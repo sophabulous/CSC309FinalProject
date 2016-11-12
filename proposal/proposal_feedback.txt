@@ -1,0 +1,5 @@
+Your proposal sounds good for the time available to work on it.
+
+Based on the proposed functionality, it sounds like the REST API design should
+be fairly straightforward. I'm also hoping that the UI will make it easy to jump
+between viewing things by store or by item.
