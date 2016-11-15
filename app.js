@@ -30,7 +30,7 @@ app.get('/stores', stores.findAll);
 app.get('/stores/:id', stores.findOne);
 app.post('/stores/', stores.addOne);
 app.post('/stores/:id', stores.updateOne);
-app.delete('stores/:id', stores.deleteOne);
+app.delete('/stores/:id', stores.deleteOne);
 
 app.listen(3000);
 console.log('Listening on port 3000');

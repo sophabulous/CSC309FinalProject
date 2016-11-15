@@ -29,8 +29,8 @@ exports.findOne = function (req, res) {
 
 exports.addOne = function (req, res) {
     console.log("addOne");
-    let newStore = new Store(req.body);
-    // TODO: add some validation?
+    let newStore = new Store(req.body.name);
+
     newStore.save(function (err, newStore) {
         if (err) throw err;
 
@@ -57,7 +57,7 @@ exports.updateOne = function (req, res) {
 
 exports.deleteOne = function (req, res) {
     console.log("deleteOne: " + req.params.id);
-    Store.findOne({_id:req.params.id}, function (err, store) {
+    Store.findOne({"_id": req.params.id}, function (err, store) {
         if (err) throw err;
         console.log(store);
         if (store) {
@@ -68,7 +68,7 @@ exports.deleteOne = function (req, res) {
 };
 
 exports.rate = function (req, res) {
-    Store.findOne({"id": req.params.id}, function (err, store) {
+    Store.findOne({"_id": req.params.id}, function (err, store) {
         if (err) throw err;
         store.rating.append(req.params.rating);
         store.save(function(err) {

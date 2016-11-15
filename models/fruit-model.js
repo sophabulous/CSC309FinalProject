@@ -1,3 +1,7 @@
+/* the idea to separate models in this way was borrowed from this source:
+ http://www.white-skies.com/2013/02/how-to-set-up-mongoose-mongo-schemas.html
+ */
+
 "use strict";
 
 var mongoose = require('mongoose');
