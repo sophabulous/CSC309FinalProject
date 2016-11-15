@@ -15,6 +15,10 @@ var fruitSchema = new Schema(
             type: String
             // enum: [countries] TODO: figure out the best way to validate
         },
+        season: {
+            // TODO: Figure out how to implement season
+            // ideas: bit array or months, 1 of 4 seasons,
+        },
         // Non-negative double
         price: {
             type: Number, min: 0, required: true
@@ -29,5 +33,5 @@ var fruitSchema = new Schema(
     }
 );
 
-mongoose.connect('mongodb://localhost/fruitdb');
-module.exports = mongoose.model('Fruit', fruitSchema);
+module.exports = function () { fruitSchema };
+mongoose.model('Fruit', fruitSchema);
