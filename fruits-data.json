@@ -1,0 +1,9 @@
+[
+  {
+    "_id": "1234Apple",
+    "origin": "Ontario",
+    "type": "Apple",
+    "price": 0.65,
+    "quantity": 10
+  }
+]
