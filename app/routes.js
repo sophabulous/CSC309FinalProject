@@ -12,7 +12,7 @@ module.exports = router;
 
 
 // Main index
-router.get('/index', mainController.displayHome);
+router.get('/', mainController.displayHome);
 
 
 // Seed database
