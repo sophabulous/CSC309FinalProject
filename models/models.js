@@ -4,8 +4,8 @@ var models = [
 ];
 
 exports.init = function () {
-    for (let i = 0, len = models.length; i < len; i++) {
-        let model = "./" + models[i];
+    for (var i = 0; i < models.length; i++) {
+        var model = "./" + models[i];
         require(model)();
     }
 };
