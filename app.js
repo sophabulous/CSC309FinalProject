@@ -17,6 +17,12 @@ mongoose.connect(process.env.DB_URI, function (err) {
 var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(express.static(__dirname + '/public/assets'));
+
+// Get the index page:
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/public/index.html');
+});
 
 // Routing
 app.use(require('./app/routes'));
