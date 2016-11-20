@@ -22,14 +22,14 @@ const ratingsSchema = new Schema(
     {collection: "ratings"},
 );
 
-const usersSchema = new Schema (
+const usersSchema = new Schema(
     {
         userName: {
             type: String,
             required: true,
             unique: true
         },
-        ratings: [ ratingsSchema ]
+        ratings: [ratingsSchema]
     },
     {collection: "users"},
 );

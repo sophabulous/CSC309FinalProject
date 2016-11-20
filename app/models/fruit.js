@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 
 const mongoose = require('mongoose'),
     Schema = mongoose.Schema,
-    fs = require("fs");
+    fs = require('fs');
 
 let fruits, seasons;
 
 // TODO: Get enum working or find a new way to validate fruit types and seasons
-// fs.readFile("app/models/fruits-data.json", "utf-8", function (err, data) {
+// fs.readFile('app/models/fruits-data.json', 'utf-8', function (err, data) {
 //     if (err) {
 //         throw err;
 //     }
@@ -16,7 +16,7 @@ let fruits, seasons;
 //     seasons = d.seasons;
 // });
 
-const fruitsSchema = new Schema (
+const fruitsSchema = new Schema(
     {
         storeId: {
             type: String,
@@ -53,7 +53,7 @@ const fruitsSchema = new Schema (
             required: true
         }
     },
-    {collection: "fruits"}
+    {collection: 'fruits'}
 );
 
 const fruitModel = mongoose.model('Fruit', fruitsSchema);
