@@ -1,7 +1,7 @@
-"use strict";
+'use strict';
 
 const Store = require('../models/store');
-const fruitsController = require('../controllers/fruits.controller.js');
+const Fruit = require('../models/fruit');
 
 module.exports = {
     showStores: showStores,
@@ -28,13 +28,13 @@ module.exports = {
  * @param req
  * @param res
  */
-function showStores (req, res) {
-    console.log("Show all stores:");
-    Store.find({}, { _id: 0 }, function (err, stores) {
+function showStores(req, res) {
+    console.log('Show all stores:');
+    Store.find({}, {_id: 0}, function (err, stores) {
         if (err) {
             console.log(err);
             res.status(404);
-            res.send("Stores not found.");
+            res.send('Stores not found.');
         } else {
             console.log(stores);
             res.send(JSON.stringify(stores))
@@ -53,22 +53,40 @@ function showStores (req, res) {
  *      photo: String (url),
  *      rateCount: Number,
  *      rateValue: Number
+ *      inventory: [Fruits]
  * }'
  *
  * @param req
  * @param res
  */
-function showSingleStore (req, res) {
+function showSingleStore(req, res) {
     let storeId = req.params.id.toUpperCase();
-    console.log("Show store " + storeId);
-    Store.findOne({"storeId": storeId}, { _id: 0 }, function (err, store) {
+    console.log('Show store ' + storeId);
+    Store.findOne({storeId: storeId}, {_id: 0}, function (err, store) {
         if (err) {
             console.log(err);
             res.status(404);
-            res.send("Store not found.");
+            res.send('Store not found.');
+        } else if (store) {
+            Fruit.find({storeId: {$eq: storeId}},
+                {quantity: 0},
+                function (err, fruits) {
+                    if (err) {
+                        console.log(err);
+                        store.inventory = [];
+                        res.send(JSON.stringify(store))
+                    } else {
+                        console.log(fruits);
+                        // TODO: find out why this doesn't work
+                        store.inventory = fruits;
+                        console.log(store);
+                        res.send(JSON.stringify(store));
+                    }
+                });
         } else {
-            console.log(store);
-            res.send(JSON.stringify(store))
+            console.log('Something went wrong.');
+            res.status(500);
+            res.send('Something went wrong.');
         }
     });
 }
@@ -92,8 +110,8 @@ function showSingleStore (req, res) {
  * @param req
  * @param res
  */
-function createNewStore (req, res) {
-    console.log("createNewStore");
+function createNewStore(req, res) {
+    console.log('createNewStore');
 
     let newStore = new Store(req.body);
 
@@ -103,9 +121,9 @@ function createNewStore (req, res) {
             // TODO: Test Mongo validation to determine if more is required here
             console.log(err);
             res.status(400);
-            res.send("Could not add new store.");
+            res.send('Could not add new store.');
         } else {
-            console.log(newStore.storeId + " was added to the database.");
+            console.log(newStore.storeId + ' was added to the database.');
             res.send('Success');
         }
     })
@@ -122,18 +140,18 @@ function createNewStore (req, res) {
  * @param req
  * @param res
  */
-function updateStore (req, res) {
+function updateStore(req, res) {
     let storeId = req.params.id.toUpperCase();
-    console.log("updateStore: " + storeId);
+    console.log('updateStore: ' + storeId);
     let name = req.body.name,
         address = req.body.address,
         photo = req.body.photo;
 
-    Store.findOne({"storeId": storeId}, function (err, store) {
+    Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
             console.log(err);
             res.status(404);
-            res.send("Store not found.");
+            res.send('Store not found.');
         } else if (store) {
             // only update fields supplied in request
             store.name = name || store.name;
@@ -144,16 +162,16 @@ function updateStore (req, res) {
                 if (err) {
                     console.log(err);
                     res.status(400);
-                    res.send("Could not update store.");
+                    res.send('Could not update store.');
                 } else {
-                    console.log("Successfully updated store " + store.storeId);
-                    res.send("Success");
+                    console.log('Successfully updated store ' + store.storeId);
+                    res.send('Success');
                 }
             });
         } else {
-            console.log("Something went wrong.");
+            console.log('Something went wrong.');
             res.status(500);
-            res.send("Something went wrong.");
+            res.send('Something went wrong.');
         }
     });
 }
@@ -167,29 +185,29 @@ function updateStore (req, res) {
  * @param req
  * @param res
  */
-function deleteStore (req, res) {
+function deleteStore(req, res) {
     let storeId = req.params.id.toUpperCase();
-    console.log("deleteStore: " + storeId);
-    Store.findOne({"storeId": storeId}, function (err, store) {
+    console.log('deleteStore: ' + storeId);
+    Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
             console.log(err);
             res.status(404);
-            res.send("Store not found.");
+            res.send('Store not found.');
         } else if (store) {
             store.remove(function (err, result) {
                 if (err) {
                     console.log(err);
                     res.status(400);
-                    res.send("Could not delete store.")
+                    res.send('Could not delete store.')
                 } else {
                     console.log(result);
                     res.send('Success');
                 }
             });
         } else {
-            console.log("Something went wrong.");
+            console.log('Something went wrong.');
             res.status(500);
-            res.send("Something went wrong.");
+            res.send('Something went wrong.');
         }
     });
 }
@@ -205,18 +223,18 @@ function deleteStore (req, res) {
  * @param req
  * @param res
  */
-function rateStore (req, res) {
+function rateStore(req, res) {
     let storeId = req.params.id.toUpperCase();
     if (!req.body.rating) {
-        console.log("Rating not specified for store " + storeId);
+        console.log('Rating not specified for store ' + storeId);
         res.status(400);
-        res.send("Could not update rating.");
+        res.send('Could not update rating.');
     } else {
-        Store.findOne({"storeId": storeId}, function (err, store) {
+        Store.findOne({storeId: storeId}, function (err, store) {
             if (err) {
                 console.log(err);
                 res.status(404);
-                res.send("Store not found.");
+                res.send('Store not found.');
             } else if (store) {
                 store.rateCount++;
                 store.rateValue += parseInt(req.body.rating);
@@ -224,16 +242,16 @@ function rateStore (req, res) {
                     if (err) {
                         console.log(err);
                         res.status(404);
-                        res.send("Could not update rating.");
+                        res.send('Could not update rating.');
                     } else {
-                        console.log(store.name + " was rated.");
+                        console.log(store.name + ' was rated.');
                         res.send('Success');
                     }
                 });
             } else {
-                console.log("Something went wrong.");
+                console.log('Something went wrong.');
                 res.status(500);
-                res.send("Something went wrong.");
+                res.send('Something went wrong.');
             }
         });
     }
@@ -248,18 +266,18 @@ function rateStore (req, res) {
  * @param req
  * @param res
  */
-function seedStores (req, res) {
+function seedStores(req, res) {
     const stores = [
         {
-            storeId: "LO123",
-            name: "Loblaws",
-            address: "123 fake st.",
-            photo: "https://assets.shop.loblaws.ca/ContentMedia/lsl/logos/banner_en.png"
+            storeId: 'LO123',
+            name: 'Loblaws',
+            address: '123 fake st.',
+            photo: 'https://assets.shop.loblaws.ca/ContentMedia/lsl/logos/banner_en.png'
         }, {
-            storeId: "NF123",
-            name: "No Frills",
-            address: "123 another st.",
-            photo: "http://www.nofrills.ca/content/dam/lclonline/nofrills/nofrills-logo.jpg"
+            storeId: 'NF123',
+            name: 'No Frills',
+            address: '123 another st.',
+            photo: 'http://www.nofrills.ca/content/dam/lclonline/nofrills/nofrills-logo.jpg'
         }
     ];
 
@@ -271,13 +289,13 @@ function seedStores (req, res) {
                 if (err) {
                     console.log(err);
                     res.status(404);
-                    res.send("Could not seed database. " +
-                        "Error on store id " + store.storeId);
+                    res.send('Could not seed database. ' +
+                        'Error on store id ' + store.storeId);
                 }
-                console.log(store.storeId + " was added to the database.");
+                console.log(store.storeId + ' was added to the database.');
             });
         }
     });
 
-    res.send("Success");
+    res.send('Success');
 }

@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
 const mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
-const storesSchema = new Schema (
+const storesSchema = new Schema(
     {
         storeId: {
             type: String,
@@ -37,8 +37,7 @@ const storesSchema = new Schema (
             default: 0
         }
     },
-    {collection: "stores"}
-
+    {collection: 'stores'}
 );
 
 const storeModel = mongoose.model('Store', storesSchema);
