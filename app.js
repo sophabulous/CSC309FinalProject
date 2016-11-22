@@ -24,4 +24,5 @@ app.use(express.static(__dirname + '/public/'));
 app.use(require('./app/routes'));
 
 app.listen(process.env.PORT || 3000);
+// app.listen(3000);
 console.log('Listening on port ' + process.env.PORT || 3000);

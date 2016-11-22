@@ -230,7 +230,7 @@ function seedFruits(req, res) {
                     res.send('Could not seed database. ' +
                         'Error on fruit id ' + fruit._id);
                 }
-                console.log(fruit._id + ' was added to the database.');
+                console.log(fruits.storeId + 's' + fruits.type + ' was added to the database.');
             });
         }
     });
