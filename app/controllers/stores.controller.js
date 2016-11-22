@@ -33,11 +33,10 @@ function showStores(req, res) {
     Store.find({}, {_id: 0}, function (err, stores) {
         if (err) {
             console.log(err);
-            res.status(404);
-            res.send('Stores not found.');
+            return res.send(500, 'Something went wrong');
         } else {
             console.log(stores);
-            res.send(JSON.stringify(stores))
+            return res.send(JSON.stringify(stores))
         }
     });
 }
@@ -65,29 +64,27 @@ function showSingleStore(req, res) {
     Store.findOne({storeId: storeId}, {_id: 0}, function (err, store) {
         if (err) {
             console.log(err);
-            res.status(404);
-            res.send('Store not found.');
-        } else if (store) {
-            Fruit.find({storeId: {$eq: storeId}},
-                {quantity: 0},
-                function (err, fruits) {
-                    if (err) {
-                        console.log(err);
-                        store.inventory = [];
-                        res.send(JSON.stringify(store))
-                    } else {
-                        console.log(fruits);
-                        // TODO: find out why this doesn't work
-                        store.inventory = fruits;
-                        console.log(store);
-                        res.send(JSON.stringify(store));
-                    }
-                });
-        } else {
-            console.log('Something went wrong.');
-            res.status(500);
-            res.send('Something went wrong.');
+            return res.send(500, 'Something went wrong.');
         }
+
+        if (!store) {
+            console.log('Store ' + storeId + 'not found.');
+            return res.send(404, 'Store not found');
+        }
+
+        Fruit.find({storeId: {$eq: storeId}}, function (err, fruits) {
+            if (err) {
+                console.log(err);
+                store.inventory = [];
+                return res.send(JSON.stringify(store))
+            } else {
+                console.log(fruits);
+                // TODO: find out why this doesn't work
+                store.inventory = fruits;
+                console.log(store);
+                return res.send(JSON.stringify(store));
+            }
+        });
     });
 }
 
@@ -111,6 +108,7 @@ function showSingleStore(req, res) {
  * @param res
  */
 function createNewStore(req, res) {
+    // TODO: only allow admin users to add store
     console.log('createNewStore');
 
     let newStore = new Store(req.body);
@@ -120,11 +118,10 @@ function createNewStore(req, res) {
             // TODO: Experiment with error messages to give user more details
             // TODO: Test Mongo validation to determine if more is required here
             console.log(err);
-            res.status(400);
-            res.send('Could not add new store.');
+            return res.send(400, 'Could not add new store.');
         } else {
             console.log(newStore.storeId + ' was added to the database.');
-            res.send('Success');
+            return res.send('Success');
         }
     })
 }
@@ -141,6 +138,7 @@ function createNewStore(req, res) {
  * @param res
  */
 function updateStore(req, res) {
+    // TODO: only allow admin users to update store
     let storeId = req.params.id.toUpperCase();
     console.log('updateStore: ' + storeId);
     let name = req.body.name,
@@ -150,29 +148,29 @@ function updateStore(req, res) {
     Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
             console.log(err);
-            res.status(404);
-            res.send('Store not found.');
-        } else if (store) {
-            // only update fields supplied in request
-            store.name = name || store.name;
-            store.address = address || store.address;
-            store.photo = photo || store.photo;
-
-            store.save(function (err, store) {
-                if (err) {
-                    console.log(err);
-                    res.status(400);
-                    res.send('Could not update store.');
-                } else {
-                    console.log('Successfully updated store ' + store.storeId);
-                    res.send('Success');
-                }
-            });
-        } else {
-            console.log('Something went wrong.');
-            res.status(500);
-            res.send('Something went wrong.');
+            return res.send(500, 'Something went wrong.');
         }
+
+        if (!store) {
+            console.log('Store ' + storeId + 'not found.');
+            return res.send(404, 'Store not found');
+        }
+
+        // only update fields supplied in request
+        store.name = name || store.name;
+        store.address = address || store.address;
+        store.photo = photo || store.photo;
+
+        store.save(function (err, store) {
+            if (err) {
+                console.log(err);
+                return res.send(500, 'Something went wrong.');
+            } else {
+                console.log('Successfully updated store ' + store.storeId);
+                return res.send('Success');
+            }
+        });
+
     });
 }
 
@@ -186,29 +184,29 @@ function updateStore(req, res) {
  * @param res
  */
 function deleteStore(req, res) {
+    // TODO: only allow admin users to delete store
     let storeId = req.params.id.toUpperCase();
     console.log('deleteStore: ' + storeId);
     Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
             console.log(err);
-            res.status(404);
-            res.send('Store not found.');
-        } else if (store) {
-            store.remove(function (err, result) {
-                if (err) {
-                    console.log(err);
-                    res.status(400);
-                    res.send('Could not delete store.')
-                } else {
-                    console.log(result);
-                    res.send('Success');
-                }
-            });
-        } else {
-            console.log('Something went wrong.');
-            res.status(500);
-            res.send('Something went wrong.');
+            return res.send(500, 'Something went wrong.');
         }
+
+        if (!store) {
+            console.log('Store ' + storeId + 'not found.');
+            return res.send(404, 'Store not found');
+        }
+
+        store.remove(function (err, result) {
+            if (err) {
+                console.log(err);
+                return res.send(500, 'Something went wrong.');
+            } else {
+                console.log(result);
+                return res.send('Success');
+            }
+        });
     });
 }
 
@@ -224,37 +222,38 @@ function deleteStore(req, res) {
  * @param res
  */
 function rateStore(req, res) {
+    // TODO: Only allow logged in users to rate and only if they haven't already
+    // rated
     let storeId = req.params.id.toUpperCase();
+
     if (!req.body.rating) {
         console.log('Rating not specified for store ' + storeId);
-        res.status(400);
-        res.send('Could not update rating.');
-    } else {
-        Store.findOne({storeId: storeId}, function (err, store) {
+        return res.send(400, 'Could not update rating.');
+    }
+
+    Store.findOne({storeId: storeId}, function (err, store) {
+        if (err) {
+            console.log(err);
+            return res.send(500, 'Something went wrong.');
+        }
+
+        if (!store) {
+            console.log('Store ' + storeId + 'not found.');
+            return res.send(404, 'Store not found');
+        }
+
+        store.rateCount++;
+        store.rateValue += parseInt(req.body.rating);
+        store.save(function (err) {
             if (err) {
                 console.log(err);
-                res.status(404);
-                res.send('Store not found.');
-            } else if (store) {
-                store.rateCount++;
-                store.rateValue += parseInt(req.body.rating);
-                store.save(function (err) {
-                    if (err) {
-                        console.log(err);
-                        res.status(404);
-                        res.send('Could not update rating.');
-                    } else {
-                        console.log(store.name + ' was rated.');
-                        res.send('Success');
-                    }
-                });
+                return res.send(500, 'Something went wrong.');
             } else {
-                console.log('Something went wrong.');
-                res.status(500);
-                res.send('Something went wrong.');
+                console.log(store.name + ' was rated.');
+                return res.send('Success');
             }
         });
-    }
+    });
 }
 
 
@@ -288,14 +287,12 @@ function seedStores(req, res) {
             newStore.save(function (err) {
                 if (err) {
                     console.log(err);
-                    res.status(404);
-                    res.send('Could not seed database. ' +
-                        'Error on store id ' + store.storeId);
+                    return res.send(400, 'Could not seed database.');
                 }
                 console.log(store.storeId + ' was added to the database.');
             });
         }
     });
 
-    res.send('Success');
+    return res.send('Success');
 }

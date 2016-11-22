@@ -15,30 +15,47 @@ module.exports = {
 /**
  * Respond to request with a stringified list of all fruit objects.
  *
+ * Use type query to get back only fruits of a specific type.
+ *
  * '[{
  *      _id: ObjectId
  *      storeId: String,
  *      type: String,
  *      photo: String,
  *      season: String (url),
- *      price: Number
+ *      price: Number,
+ *      quantity: Number
  * }]'
  *
  * @param req
  * @param res
  */
 function showFruits(req, res) {
-    console.log('Show all fruits:');
-    Fruit.find({}, {quantity: 0}, function (err, fruits) {
-        if (err) {
-            console.log(err);
-            res.status(404);
-            res.send('Fruits not found.');
-        } else {
-            console.log(fruits);
-            res.send(JSON.stringify(fruits))
-        }
-    });
+    let type = req.query.type;
+    console.log('Show all ' + type || 'fruits');
+
+    if (type) {
+        type = type.toLowerCase();
+        Fruit.find({type: type}, function (err, fruits) {
+            if (err) {
+                console.log(err);
+                return res.send(500, 'Something went wrong.');
+            } else {
+                console.log(fruits);
+                return res.send(JSON.stringify(fruits))
+            }
+        });
+    } else {
+        Fruit.find({}, function (err, fruits) {
+            if (err) {
+                console.log(err);
+                return res.send(500, 'Something went wrong.');
+            } else {
+                console.log(fruits);
+                return res.send(JSON.stringify(fruits))
+            }
+        });
+    }
 }
 
 
@@ -51,24 +68,30 @@ function showFruits(req, res) {
  *      type: String,
  *      photo: String,
  *      season: String (url),
- *      price: Number
+ *      price: Number,
+ *      quantity: Number
  * }'
  *
  * @param req
  * @param res
  */
 function showSingleFruit(req, res) {
-    console.log('Show fruit ' + req.params.id);
-    let type = req.params.id.toLowerCase();
-    Fruit.findOne({type: type}, {quantity: 0}, function (err, fruit) {
+    let id = req.params.id;
+    console.log('Show fruit ' + id);
+    Fruit.findOne({_id: id}, function (err, fruit) {
         if (err) {
             console.log(err);
-            res.status(404);
-            res.send('Fruit not found.');
-        } else {
-            console.log(fruit);
-            res.send(JSON.stringify(fruit))
+            return res.send(500, 'Something went wrong');
         }
+
+        if (!fruit) {
+            console.log('Fruit ' + id + 'not found.');
+            return res.send(404, 'Fruit not found');
+        }
+
+        console.log(fruit);
+        return res.send(JSON.stringify(fruit));
+
     });
 }
 
@@ -94,6 +117,7 @@ function showSingleFruit(req, res) {
  * @param res
  */
 function createNewFruit(req, res) {
+    // TODO: only allow admin users to add fruit
     console.log('createNewFruit');
 
     let newFruit = new Fruit(req.body);
@@ -123,6 +147,7 @@ function createNewFruit(req, res) {
  * @param res
  */
 function updateFruit(req, res) {
+    // TODO: only allow admin users to update fruit
     console.log('updatefruit: ' + req.params.id);
     let photo = req.body.photo,
         price = req.body.price,
@@ -167,6 +192,7 @@ function updateFruit(req, res) {
  * @param res
  */
 function deleteFruit(req, res) {
+    // TODO: only allow admin users to delete fruit
     console.log('deleteFruit: ' + req.params.id);
     Fruit.findOne({_id: req.params.id}, function (err, fruit) {
         if (err) {
