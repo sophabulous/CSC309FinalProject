@@ -6,7 +6,7 @@ const express = require('express'),
     session = require('express-session');
 
 // Database startup (get db url from .env variables)
-mongoose.connect(process.env.DB_URI, function (err) {
+mongoose.connect(process.env.DB_URI || 'mongodb://localhost/db',function (err) {
     if (err) {
         console.log('ERROR connecting to database. ' + err);
     } else {
@@ -20,7 +20,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(__dirname + '/public/'));
 app.use(session({
-    secret: process.env.SESSION_SECRET, // get secret from .env variables
+    secret: process.env.SESSION_SECRET || 'secret', // get secret from .env
+    // variables
     cookie: {
         maxAge: 3600000 // auto-end session in one hour
     },
