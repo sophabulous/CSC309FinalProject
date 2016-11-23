@@ -8,7 +8,7 @@ const express = require('express'),
 
 
 // Database startup (get db url from .env variables)
-mongoose.connect(process.env.DB_URI || 'mongodb://localhost/db', function (err, db) {
+mongoose.connect(process.env.DB_URI || 'mongodb://localhost/db', function (err){
     if (err) {
         console.log('ERROR connecting to database. ' + err);
     } else {
@@ -49,7 +49,6 @@ fs.readFile('./seed-db.json', 'utf-8', function (err, data) {
             });
         }
     });
-
 });
 
 
@@ -79,6 +78,7 @@ app.use(function(req, res, next) {
 
 // Routing
 app.use(require('./app/routes'));
+
 
 // Use .env to store port or default to port 3000
 let port = process.env.PORT || 3000;

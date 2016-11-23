@@ -245,3 +245,125 @@ ul.alert-dropdown {
     width: 75%;
     padding-top: 8px;
 }
+
+/*Product Detail Page*/
+
+/*Comments Section*/
+.detailBox {
+    width: 80%;
+    margin:50px;
+}
+.titleBox {
+    background-color:#fdfdfd;
+    padding:10px;
+    font-size: 3em;
+}
+.titleBox label{
+  color:#444;
+  margin:0;
+  display:inline-block;
+}
+
+
+.actionBox .form-group * {
+    width:100%;
+}
+.taskDescription {
+    margin-top:10px 0;
+}
+.commentList {
+    padding:0;
+    list-style:none;
+    max-height:80%;
+    overflow:auto;
+}
+.commentList li {
+    margin:0;
+    margin-top:10px;
+}
+.commentList li > div {
+    display:table-cell;
+}
+.commenterImage {
+    width:30px;
+    margin-right:5px;
+    height:100%;
+    float:left;
+}
+.commenterImage img {
+    width:100%;
+    border-radius:50%;
+}
+.commentText p {
+    margin:0;
+}
+.sub-text {
+    color:#aaa;
+    font-family:verdana;
+    font-size:11px;
+}
+.actionBox {
+    border-top:1px dotted #bbb;
+    padding:10px;
+}
+
+
+.thumbnail:hover{
+    cursor: pointer;
+}
+
+/*Product Info Panel*/
+.product_info_panel{
+    text-align: right;
+    padding-right: 10%;
+}
+
+.product_detail{
+    font-size: 20px;
+}
+
+.product-pic{
+    text-align: right;
+/*    width: 80%;
+    height: auto;*/
+}
+
+.productid{
+    color: #332C29;
+    font-size: 12px;
+}
+
+.product_det_name{
+    font-size: 3em;
+}
+
+.product_info_panel select, .product_info_panel input{
+    margin-bottom: 2%;
+    padding: 5px;
+}
+
+.add-to-cart {
+   border: 1px solid #50504B;
+   background: #ffffff;
+   padding: 8px 30px;
+   -webkit-border-radius: 5px;
+   -moz-border-radius: 5px;
+   border-radius: 5px;
+   /*text-shadow: rgba(0,0,0,.4) 0 1px 0;*/
+   color: #000000;
+   font-size: 20px;
+   text-decoration: none;
+   vertical-align: middle;
+   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+   }
+.add-to-cart:hover {
+   border-color: #d88d1e;
+   background: #d88d1e;
+   color: #ffffff;
+   text-decoration: none;
+   }
+.add-to-cart:active {
+   border: 1px solid #d88d1e;
+   background: #ffffff;
+   color: #d88d1e;
+   }
