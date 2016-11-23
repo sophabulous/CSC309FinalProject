@@ -14,16 +14,6 @@ Create a directory to store the database and start the database server:
         
 `mongod --dbpath=$PWD/data`
 
-
-## Seeding Database
-
-To seed the database use the following GET routes:
-
-`/stores/seed`
-
-`/fruits/seed`
-
-
 ## Express API
 
 | Route                  | GET                          | POST                                            | DELETE          |
