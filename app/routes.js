@@ -37,7 +37,7 @@ router.delete('/stores/:id', storesController.deleteStore);
 
 
 // Fruit routes
-// Get an array of fruit objects -- query single fruit type with ?type=type
+// Get an array of fruit objects -- query with ?type=type ?season=season
 router.get('/fruits', fruitsController.showFruits);
 // Get a single fruit object
 router.get('/fruits/:id', fruitsController.showSingleFruit);

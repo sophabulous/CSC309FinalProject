@@ -15,7 +15,8 @@ module.exports = {
 /**
  * Respond to request with a stringified list of all fruit objects.
  *
- * Use type query to get back only fruits of a specific type.
+ * Use type query to get back only fruits of a specific type or season
+ * query to get back only fruits of a specific season.
  *
  * '[{
  *      _id: ObjectId
@@ -31,8 +32,9 @@ module.exports = {
  * @param res
  */
 function showFruits(req, res) {
-    let type = req.query.type;
-    console.log('Show all ' + type || 'fruits');
+    let type = req.query.type,
+        season = req.query.season;
+    console.log('Show all ' + (type || season || 'fruits'));
 
     if (type) {
         type = type.toLowerCase();
@@ -45,6 +47,17 @@ function showFruits(req, res) {
                 return res.send(JSON.stringify(fruits))
             }
         });
+    } else if (season) {
+        season = season.toLowerCase();
+        Fruit.find({season: season}, function (err, fruits) {
+            if (err) {
+                console.log(err);
+                return res.send(500, 'Something went wrong.');
+            } else {
+                console.log(fruits);
+                return res.send(JSON.stringify(fruits));
+            }
+        })
     } else {
         Fruit.find({}, function (err, fruits) {
             if (err) {

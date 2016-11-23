@@ -22,6 +22,7 @@ function createNewUser(req, res) {
         passwordConfirm = req.body.password_confirm,
         name = req.body.name,
         address = req.body.address,
+        email = req.body.email,
         hashedPwd, newUser;
 
     if (password !== passwordConfirm) {
@@ -45,7 +46,8 @@ function createNewUser(req, res) {
             'userName': username,
             'password': hashedPwd,
             'name': name,
-            'address': address
+            'address': address,
+            'email': email
         });
 
         newUser.save(function (err, newUser) {
@@ -96,7 +98,7 @@ function updateUser(req, res) {
         return res.send('Authorization failed.');
     }
 
-    let username = req.body.username,
+    let email = req.body.email,
         password = req.body.password,
         passwordConfirm = req.body.password_confirm,
         name = req.body.name,
@@ -122,7 +124,7 @@ function updateUser(req, res) {
         if (password) {hashedPwd = bcrypt.hashSync(password, 10);}
 
         // Update all fields that were provided
-        user.userName = username || user.userName;
+        user.email = email || user.email;
         user.password = hashedPwd || user.password;
         user.name = name || user.name;
         user.address = address || user.address;

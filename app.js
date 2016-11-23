@@ -1,9 +1,11 @@
+'use strict';
+
 require('dotenv').config();
 
 const express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
-    fs = require('fs');
+    fs = require('fs'),
     session = require('express-session');
 
 
@@ -25,6 +27,7 @@ fs.readFile('./seed-db.json', 'utf-8', function (err, data) {
     let db = mongoose.connection;
     let fruitsCollection = db.collection('fruits');
     let storesCollection = db.collection('stores');
+    let usersCollection = db.collection('users');
 
     fruitsCollection.count(function (err, count) {
         if (!err && count === 0) {
@@ -39,7 +42,7 @@ fs.readFile('./seed-db.json', 'utf-8', function (err, data) {
     });
 
     storesCollection.count(function (err, count) {
-        if (!err && count === 0){
+        if (!err && count === 0) {
             storesCollection.insertMany(d.stores, function (err) {
                 if (err) {
                     console.log(err);
@@ -49,6 +52,18 @@ fs.readFile('./seed-db.json', 'utf-8', function (err, data) {
             });
         }
     });
+
+    usersCollection.count(function (err, count) {
+        if (!err && count === 0) {
+            usersCollection.insertMany(d.users, function (err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Inserted users into db.');
+                }
+            })
+        }
+    })
 });
 
 
