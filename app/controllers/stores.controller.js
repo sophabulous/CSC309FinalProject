@@ -2,6 +2,7 @@
 
 const Store = require('../models/store');
 const Fruit = require('../models/fruit');
+const User  = require('../models/user');
 
 module.exports = {
     showStores: showStores,
@@ -109,7 +110,9 @@ function showSingleStore(req, res) {
  */
 function createNewStore(req, res) {
     // TODO: only allow admin users to add store
+
     console.log('createNewStore');
+
 
     let newStore = new Store(req.body);
 
