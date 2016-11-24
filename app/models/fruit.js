@@ -52,6 +52,17 @@ const fruitsSchema = new Schema(
             default: 0,
             required: true
         }
+        //TODO: figure out a per unit or multi size system
+        // unit: {
+        //     type: String,
+        //     lower: true,
+        //     required: true
+        // },
+        //TODO: figure out a comment system
+        // comments: [{
+        //     type: Schema.ObjectId,
+        //     ref: 'Comment'
+        // }]
     },
     {collection: 'fruits'}
 );

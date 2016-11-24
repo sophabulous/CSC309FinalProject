@@ -7,8 +7,7 @@ module.exports = {
     showSingleFruit: showSingleFruit,
     createNewFruit: createNewFruit,
     updateFruit: updateFruit,
-    deleteFruit: deleteFruit,
-    seedFruits: seedFruits
+    deleteFruit: deleteFruit
 };
 
 
@@ -224,50 +223,4 @@ function deleteFruit(req, res) {
             res.send('Something went wrong.');
         }
     });
-}
-
-
-/**
- * Seed the database with fruit objects.
- *
- * Sends 'Success' upon success or sends error message.
- *
- * @param req
- * @param res
- */
-function seedFruits(req, res) {
-    const fruits = [
-        {
-            storeId: 'LO123',
-            type: 'apple',
-            season: 'fall',
-            price: 1.00,
-            quantity: 100
-        }, {
-            storeId: 'NF123',
-            type: 'banana',
-            season: 'summer',
-            photo: 'https://cdn.pixabay.com/photo/2016/09/03/20/48/bananas-1642706_960_720.jpg',
-            price: 0.50,
-            quantity: 32
-        }
-    ];
-
-    // Clear database before seeding again
-    Fruit.remove({}, function () {
-        for (let fruit of fruits) {
-            let newFruit = new Fruit(fruit);
-            newFruit.save(function (err) {
-                if (err) {
-                    console.log(err);
-                    res.status(404);
-                    res.send('Could not seed database. ' +
-                        'Error on fruit id ' + fruit._id);
-                }
-                console.log(fruits.storeId + 's' + fruits.type + ' was added to the database.');
-            });
-        }
-    });
-
-    res.send('Success');
 }

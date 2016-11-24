@@ -1,8 +1,8 @@
 'use strict';
 
-const Store = require('../models/store');
-const Fruit = require('../models/fruit');
-const User  = require('../models/user');
+const Store = require('../models/store'),
+    Rating = require('../models/rating'),
+    dbErrors = require('../services/handleDatabaseErrors');
 
 module.exports = {
     showStores: showStores,
@@ -10,8 +10,7 @@ module.exports = {
     createNewStore: createNewStore,
     updateStore: updateStore,
     deleteStore: deleteStore,
-    rateStore: rateStore,
-    seedStores: seedStores
+    rateStore: rateStore
 };
 
 /**
@@ -31,10 +30,12 @@ module.exports = {
  */
 function showStores(req, res) {
     console.log('Show all stores:');
+
+    // Send all stores from database -- exclude _id field
     Store.find({}, {_id: 0}, function (err, stores) {
         if (err) {
             console.log(err);
-            return res.send(500, 'Something went wrong');
+            return res.status(500).send(err.message);
         } else {
             console.log(stores);
             return res.send(JSON.stringify(stores))
@@ -53,39 +54,31 @@ function showStores(req, res) {
  *      photo: String (url),
  *      rateCount: Number,
  *      rateValue: Number
- *      inventory: [Fruits]
  * }'
  *
  * @param req
  * @param res
  */
 function showSingleStore(req, res) {
-    let storeId = req.params.id.toUpperCase();
+    let storeId = req.params.id.toUpperCase(); // storeID stored as uppercase
+
     console.log('Show store ' + storeId);
+
+    // Send store in database that matches unique (enforced) storeId
+    // exclude _id field
     Store.findOne({storeId: storeId}, {_id: 0}, function (err, store) {
         if (err) {
             console.log(err);
-            return res.send(500, 'Something went wrong.');
+            return res.status(500).send(err.message);
         }
 
         if (!store) {
             console.log('Store ' + storeId + 'not found.');
-            return res.send(404, 'Store not found');
+            return res.status(404).send('Store not found');
         }
 
-        Fruit.find({storeId: {$eq: storeId}}, function (err, fruits) {
-            if (err) {
-                console.log(err);
-                store.inventory = [];
-                return res.send(JSON.stringify(store))
-            } else {
-                console.log(fruits);
-                // TODO: find out why this doesn't work
-                store.inventory = fruits;
-                console.log(store);
-                return res.send(JSON.stringify(store));
-            }
-        });
+        console.log(store);
+        return res.send(JSON.stringify(store));
     });
 }
 
@@ -109,19 +102,17 @@ function showSingleStore(req, res) {
  * @param res
  */
 function createNewStore(req, res) {
-    // TODO: only allow admin users to add store
-
-    console.log('createNewStore');
-
+    if (!req.session.admin) {
+        console.log("Not authorized to create store");
+        return req.status(409).send("Not authorized.");
+    }
 
     let newStore = new Store(req.body);
 
     newStore.save(function (err, newStore) {
         if (err) {
-            // TODO: Experiment with error messages to give user more details
-            // TODO: Test Mongo validation to determine if more is required here
             console.log(err);
-            return res.send(400, 'Could not add new store.');
+            return res.status(500).send(dbErrors.handleSaveErrors(err));
         } else {
             console.log(newStore.storeId + ' was added to the database.');
             return res.send('Success');
@@ -141,40 +132,37 @@ function createNewStore(req, res) {
  * @param res
  */
 function updateStore(req, res) {
-    // TODO: only allow admin users to update store
+    // Only admins can update a store
+    if (!req.session.admin) {
+        console.log("Not authorized to create store");
+        return req.status(409).send("Not authorized.");
+    }
+
     let storeId = req.params.id.toUpperCase();
-    console.log('updateStore: ' + storeId);
-    let name = req.body.name,
-        address = req.body.address,
-        photo = req.body.photo;
+    let updateParams = {};
 
-    Store.findOne({storeId: storeId}, function (err, store) {
-        if (err) {
-            console.log(err);
-            return res.send(500, 'Something went wrong.');
-        }
+    // Get update fields from request body
+    if (req.body.name) {
+        updateParams.name = req.body.name;
+    }
+    if (req.body.address) {
+        updateParams.address = req.body.address;
+    }
+    if (req.body.photo) {
+        updateParams.photo = req.body.photo;
+    }
 
-        if (!store) {
-            console.log('Store ' + storeId + 'not found.');
-            return res.send(404, 'Store not found');
-        }
-
-        // only update fields supplied in request
-        store.name = name || store.name;
-        store.address = address || store.address;
-        store.photo = photo || store.photo;
-
-        store.save(function (err, store) {
+    Store.findOneAndUpdate({storeId: storeId},
+        updateParams,
+        function (err, store) {
             if (err) {
                 console.log(err);
-                return res.send(500, 'Something went wrong.');
-            } else {
-                console.log('Successfully updated store ' + store.storeId);
-                return res.send('Success');
+                return res.status(500).send(dbErrors.handleSaveErrors(err));
             }
-        });
 
-    });
+            console.log('Updated store ', store.storeId);
+            res.send('Success');
+        });
 }
 
 
@@ -187,24 +175,28 @@ function updateStore(req, res) {
  * @param res
  */
 function deleteStore(req, res) {
-    // TODO: only allow admin users to delete store
+    if (!req.session.admin) {
+        console.log("Not authorized to create store");
+        return req.status(409).send("Not authorized.");
+    }
+
     let storeId = req.params.id.toUpperCase();
     console.log('deleteStore: ' + storeId);
     Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
             console.log(err);
-            return res.send(500, 'Something went wrong.');
+            return res.status(500).send(err.message);
         }
 
         if (!store) {
             console.log('Store ' + storeId + 'not found.');
-            return res.send(404, 'Store not found');
+            return res.status(404).send('Store not found');
         }
 
         store.remove(function (err, result) {
             if (err) {
                 console.log(err);
-                return res.send(500, 'Something went wrong.');
+                return res.status(500).send(err.message);
             } else {
                 console.log(result);
                 return res.send('Success');
@@ -217,7 +209,10 @@ function deleteStore(req, res) {
 /**
  * Updates the rating value of an existing store.
  *
- * Send {'rating': Number } (min:0, max:5) in the request.
+ * Send {
+ *      'rating': Number (min:0, max:5)
+ *      }
+ * in the request.
  *
  * Sends 'Success' upon success or sends error message.
  *
@@ -225,77 +220,78 @@ function deleteStore(req, res) {
  * @param res
  */
 function rateStore(req, res) {
-    // TODO: Only allow logged in users to rate and only if they haven't already
-    // rated
-    let storeId = req.params.id.toUpperCase();
+    let storeId = req.params.id.toUpperCase(),
+        username = req.session.username,
+        ratingVal = parseInt(req.body.rating);
 
-    if (!req.body.rating) {
-        console.log('Rating not specified for store ' + storeId);
-        return res.send(400, 'Could not update rating.');
+    // Check that user is logged in.
+    if (!username) {
+        console.log("Not authorized to rate store");
+        return res.status(409).send('Not authorized to rate store.');
     }
 
+
+    // Find store
     Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
             console.log(err);
-            return res.send(500, 'Something went wrong.');
+            return res.status(500).send(dbErrors.handleSaveErrors(err));
         }
 
-        if (!store) {
-            console.log('Store ' + storeId + 'not found.');
-            return res.send(404, 'Store not found');
-        }
-
-        store.rateCount++;
-        store.rateValue += parseInt(req.body.rating);
-        store.save(function (err) {
+        // Create and save new rating to database
+        addRating(storeId, username, ratingVal, function (err, rating) {
             if (err) {
                 console.log(err);
-                return res.send(500, 'Something went wrong.');
-            } else {
-                console.log(store.name + ' was rated.');
-                return res.send('Success');
+                return res.status(400).send(err);
             }
+
+            // Rating was successfully added, so store's rating can be updated
+            store.rateCount++;
+            store.rateValue += ratingVal;
+            store.save(function (err) {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).send(dbErrors.handleSaveErrors(err));
+                } else {
+                    console.log(store.name + ' was rated.');
+                    return res.send('Success');
+                }
+            });
         });
     });
 }
 
 
 /**
- * Seed the database with store objects.
+ * Herlper function for createing a new rating and saving it to the database.
  *
- * Sends 'Success' upon success or sends error message.
- *
- * @param req
- * @param res
+ * @param storeId
+ * @param username
+ * @param ratingVal
+ * @param callback
  */
-function seedStores(req, res) {
-    const stores = [
-        {
-            storeId: 'LO123',
-            name: 'Loblaws',
-            address: '123 fake st.',
-            photo: 'https://assets.shop.loblaws.ca/ContentMedia/lsl/logos/banner_en.png'
-        }, {
-            storeId: 'NF123',
-            name: 'No Frills',
-            address: '123 another st.',
-            photo: 'http://www.nofrills.ca/content/dam/lclonline/nofrills/nofrills-logo.jpg'
-        }
-    ];
+function addRating(storeId, username, ratingVal, callback) {
+    Rating.findOne({storeId: storeId, username: username},
+        function (err, rating) {
+            if (err) {
+                console.log(err);
+                callback(dbErrors.handleSaveErrors(err));
+                return;
+            }
 
-    // Clear database before seeding again
-    Store.remove({}, function () {
-        for (let store of stores) {
-            let newStore = new Store(store);
-            newStore.save(function (err) {
-                if (err) {
-                    console.log(err);
-                    return res.send(400, 'Could not seed database.');
-                }
-                console.log(store.storeId + ' was added to the database.');
+            if (rating) {
+                callback('Cannot rate more than once.');
+            }
+
+            let newRating = new Rating({
+                storeId: storeId,
+                username: username,
+                value: ratingVal
             });
-        }
-    });
 
-    return res.send('Success');
+            newRating.save(function (err, rating) {
+                callback(err, rating);
+                return;
+            });
+        });
 }

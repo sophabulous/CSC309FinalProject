@@ -1,147 +1,263 @@
 'use strict';
 
 const User = require('../models/user'),
-    bcrypt = require('bcrypt');
+    bcrypt = require('bcryptjs'),
+    dbErrors = require('../services/handleDatabaseErrors');
 
 module.exports = {
+    showUser: showUser,
     createNewUser: createNewUser,
     loginUser: loginUser,
-    updateUser: updateUser,
+    updateUserProfile: updateUserProfile,
+    updateUserPassword: updateUserPassword,
     signoutUser: signoutUser
 };
 
 
+/**
+ * Show profile of single user to a signed in user.
+ *
+ * Response includes
+ *
+ * {
+ *      username: String,
+ *      name: String,
+ *      photo: String (url)
+ * }
+ *
+ * @param req
+ * @param res
+ * @returns {*}
+ */
+function showUser(req, res) {
+    // Only show profile of user to signed in users
+    if (!req.session.username) {
+        return res.status(409).send('Authorization failed.');
+    }
+
+    User.findOne({username: username},
+        {password: 0, email: 0, address: 0},
+        function (err, user) {
+            if (err) {
+                return res.status(500).send(err.message);
+            }
+
+            if (!user) {
+                return res.status(404).send('User not found.');
+            }
+
+            else {
+                return res.send(user);
+            }
+        });
+}
+
+
+/**
+ * Create a new user object and update the database.
+ *
+ * A request should include a body with the following format:
+ *
+ * {
+ *      username: String,
+ *      password: String,
+ *      name: String,
+ *      address: String,
+ *      email: String
+ * }
+ *
+ * @param req
+ * @param res
+ */
 function createNewUser(req, res) {
-    if (req.session.username) {
-        // User is already signed in
+    // Don't allow signed in users to create new user, unless admin
+    if (!req.session.admin && req.session.username) {
         return res.send('Already signed in.');
     }
 
-    let username = req.body.username,
-        password = req.body.password,
-        passwordConfirm = req.body.password_confirm,
-        name = req.body.name,
-        address = req.body.address,
-        email = req.body.email,
-        hashedPwd, newUser;
+    // Hash password before storing in database
+    let hashedPwd = bcrypt.hashSync(req.body.password);
 
-    if (password !== passwordConfirm) {
-        // Password confirmation failed
-        return res.send('Passwords do not match');
-    }
+    let newUser = new User({
+        username: req.body.username,
+        password: hashedPwd,
+        email: req.body.email,
+        address: req.body.address
+    });
 
-    // If user doesn't already exist, add new user
-    User.findOne({userName: username}, function (err, user) {
+    // Rely on MongoDB validation to check for unique and required fields
+    // and report appropriate errors.
+    newUser.save(newUser, function (err, user) {
         if (err) {
             console.log(err);
-            return res.send(500, 'Something went wrong.');
-        }
-
-        if (user) {
-            return res.send('User already exists.');
-        }
-
-        hashedPwd = bcrypt.hashSync(password, 10);
-        newUser = new User({
-            'userName': username,
-            'password': hashedPwd,
-            'name': name,
-            'address': address,
-            'email': email
-        });
-
-        newUser.save(function (err, newUser) {
-            if (err) {
-                console.log(err);
-                return res.send(500, 'Something went wrong.');
-            }
-
-            req.session.username = username;
+            return res.status(409).send(dbErrors.handleSaveErrors(err));
+        } else {
+            req.session.username = user.username;
             req.session.admin = false;
-            console.log(newUser);
+            console.log('Added new user ', user.username);
             console.log(req.session);
             return res.send('Success');
-        })
+        }
     });
 }
 
 
+/**
+ * Login user and provide user with session cookie.
+ *
+ * A request should include a body with the following format:
+ *
+ * {
+*      username: String,
+*      password: String
+* }
+ *
+ * @param req
+ * @param res
+ */
 function loginUser(req, res) {
-    let requestUser = req.body.username,
-        requestPass = req.body.password;
+    // Don't allow signed in users to sign in again.
+    if (req.session.username) {
+        return res.send('Already signed in.');
+    }
 
-    User.findOne({ userName: requestUser }, function (err, user) {
+    let username = req.body.username,
+        password = req.body.password;
+
+    User.findOne({username: username}, function (err, user) {
         if (err) {
             console.log(err);
-            return res.send(500, 'Something went wrong.');
+            return res.status(500).send(err.message);
         }
 
         // Verify user exists and password matches stored password
-        if (user && bcrypt.compareSync(requestPass, user.password)) {
-            req.session.username = user.userName;
+        if (user && bcrypt.compareSync(password, user.password)) {
+            req.session.username = user.username;
             req.session.admin = user.admin;
             return res.send('Success');
-        } else {
-            console.log('Invalid signin ' + user);
-            return res.send('Invalid username or password.');
+        } else { // user doesn't exist or password match failed
+            console.log('Invalid login attempt.');
+            return res.status(409).send('Invalid username or password.');
         }
     })
 }
 
 
-function updateUser(req, res) {
+/**
+ * Modify user's profile. Only the user or an admin can modify a user's
+ * profile.
+ *
+ * A request should include a body with the following format:
+ *
+ * {
+*      username: String,
+*      address: String (optional),
+*      name: String (optional),
+*      email: String(optional),
+*      photo: String (optional)
+* }
+ *
+ * @param req
+ * @param res
+ */
+function updateUserProfile(req, res) {
     let sessionUser = req.session.username,
         requestUser = req.body.username,
         isAdmin = req.session.admin;
 
-    if (sessionUser || sessionUser !== requestUser || !isAdmin) {
-        return res.send('Authorization failed.');
+    // Authorize changes only for actual user or admin user
+    if (!sessionUser || sessionUser !== requestUser || !isAdmin) {
+        return res.status(409).send('Authorization failed.');
     }
 
-    let email = req.body.email,
-        password = req.body.password,
-        passwordConfirm = req.body.password_confirm,
-        name = req.body.name,
-        address = req.body.address,
-        hashedPwd;
-
-    if (password !== passwordConfirm) {
-        // Password confirmation failed
-        return res.send('Passwords do not match');
-    }
-
-    // If user doesn't already exist, add new user
-    User.findOne({userName: requestUser}, function (err, user) {
+    // Find the user to update profile
+    User.findOne({username: requestUser}, function (err, user) {
         if (err) {
             console.log(err);
-            return res.send(500, 'Something went wrong.');
+            return res.status(500).send(err.message);
         }
 
-        if (!user) {
-            return res.send(404, 'User not found.');
+        if (!user) { // Confirmed user session above so this shouldn't happen.
+            return res.status(404).send('User not found.');
         }
-
-        if (password) {hashedPwd = bcrypt.hashSync(password, 10);}
 
         // Update all fields that were provided
         user.email = email || user.email;
-        user.password = hashedPwd || user.password;
         user.name = name || user.name;
         user.address = address || user.address;
+        user.photo = photo || user.photo;
 
+        // Save to database, rely on MongoDB validation for email uniqueness
         user.save(function (err, user) {
             if (err) {
                 console.log(err);
-                return res.send(500, 'Something went wrong.');
+                return res.status(400).send(dbErrors.handleSaveErrors(err));
             }
 
-            console.log(user);
+            console.log('Successfully updated user ', user.username);
             return res.send('Success');
         })
     });
 }
 
-function signoutUser (req, res) {
+/**
+ * Modify user's profile. Only the user or an admin can modify a user's
+ * profile.
+ *
+ * A request should include a body with the following format:
+ *
+ * {
+*      username: String,
+*      password: String
+* }
+ *
+ * @param req
+ * @param res
+ */
+function updateUserPassword(req, res) {
+    let sessionUser = req.session.username,
+        requestUser = req.body.username,
+        isAdmin = req.session.admin;
+
+    // Authorize changes only for actual user or admin user
+    if (!sessionUser || sessionUser !== requestUser || !isAdmin) {
+        return res.status(409).send('Authorization failed.');
+    }
+
+    // Find the user to update profile
+    User.findOne({username: requestUser}, function (err, user) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err.message);
+        }
+
+        if (!user) { // Confirmed user session above so this shouldn't happen.
+            return res.status(404).send('User not found.');
+        }
+
+        user.password = bcrypt.hashSync(req.body.password);
+
+        // Save to database, rely on MongoDB validation
+        user.save(function (err, user) {
+            if (err) {
+                console.log(err);
+                return res.status(400).send(dbErrors.handleSaveErrors(err));
+            }
+
+            console.log('SUpdated password for  user ', user.username);
+            return res.send('Success');
+        })
+    });
+}
+
+
+/**
+ * Signout user.
+ *
+ * @param req
+ * @param res
+ */
+function signoutUser(req, res) {
     req.session.destroy();
     return res.send('Success');
 }

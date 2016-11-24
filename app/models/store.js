@@ -1,6 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose'),
+    uniqueValidator = require('mongoose-unique-validator'),
     Schema = mongoose.Schema;
 
 const storesSchema = new Schema(
@@ -38,7 +39,7 @@ const storesSchema = new Schema(
         }
     },
     {collection: 'stores'}
-);
+).plugin(uniqueValidator, {message: 'Error, expected {PATH} to be unique.'});
 
 const storeModel = mongoose.model('Store', storesSchema);
 
