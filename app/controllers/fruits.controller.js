@@ -15,8 +15,7 @@ module.exports = {
 /**
  * Respond to request with a stringified list of all fruit objects.
  *
- * Use type query to get back only fruits of a specific type or season
- * query to get back only fruits of a specific season.
+ * Use type, season or storeId query to get back only fruits of a specific value
  *
  * '[{
  *      _id: ObjectId
@@ -33,42 +32,38 @@ module.exports = {
  */
 function showFruits(req, res) {
     let type = req.query.type,
-        season = req.query.season;
-    console.log('Show all ' + (type || season || 'fruits'));
+        season = req.query.season,
+        storeId = req.query.storeId,
+        query = {};
+
+    console.log('Show all! Query by type: ' + type || '""'
+        + ' season: ' + season || '""'
+        + ' store: ' + storeId || '""');
 
     if (type) {
         type = type.toLowerCase();
-        Fruit.find({type: type}, function (err, fruits) {
-            if (err) {
-                console.log(err);
-                return res.send(500, 'Something went wrong.');
-            } else {
-                console.log(fruits);
-                return res.send(JSON.stringify(fruits))
-            }
-        });
-    } else if (season) {
-        season = season.toLowerCase();
-        Fruit.find({season: season}, function (err, fruits) {
-            if (err) {
-                console.log(err);
-                return res.send(500, 'Something went wrong.');
-            } else {
-                console.log(fruits);
-                return res.send(JSON.stringify(fruits));
-            }
-        })
-    } else {
-        Fruit.find({}, function (err, fruits) {
-            if (err) {
-                console.log(err);
-                return res.send(500, 'Something went wrong.');
-            } else {
-                console.log(fruits);
-                return res.send(JSON.stringify(fruits))
-            }
-        });
+        query.type = type;
     }
+
+    if (season) {
+        season = season.toLowerCase();
+        query.season = season;
+    }
+
+    if (storeId) {
+        storeId = storeId.toUpperCase();
+        query.storeId = storeId;
+    }
+
+    Fruit.find(query, function (err, fruits) {
+        if (err) {
+            console.log(err);
+            return res.send(500, 'Something went wrong.');
+        } else {
+            console.log(fruits);
+            return res.send(JSON.stringify(fruits))
+        }
+    });
 }
 
 
