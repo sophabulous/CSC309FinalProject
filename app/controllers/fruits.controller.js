@@ -1,6 +1,7 @@
 'use strict';
 
-const Fruit = require('../models/fruit');
+const Fruit = require('../models/fruit'),
+    dbErrors = require('../services/handleDatabaseErrors');
 
 module.exports = {
     showFruits: showFruits,
@@ -20,8 +21,8 @@ module.exports = {
  *      _id: ObjectId
  *      storeId: String,
  *      type: String,
- *      photo: String,
- *      season: String (url),
+ *      photo: String (url),
+ *      season: String,
  *      price: Number,
  *      quantity: Number
  * }]'
@@ -57,10 +58,10 @@ function showFruits(req, res) {
     Fruit.find(query, function (err, fruits) {
         if (err) {
             console.log(err);
-            return res.send(500, 'Something went wrong.');
+            return res.status(500).send(err.message);
         } else {
             console.log(fruits);
-            return res.send(JSON.stringify(fruits))
+            return res.send(JSON.stringify(fruits));
         }
     });
 }
@@ -73,8 +74,8 @@ function showFruits(req, res) {
  *      _id: ObjectId
  *      storeId: String,
  *      type: String,
- *      photo: String,
- *      season: String (url),
+ *      photo: String (url),
+ *      season: String,
  *      price: Number,
  *      quantity: Number
  * }'
@@ -88,7 +89,7 @@ function showSingleFruit(req, res) {
     Fruit.findOne({_id: id}, function (err, fruit) {
         if (err) {
             console.log(err);
-            return res.send(500, 'Something went wrong');
+            return res.status(500).send(err.message);
         }
 
         if (!fruit) {
@@ -124,24 +125,25 @@ function showSingleFruit(req, res) {
  * @param res
  */
 function createNewFruit(req, res) {
-    // TODO: only allow admin users to add fruit
-    console.log('createNewFruit');
+    // Only admins can create a fruit
+    if (!req.session.admin) {
+        console.log("Not authorized to create fruit");
+        return res.status(409).send("Not authorized.");
+    }
 
     let newFruit = new Fruit(req.body);
 
     newFruit.save(function (err, newFruit) {
         if (err) {
-            // TODO: Experiment with error messages to give user more details
-            // TODO: Test Mongo validation to determine if more is required here
             console.log(err);
-            res.status(400);
-            res.send('Could not add new fruit.');
+            res.status(409).send(dbErrors.handleSaveErrors(err));
         } else {
             console.log(newFruit._id + ' was added to the database.');
             res.send('Success');
         }
     })
 }
+
 
 /**
  * Updates an existing fruit object and updates the database.
@@ -154,38 +156,39 @@ function createNewFruit(req, res) {
  * @param res
  */
 function updateFruit(req, res) {
-    // TODO: only allow admin users to update fruit
-    console.log('updatefruit: ' + req.params.id);
-    let photo = req.body.photo,
-        price = req.body.price,
-        quantity = req.body.quantity;
+    // Only admins can update a fruit
+    if (!req.session.admin) {
+        console.log("Not authorized to update fruit");
+        return res.status(409).send("Not authorized.");
+    }
 
-    Fruit.findOne({_id: req.params.id}, function (err, fruit) {
+    let fruitId = req.params.id;
+    let updateParams = {};
+
+    // Get update fields from request body
+    if (req.body.photo) {
+        updateParams.photo = req.body.photo;
+    }
+    if (req.body.price) {
+        updateParams.price = req.body.price;
+    }
+    if (req.body.quantity) {
+        updateParams.quantity = req.body.quantity;
+    }
+
+    Fruit.findOneAndUpdate({_id: fruitId}, updateParams, function (err, fruit) {
         if (err) {
             console.log(err);
-            res.status(404);
-            res.send('Fruit not found.');
-        } else if (fruit) {
-            // only update fields supplied in request
-            fruit.photo = photo || fruit.photo;
-            fruit.price = price || fruit.price;
-            fruit.quantity = quantity || fruit.quantity;
-
-            fruit.save(function (err, fruit) {
-                if (err) {
-                    console.log(err);
-                    res.status(400);
-                    res.send('Could not update fruit.');
-                } else {
-                    console.log('Successfully updated fruit ' + fruit._id);
-                    res.send('Success');
-                }
-            });
-        } else {
-            console.log('Something went wrong.');
-            res.status(500);
-            res.send('Something went wrong.');
+            return res.status(500).send(dbErrors.handleSaveErrors(err));
         }
+
+        if (!fruit) {
+            console.log('Fruit not found');
+            return res.status(404).send('Fruit not found');
+        }
+
+        console.log('Updated fruit ', fruit._id);
+        return res.send('Success');
     });
 }
 
@@ -199,28 +202,23 @@ function updateFruit(req, res) {
  * @param res
  */
 function deleteFruit(req, res) {
-    // TODO: only allow admin users to delete fruit
-    console.log('deleteFruit: ' + req.params.id);
-    Fruit.findOne({_id: req.params.id}, function (err, fruit) {
+    // Only admins can delete a fruit
+    if (!req.session.admin) {
+        console.log("Not authorized to delete fruit");
+        return res.status(409).send("Not authorized.");
+    }
+
+    Fruit.findByIdAndRemove(req.params.id, function (err, fruit) {
         if (err) {
             console.log(err);
-            res.status(404);
-            res.send('Fruit not found.');
-        } else if (fruit) {
-            fruit.remove(function (err, result) {
-                if (err) {
-                    console.log(err);
-                    res.status(400);
-                    res.send('Could not delete fruit.')
-                } else {
-                    console.log(result);
-                    res.send('Success');
-                }
-            });
-        } else {
-            console.log('Something went wrong.');
-            res.status(500);
-            res.send('Something went wrong.');
+            return res.status(500).send(err.message);
         }
+
+        if (!fruit) {
+            console.log('Fruit not found');
+            return res.status(404).send('Fruit not found');
+        }
+
+        return res.send('Success');
     });
 }

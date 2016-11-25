@@ -104,7 +104,7 @@ function showSingleStore(req, res) {
 function createNewStore(req, res) {
     if (!req.session.admin) {
         console.log("Not authorized to create store");
-        return req.status(409).send("Not authorized.");
+        return res.status(409).send("Not authorized.");
     }
 
     let newStore = new Store(req.body);
@@ -135,7 +135,7 @@ function updateStore(req, res) {
     // Only admins can update a store
     if (!req.session.admin) {
         console.log("Not authorized to create store");
-        return req.status(409).send("Not authorized.");
+        return res.status(409).send("Not authorized.");
     }
 
     let storeId = req.params.id.toUpperCase();
@@ -177,12 +177,11 @@ function updateStore(req, res) {
 function deleteStore(req, res) {
     if (!req.session.admin) {
         console.log("Not authorized to create store");
-        return req.status(409).send("Not authorized.");
+        return res.status(409).send("Not authorized.");
     }
 
     let storeId = req.params.id.toUpperCase();
-    console.log('deleteStore: ' + storeId);
-    Store.findOne({storeId: storeId}, function (err, store) {
+    Store.findOneAndRemove({storeId: storeId}, function (err, store) {
         if (err) {
             console.log(err);
             return res.status(500).send(err.message);
@@ -193,15 +192,8 @@ function deleteStore(req, res) {
             return res.status(404).send('Store not found');
         }
 
-        store.remove(function (err, result) {
-            if (err) {
-                console.log(err);
-                return res.status(500).send(err.message);
-            } else {
-                console.log(result);
-                return res.send('Success');
-            }
-        });
+        console.log('Deleted store ', storeId);
+        return res.send('Success');
     });
 }
 

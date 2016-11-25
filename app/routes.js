@@ -55,5 +55,7 @@ router.post('/login', usersController.loginUser);
 router.post('/user', usersController.updateUserProfile);
 // Update user password
 router.post('/password', usersController.updateUserPassword);
+// Delete user
+router.delete('/user/:id', usersController.deleteUser);
 // Signout user
 router.get('/signout', usersController.signoutUser);

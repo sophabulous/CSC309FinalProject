@@ -10,6 +10,7 @@ module.exports = {
     loginUser: loginUser,
     updateUserProfile: updateUserProfile,
     updateUserPassword: updateUserPassword,
+    deleteUser: deleteUser,
     signoutUser: signoutUser
 };
 
@@ -170,35 +171,72 @@ function updateUserProfile(req, res) {
         return res.status(409).send('Authorization failed.');
     }
 
-    // Find the user to update profile
-    User.findOne({username: requestUser}, function (err, user) {
+    let updateParams = {};
+
+    // Get update fields from request body
+    if (req.body.name) {
+        updateParams.name = req.body.name;
+    }
+    if (req.body.email) {
+        updateParams.email = req.body.email;
+    }
+    if (req.body.address) {
+        updateParams.address = req.body.address;
+    }
+    if (req.body.photo) {
+        updateParams.photo = req.body.photo;
+    }
+
+    User.findOneAndUpdate({username: sessionUser},
+        updateParams,
+        function (err, user) {
+            if (err) {
+                console.log(err);
+                return res.status(500).send(dbErrors.handleSaveErrors(err));
+            }
+
+            if (!user) {
+                console.log('Could not find user ', username);
+                return res.status(404).send('User not found.');
+            }
+
+            console.log('Updated user ', user.username);
+            res.send('Success');
+        });
+}
+
+
+/**
+ * Deletes an existing user object and updates the database.
+ *
+ * Sends 'Success' upon success or sends error message.
+ *
+ * @param req
+ * @param res
+ */
+function deleteUser(req, res) {
+    if (!req.session.admin) {
+        console.log("Not authorized to delete user");
+        return res.status(409).send("Not authorized.");
+    }
+
+    let username = req.params.id;
+    User.findOneAndRemove({username: username}, function (err, user) {
         if (err) {
             console.log(err);
             return res.status(500).send(err.message);
         }
 
-        if (!user) { // Confirmed user session above so this shouldn't happen.
-            return res.status(404).send('User not found.');
+        if (!user) {
+            console.log('User ' + username + 'not found.');
+            return res.status(404).send('User not found');
         }
 
-        // Update all fields that were provided
-        user.email = email || user.email;
-        user.name = name || user.name;
-        user.address = address || user.address;
-        user.photo = photo || user.photo;
-
-        // Save to database, rely on MongoDB validation for email uniqueness
-        user.save(function (err, user) {
-            if (err) {
-                console.log(err);
-                return res.status(400).send(dbErrors.handleSaveErrors(err));
-            }
-
-            console.log('Successfully updated user ', user.username);
-            return res.send('Success');
-        })
+        console.log('Deleted user ', username);
+        return res.send('Success');
     });
 }
+
 
 /**
  * Modify user's profile. Only the user or an admin can modify a user's
