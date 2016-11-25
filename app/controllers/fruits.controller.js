@@ -1,7 +1,8 @@
 'use strict';
 
 const Fruit = require('../models/fruit'),
-    dbErrors = require('../services/handleDatabaseErrors');
+    dbErrors = require('../services/handleDatabaseErrors'),
+    authorize = require('../services/authorize');
 
 module.exports = {
     showFruits: showFruits,
@@ -126,22 +127,23 @@ function showSingleFruit(req, res) {
  */
 function createNewFruit(req, res) {
     // Only admins can create a fruit
-    if (!req.session.admin) {
-        console.log("Not authorized to create fruit");
-        return res.status(409).send("Not authorized.");
-    }
-
-    let newFruit = new Fruit(req.body);
-
-    newFruit.save(function (err, newFruit) {
+    authorize.onlyAdmin(req.session.admin, function (err, success) {
         if (err) {
-            console.log(err);
-            res.status(409).send(dbErrors.handleSaveErrors(err));
+            return res.status(409).send(err);
         } else {
-            console.log(newFruit._id + ' was added to the database.');
-            res.send('Success');
+            let newFruit = new Fruit(req.body);
+
+            newFruit.save(function (err, newFruit) {
+                if (err) {
+                    console.log(err);
+                    res.status(409).send(dbErrors.handleSaveErrors(err));
+                } else {
+                    console.log(newFruit._id + ' was added to the database.');
+                    res.send('Success');
+                }
+            })
         }
-    })
+    });
 }
 
 
@@ -157,38 +159,42 @@ function createNewFruit(req, res) {
  */
 function updateFruit(req, res) {
     // Only admins can update a fruit
-    if (!req.session.admin) {
-        console.log("Not authorized to update fruit");
-        return res.status(409).send("Not authorized.");
-    }
-
-    let fruitId = req.params.id;
-    let updateParams = {};
-
-    // Get update fields from request body
-    if (req.body.photo) {
-        updateParams.photo = req.body.photo;
-    }
-    if (req.body.price) {
-        updateParams.price = req.body.price;
-    }
-    if (req.body.quantity) {
-        updateParams.quantity = req.body.quantity;
-    }
-
-    Fruit.findOneAndUpdate({_id: fruitId}, updateParams, function (err, fruit) {
+    authorize.onlyAdmin(req.session.admin, function (err, success) {
         if (err) {
-            console.log(err);
-            return res.status(500).send(dbErrors.handleSaveErrors(err));
-        }
+            return res.status(409).send(err);
+        } else {
+            let fruitId = req.params.id;
+            let updateParams = {};
 
-        if (!fruit) {
-            console.log('Fruit not found');
-            return res.status(404).send('Fruit not found');
-        }
+            // Get update fields from request body
+            if (req.body.photo) {
+                updateParams.photo = req.body.photo;
+            }
+            if (req.body.price) {
+                updateParams.price = req.body.price;
+            }
+            if (req.body.quantity) {
+                updateParams.quantity = req.body.quantity;
+            }
 
-        console.log('Updated fruit ', fruit._id);
-        return res.send('Success');
+            Fruit.findOneAndUpdate({_id: fruitId},
+                updateParams,
+                function (err, fruit) {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).
+                            send(dbErrors.handleSaveErrors(err));
+                    }
+
+                    if (!fruit) {
+                        console.log('Fruit not found');
+                        return res.status(404).send('Fruit not found');
+                    }
+
+                    console.log('Updated fruit ', fruit._id);
+                    return res.send('Success');
+                });
+        }
     });
 }
 
@@ -203,22 +209,23 @@ function updateFruit(req, res) {
  */
 function deleteFruit(req, res) {
     // Only admins can delete a fruit
-    if (!req.session.admin) {
-        console.log("Not authorized to delete fruit");
-        return res.status(409).send("Not authorized.");
-    }
-
-    Fruit.findByIdAndRemove(req.params.id, function (err, fruit) {
+    authorize.onlyAdmin(req.session.admin, function (err, success) {
         if (err) {
-            console.log(err);
-            return res.status(500).send(err.message);
-        }
+            return res.status(409).send(err);
+        } else {
+            Fruit.findByIdAndRemove(req.params.id, function (err, fruit) {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).send(err.message);
+                }
 
-        if (!fruit) {
-            console.log('Fruit not found');
-            return res.status(404).send('Fruit not found');
-        }
+                if (!fruit) {
+                    console.log('Fruit not found');
+                    return res.status(404).send('Fruit not found');
+                }
 
-        return res.send('Success');
+                return res.send('Success');
+            });
+        }
     });
 }
