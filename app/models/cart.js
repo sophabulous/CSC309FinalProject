@@ -31,7 +31,7 @@ const cartsSchema = new Schema(
         lastUpdated: {
             type: Date,
             default: Date.now,
-            expires: '1m',
+            expires: '1h',
             required: true
         }
     },

@@ -118,7 +118,8 @@ function showSingleCart(req, res) {
  *      quantity: Number
  * }
  *
- * Cart is stored in session.
+ * Cart is stored in session and are only stored in the database for 1 hour
+ * after the last time modified.
  *
  * Sends 'Success' upon success or updates status and sends error message.
  *
