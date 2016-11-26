@@ -7,7 +7,8 @@ const express = require('express'),
     storesController = require('./controllers/stores.controller'),
     fruitsController = require('./controllers/fruits.controller'),
     usersController = require('./controllers/users.controller'),
-    cartsController = require('./controllers/carts.controller');
+    cartsController = require('./controllers/carts.controller'),
+    ordersController = require('./controllers/orders.controller');
 
 
 module.exports = router;
@@ -75,3 +76,10 @@ router.post('/carts/:id', cartsController.modifyCart);
 router.delete('/carts/:id', cartsController.deleteCart);
 // Checkout
 router.post('/checkout/:id', cartsController.checkout);
+
+
+//Order routes
+// Show all orders -- query with ?username=
+router.get('/orders', ordersController.showOrders);
+// Show single order
+router.get('/orders/:id', ordersController.showSingleOrder);

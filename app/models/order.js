@@ -22,6 +22,11 @@ const ordersSchema = new Schema(
             type: Number,
             min: 0,
             default: 0,
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+            required: true
         }
     },
     {minimize: false},

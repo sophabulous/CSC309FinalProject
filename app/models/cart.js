@@ -27,11 +27,21 @@ const cartsSchema = new Schema(
             type: Number,
             min: 0,
             default: 0,
+        },
+        lastUpdated: {
+            type: Date,
+            default: Date.now,
+            expires: '1m',
+            required: true
         }
     },
     {minimize: false},
     {collection: 'carts'}
-).plugin(uniqueValidator, {message: 'Error, only one cart per user.'});
+).plugin(uniqueValidator, {message: 'Error, only one cart per user.'})
+.pre('save', function (next) {
+    this.lastUpdated = Date.now();
+    next();
+});
 
 const cartModel = mongoose.model('Cart', cartsSchema);
 
