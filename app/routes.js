@@ -3,10 +3,11 @@
 // create a new express router
 const express = require('express'),
     router = express.Router(),
-    mainController = require('./controllers/main.controller.js'),
-    storesController = require('./controllers/stores.controller.js'),
-    fruitsController = require('./controllers/fruits.controller.js'),
-    usersController = require('./controllers/users.controller.js');
+    mainController = require('./controllers/main.controller'),
+    storesController = require('./controllers/stores.controller'),
+    fruitsController = require('./controllers/fruits.controller'),
+    usersController = require('./controllers/users.controller'),
+    cartsController = require('./controllers/carts.controller');
 
 
 module.exports = router;
@@ -33,7 +34,7 @@ router.post('/rate/:id', storesController.rateStore);
 
 // Fruit routes
 // Get an array of fruit objects -- query with ?type= ?season= ?storeId=
-router.get('/fruits', fruitsController.showFruits);
+router.get('/fruits', fruitsController.showCarts);
 // Get a single fruit object
 router.get('/fruits/:id', fruitsController.showSingleFruit);
 // Create a new fruit
@@ -59,3 +60,16 @@ router.post('/password', usersController.updateUserPassword);
 router.delete('/user/:id', usersController.deleteUser);
 // Signout user
 router.get('/signout', usersController.signoutUser);
+
+
+// Cart routes
+// Show all carts
+router.get('/carts', cartsController.showCarts);
+// Show user's cart
+router.get('/carts/:id', cartsController.showSingleCart);
+// Add to user's cart
+router.post('/carts/:id', cartsController.modifyCart);
+// Delete a user's cart
+router.delete('/carts/:id', cartsController.deleteCart);
+// Checkout
+router.post('/checkout/:id', cartsController.checkout);
