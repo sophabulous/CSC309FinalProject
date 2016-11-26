@@ -27,17 +27,33 @@ module.exports = {
             for (let i = 0, len = collections.length; i < len; i++) {
                 collections[i].count(function (err, count) {
                     if (!err && count === 0) {
-                        collections[i].insertMany(seeds[i], function (err) {
+                        collections[i].insertMany(seeds[i], setTimeout(function (err) {
                             if (err) {
                                 console.log(err);
                             } else {
                                 console.log("Loaded database with : ",
                                     seeds[i]);
                             }
-                        });
+                        }, 3000));
                     }
+                });
+            }
+        });
+    },
+
+    /** copied from http://stackoverflow.com/a/29461274 **/
+    drop: function () {
+        mongoose.connection.db.listCollections().toArray(function(err, names) {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                names.forEach(function(e,i,a) {
+                    mongoose.connection.db.dropCollection(e.name);
                 });
             }
         });
     }
 };
+
+

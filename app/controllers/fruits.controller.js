@@ -18,15 +18,19 @@ module.exports = {
  *
  * Use type, season or storeId query to get back only fruits of a specific value
  *
- * '[{
- *      _id: ObjectId
- *      storeId: String,
- *      type: String,
- *      photo: String (url),
- *      season: String,
- *      price: Number,
- *      quantity: Number
- * }]'
+ * Example response to /fruits/
+ * '[
+ *  "_id": "5839bb15c2342805668a8863",
+ *  "storeId": "LO126",
+ *  "type": "grapefruit",
+ *  "season": "summer",
+ *  "unit": "approx 500g",
+ *  "comments": [],
+ *  "quantity": 80,
+ *  "price": 1.2,
+ *  "photo":
+ *  "https://cdn.pixabay.com/photo/2016/11/02/16/49/orange-1792233__340.jpg"
+ *  ]'
  *
  * @param req
  * @param res
@@ -69,16 +73,20 @@ function showFruits(req, res) {
 
 
 /**
- * Respond to request with a stringified fruit object.
+ * Respond to request with a stringified fruit object of fruit with _id /:id.
  *
+ * Example response to /fruits/5839bb15c2342805668a8863
  * '{
- *      _id: ObjectId
- *      storeId: String,
- *      type: String,
- *      photo: String (url),
- *      season: String,
- *      price: Number,
- *      quantity: Number
+ *   "_id": "5839bb15c2342805668a8863",
+ *   "storeId": "LO126",
+ *   "type": "grapefruit",
+ *   "season": "summer",
+ *   "unit": "approx 500g",
+ *   "comments": [],
+ *   "quantity": 80,
+ *   "price": 1.2,
+ *   "photo":
+ *   "https://cdn.pixabay.com/photo/2016/11/02/16/49/orange-1792233__340.jpg"
  * }'
  *
  * @param req
@@ -108,19 +116,22 @@ function showSingleFruit(req, res) {
 /**
  * Create a new fruit object and update the database.
  *
- * A request should include a body with the following format:
+ * Must be admin.
+ *
+ * A request should be a JSON object in the following format
  *
  * {
- *      storeId: String,
- *      type: String,
- *      photo: String (url, optional),
- *      season: String,
- *      price: Number,
- *      quantity: Number
+ *   "storeId": String,
+ *   "type": String,
+ *   "season": String,
+ *   "unit": String,
+ *   "quantity": Number,
+ *   "price": Number,
+ *   "photo": String (optional)
  * }
  *
  *
- * Sends 'Success' upon success or sets status to 400 and sends error message.
+ * Sends 'Success' upon success or sets status to 409 and sends error message.
  *
  * @param req
  * @param res
@@ -133,6 +144,8 @@ function createNewFruit(req, res) {
 
     let newFruit = new Fruit(req.body);
 
+    // Rely on MongoDB validation to check for unique and required
+    // fields and report appropriate errors.
     newFruit.save(function (err, newFruit) {
         if (err) {
             console.log(err);
@@ -146,11 +159,23 @@ function createNewFruit(req, res) {
 
 
 /**
- * Updates an existing fruit object and updates the database.
+ * Updates an existing fruit object and updates the database with /:id as
+ * the fruit _id.
  *
- * Fields that can be updated include 'photo', 'price', 'quantity'.
+ * Must be admin.
  *
- * Sends 'Success' upon success or sends error message.
+ * Fields that can be updated include 'photo', 'price', 'quantity', 'unit'.
+ *
+ * A request should be a JSON object in the following format.
+ *
+ * {
+ *   "unit": String (optional),
+ *   "quantity": Number (optional),
+ *   "price": Number (optional),
+ *   "photo": String (optional)
+ * }
+ *
+ * Sends 'Success' upon success or modifies status and sends error message.
  *
  * @param req
  * @param res
@@ -178,6 +203,8 @@ function updateFruit(req, res) {
         fruit.price = req.body.price || fruit.price;
         fruit.quantity = req.body.quantity || fruit.quantity;
 
+        // Rely on MongoDB validation to check for unique and required
+        // fields and report appropriate errors.
         fruit.save(function (err) {
             if (err) {
                 console.log(err);
@@ -191,9 +218,12 @@ function updateFruit(req, res) {
 
 
 /**
- * Deletes an existing fruit object and updates the database.
+ * Deletes an existing fruit object and updates the database with /:id as
+ * the fruit _id.
  *
- * Sends 'Success' upon success or sends error message.
+ * Must be admin.
+ *
+ * Sends 'Success' upon success or modifies status and sends error message.
  *
  * @param req
  * @param res

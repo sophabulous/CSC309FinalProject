@@ -21,6 +21,7 @@ const cartsSchema = new Schema(
                 type: Number,
                 default: 1,
                 min: 1
+            }
         }],
         total: {
             type: Number,
@@ -28,6 +29,7 @@ const cartsSchema = new Schema(
             default: 0,
         }
     },
+    {minimize: false},
     {collection: 'carts'}
 ).plugin(uniqueValidator, {message: 'Error, only one cart per user.'});
 

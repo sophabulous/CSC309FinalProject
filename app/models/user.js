@@ -38,6 +38,7 @@ const usersSchema = new Schema(
             default: 'https://cdn.pixabay.com/photo/2016/03/31/14/47/avatar-1292817__340.png'
         }
     },
+    {minimize: false},
     {collection: 'users'}
 ).plugin(uniqueValidator, {message: 'Error, expected {PATH} to be unique.'});
 

@@ -23,6 +23,7 @@ const ratingsSchema = new Schema(
             required: true
         }
     },
+    {minimize: false},
     {collection: 'ratings'}
 );
 

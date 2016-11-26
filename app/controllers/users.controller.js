@@ -6,6 +6,7 @@ const User = require('../models/user'),
     authorize = require('../services/authorize');
 
 module.exports = {
+    showUsers: showUsers,
     showUser: showUser,
     createNewUser: createNewUser,
     loginUser: loginUser,
@@ -16,16 +17,47 @@ module.exports = {
 };
 
 
+/** Show profile of all users.
+ *
+ * Must be admin.
+ *
+ *  Example response to /user/
+ *  '[{
+ *      username: 'Alice123',
+ *      name: 'Alice',
+ *      address: '123 fake street'
+ *      email: 'alice@alice.com'
+ *      photo:
+ *      'https://cdn.pixabay.com/photo/2016/03/31/14/47/avatar-1292817__340.png'
+ *  }]'
+ */
+function showUsers(req, res) {
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
+
+    User.find({}, {password: 0}, function (err, users) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err.message);
+        } else {
+            return res.send(users);
+        }
+    })
+}
+
 /**
- * Show profile of single user to a signed in user.
+ * Show profile of single user to a signed in user with :id as the username.
  *
- * Response includes
+ * Must be signed in.
  *
- * {
+ * Example response to /user/:id
+ *
+ * '{
  *      username: String,
  *      name: String,
  *      photo: String (url)
- * }
+ * }'
  *
  * @param req
  * @param res
@@ -38,10 +70,11 @@ function showUser(req, res) {
     }
 
 
-    User.findOne({username: username},
+    User.findOne({username: req.session.username},
         {password: 0, email: 0, address: 0},
         function (err, user) {
             if (err) {
+                console.log(err);
                 return res.status(500).send(err.message);
             }
 
@@ -59,6 +92,8 @@ function showUser(req, res) {
 /**
  * Create a new user object and update the database.
  *
+ * Must be either admin or not logged in.
+ *
  * A request should include a body with the following format:
  *
  * {
@@ -69,6 +104,7 @@ function showUser(req, res) {
  *      email: String
  * }
  *
+ * Sends 'Success' upon success or updates status and sends error message.
  * @param req
  * @param res
  */
@@ -110,12 +146,16 @@ function createNewUser(req, res) {
 /**
  * Login user and provide user with session cookie.
  *
+ * Must not be logged in already.
+ *
  * A request should include a body with the following format:
  *
  * {
  *      username: String,
  *      password: String
  * }
+ *
+ * Sends 'Success' upon success or updates status and sends error message.
  *
  * @param req
  * @param res
@@ -141,16 +181,16 @@ function loginUser(req, res) {
             return res.send('Success');
         } else { // user doesn't exist or password match failed
             console.log('Invalid login attempt.');
-            return res.status(409).
-                send('Invalid username or password.');
+            return res.status(409).send('Invalid username or password.');
         }
     });
 }
 
 
 /**
- * Modify user's profile. Only the user or an admin can modify a
- * user's profile.
+ * Modify user's profile with :id as the username.
+ *
+ * Must be admin or active user.
  *
  * A request should include a body with the following format:
  *
@@ -160,6 +200,8 @@ function loginUser(req, res) {
  *      email: String(optional),
  *      photo: String (optional)
  * }
+ *
+ *  Sends 'Success' upon success or updates status and sends error message.
  *
  * @param req
  * @param res
@@ -190,6 +232,8 @@ function updateUserProfile(req, res) {
         user.address = req.body.address || user.address;
         user.photo = req.body.photo || user.photo;
 
+        // Rely on MongoDB validation to check for unique and required
+        // fields and report appropriate errors.
         user.save(function (err, user) {
             if (err) {
                 console.log(err);
@@ -204,9 +248,11 @@ function updateUserProfile(req, res) {
 
 
 /**
- * Deletes an existing user object and updates the database.
+ * Deletes an existing user object and updates the database with :id as the username.
  *
- * Sends 'Success' upon success or sends error message.
+ * Must be admin.
+ *
+ * Sends 'Success' upon success or updates status and sends error message.
  *
  * @param req
  * @param res
@@ -235,14 +281,17 @@ function deleteUser(req, res) {
 
 
 /**
- * Modify user's profile. Only the user or an admin can modify a
- * user's profile.
+ * Modify user's password with with :id as the username.
+ *
+ * Must be admin or active user.
  *
  * A request should include a body with the following format:
  *
  * {
  *      password: String
  * }
+ *
+ * Sends 'Success' upon success or updates status and sends error message.
  *
  * @param req
  * @param res
@@ -286,6 +335,8 @@ function updateUserPassword(req, res) {
 
 /**
  * Signout user.
+ *
+ * Sends 'Success' upon success.
  *
  * @param req
  * @param res

@@ -14,16 +14,20 @@ module.exports = {
     rateStore: rateStore
 };
 
+
 /**
  * Respond to request with a stringified list of all store objects.
  *
+ * Example response to /stores/
  * '[{
- *      storeId: String,
- *      name: String,
- *      address: String,
- *      photo: String (url),
- *      rateCount: Number,
- *      rateValue: Number
+ *   "storeId": "LO123",
+ *   "name": "Loblaws",
+ *   "address": "11 Redway Road",
+ *   "photo":
+ *   "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
+ *   "rateCount": 2,
+ *   "rateValue": 4,
+ *   "comments": []
  * }]'
  *
  * @param req
@@ -46,15 +50,18 @@ function showStores(req, res) {
 
 
 /**
- * Respond to request with a strigified store object.
+ * Respond to request with a strigified store object with /:id as the storeId.
  *
+ * Example response to /stores/LO123
  * '{
- *      storeId: String,
- *      name: String,
- *      address: String,
- *      photo: String (url),
- *      rateCount: Number,
- *      rateValue: Number
+ *   "storeId": "LO123",
+ *   "name": "Loblaws",
+ *   "address": "11 Redway Road",
+ *   "photo":
+ *   "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
+ *   "rateCount": 2,
+ *   "rateValue": 4,
+ *   "comments": []
  * }'
  *
  * @param req
@@ -87,6 +94,8 @@ function showSingleStore(req, res) {
 /**
  * Create a new store object and update the database.
  *
+ * Must be admin.
+ *
  * A request should include a body with the following format:
  *
  * {
@@ -108,7 +117,16 @@ function createNewStore(req, res) {
         return res.status(409).send('Not Authorized.');
     }
 
-    let newStore = new Store(req.body);
+    // Don't allow setting ratings upfront so selectively build store object
+    // from request
+    let newStore = new Store({
+        storeId: req.body.storeId ? req.body.storeId.toUpperCase() : '',
+        name: req.body.name,
+        address: req.body.address
+    });
+
+    // Allow default photo to be used if photo is not provided
+    req.body.photo ? newStore.photo = req.body.photo : null;
 
     newStore.save(function (err, newStore) {
         if (err) {
@@ -126,9 +144,11 @@ function createNewStore(req, res) {
 /**
  * Updates an existing store object and updates the database.
  *
+ * Must be admin.
+ *
  * Fields that can be updated include 'name', 'address', 'photo'.
  *
- * Sends 'Success' upon success or sends error message.
+ * Sends 'Success' upon success or changes status and sends error message.
  *
  * @param req
  * @param res
@@ -151,6 +171,8 @@ function updateStore(req, res) {
         store.address = req.body.address || store.address;
         store.photo = req.body.photo || store.photo;
 
+        // Rely on MongoDB validation to check for unique and required
+        // fields and report appropriate errors.
         store.save(function (err) {
             if (err) {
                 console.log(err);
@@ -165,7 +187,9 @@ function updateStore(req, res) {
 /**
  * Deletes an existing store object and updates the database.
  *
- * Sends 'Success' upon success or sends error message.
+ * Must be admin.
+ *
+ * Sends 'Success' upon success or changes status and sends error message.
  *
  * @param req
  * @param res
@@ -196,12 +220,14 @@ function deleteStore(req, res) {
 /**
  * Updates the rating value of an existing store.
  *
+ * Msut be logged in.
+ *
  * Send {
  *      'rating': Number (min:0, max:5)
  *      }
  * in the request.
  *
- * Sends 'Success' upon success or sends error message.
+ * Sends 'Success' upon success or changes status and sends error message.
  *
  * @param req
  * @param res
@@ -216,6 +242,10 @@ function rateStore(req, res) {
         return res.status(409).send('Not Authorized.');
     }
 
+    if (!ratingVal || ratingVal < 0 || ratingVal > 5) {
+        return res.status(409).send('Invalid rating value.');
+    }
+
     // Find store
     Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
@@ -227,13 +257,16 @@ function rateStore(req, res) {
         addRating(storeId, username, ratingVal, function (err, rating) {
             if (err) {
                 console.log(err);
-                return res.status(400).send(err);
+                return res.status(400).send(err.message);
             }
 
             // Rating was successfully added, so store's rating can be
             // updated
             store.rateCount++;
             store.rateValue += ratingVal;
+
+            // Rely on MongoDB validation to check for unique and required
+            // fields and report appropriate errors.
             store.save(function (err) {
                 if (err) {
                     console.log(err);
@@ -249,7 +282,7 @@ function rateStore(req, res) {
 
 
 /**
- * Herlper function for createing a new rating and saving it to the database.
+ * Helper function for creating a new rating and saving it to the database.
  *
  * @param storeId
  * @param username

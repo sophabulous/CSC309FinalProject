@@ -24,6 +24,7 @@ const ordersSchema = new Schema(
             default: 0,
         }
     },
+    {minimize: false},
     {collection: 'orders'}
 );
 

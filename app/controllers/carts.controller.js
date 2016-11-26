@@ -21,12 +21,12 @@ module.exports = {
  * Only authorized for admin.
  *
  * Responds with
- * [{
+ * '[{
  *      _id: ObjectId,
  *      username: String,
  *      total: Number,
  *      items: [Fruits],
- * }]
+ * }]'
  *
  * @param req
  * @param res
@@ -56,12 +56,14 @@ function showCarts(req, res) {
  * Only authorized for admin or active user.
  *
  * Responds with
- * {
+ * '{
  *      _id: ObjectId,
  *      username: String,
  *      total: Number,
  *      items: [Fruits],
- * }
+ * }'
+ *
+ * Cart is stored in session.
  *
  * @param req
  * @param res
@@ -106,6 +108,8 @@ function showSingleCart(req, res) {
  * not yet have a cart.
  *
  * Cart is stored in session
+ *
+ * Sends 'Success' upon success or updates status and sends error message.
  *
  * @param req
  * @param res
@@ -213,12 +217,10 @@ function modifyCart(req, res) {
 /**
  * Deletes cart.
  *
- * Send 'Success' on success, 'Partial Success' if only some items could
- * be fulfilled and error message on failure.
+ * Sends 'Success' upon success or updates status and sends error message.
  *
  * @param req
  * @param res
- * @returns {*}
  */
 function deleteCart(req, res) {
     let requestUser = req.params.id,
@@ -248,6 +250,22 @@ function deleteCart(req, res) {
 }
 
 
+/**
+ * Transfers fields from user's cart into an order object and delete the
+ * user's cart afterwards.
+ *
+ * Items in cart are checked against available inventory which means full
+ * order might not be possible to fulfill. Assume a partial order is good
+ * enough and only complete the order with inventory that is available.
+ * Remove items from inventory as they are fulfilled in the order. Total is
+ * updated to reflect actual purchases.
+ *
+ * Send 'Success' on success, 'Partial Success' if only some items could
+ * be fulfilled and error message on failure.
+ *
+ * @param req
+ * @param res
+ */
 function checkout(req, res) {
     let requestUser = req.params.id,
         activeUser = req.session.username,
