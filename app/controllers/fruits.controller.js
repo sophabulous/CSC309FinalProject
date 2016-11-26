@@ -60,7 +60,7 @@ function showFruits(req, res) {
         query.storeId = storeId;
     }
 
-    Fruit.find(query, function (err, fruits) {
+    Fruit.find(query).populate('comments').exec(function (err, fruits) {
         if (err) {
             console.log(err);
             return res.status(500).send(err.message);
@@ -95,7 +95,7 @@ function showFruits(req, res) {
 function showSingleFruit(req, res) {
     let id = req.params.id;
     console.log('Show fruit ' + id);
-    Fruit.findOne({_id: id}, function (err, fruit) {
+    Fruit.findOne({_id: id}).populate('comments').exec(function (err, fruit) {
         if (err) {
             console.log(err);
             return res.status(500).send(err.message);
@@ -149,10 +149,10 @@ function createNewFruit(req, res) {
     newFruit.save(function (err, newFruit) {
         if (err) {
             console.log(err);
-            res.status(409).send(dbErrors.handleSaveErrors(err));
+            return res.status(409).send(dbErrors.handleSaveErrors(err));
         } else {
             console.log(newFruit._id + ' was added to the database.');
-            res.send('Success');
+            return res.send('Success');
         }
     });
 }

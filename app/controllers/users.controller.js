@@ -128,7 +128,7 @@ function createNewUser(req, res) {
 
     // Rely on MongoDB validation to check for unique and required
     // fields and report appropriate errors.
-    newUser.save(function (err, user) {
+    newUser.save(function (err, neuserwUser) {
         if (err) {
             console.log(err);
             return res.status(409).

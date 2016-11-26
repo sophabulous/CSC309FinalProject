@@ -8,7 +8,8 @@ const express = require('express'),
     fruitsController = require('./controllers/fruits.controller'),
     usersController = require('./controllers/users.controller'),
     cartsController = require('./controllers/carts.controller'),
-    ordersController = require('./controllers/orders.controller');
+    ordersController = require('./controllers/orders.controller'),
+    commentsController = require('./controllers/comments.controller');
 
 
 module.exports = router;
@@ -78,8 +79,19 @@ router.delete('/carts/:id', cartsController.deleteCart);
 router.post('/checkout/:id', cartsController.checkout);
 
 
-//Order routes
+// Order routes
 // Show all orders -- query with ?username=
 router.get('/orders', ordersController.showOrders);
 // Show single order
 router.get('/orders/:id', ordersController.showSingleOrder);
+
+
+// Comment routes
+// Show all comments -- query with ?username=, ?storeId=, ?fruitId=
+router.get('/comments', commentsController.showComments);
+// Add a fruit comment
+router.post('/comments/fruits', commentsController.commentOnFruit);
+// Add a store comment
+router.post('/comments/stores', commentsController.commentOnStore);
+// Delete a comment
+router.delete('/comments', commentsController.deleteComment);
