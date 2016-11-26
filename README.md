@@ -33,6 +33,7 @@ To seed the database use the following GET routes:
 | /stores/:id?rating=    | N/A                          | Rate a store                                    | N/A             |
 | /fruits                | Get all fruits               | Create a new fruit                              | N/A             |
 | /fruits?type=          | Get all fruits with type     | N/A                                             | N/A             |
+| /fruits?season=        | Get all fruits with seaso    | N/A                                             | N/A             |
 | /fruits/:id            | Get a fruit                  | Modify a fruit {price: , quantity: , photo:}    | Delete a fruit  |
 | /signup                | N/A                          | Create new user                                 | N/A             |
 | /login                 | N/A                          | Start user session                              | N/A             |  

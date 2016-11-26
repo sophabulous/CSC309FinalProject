@@ -53,9 +53,9 @@ router.post('/signup', usersController.createNewUser);
 // Login
 router.post('/login', usersController.loginUser);
 // Update user email, name, photo
-router.post('/user', usersController.updateUserProfile);
+router.post('/user/:id', usersController.updateUserProfile);
 // Update user password
-router.post('/password', usersController.updateUserPassword);
+router.post('/password/:id', usersController.updateUserPassword);
 // Delete user
 router.delete('/user/:id', usersController.deleteUser);
 // Signout user

@@ -14,14 +14,13 @@ const cartsSchema = new Schema(
         items: [{
             fruit: {
                 type: Schema.ObjectId,
-                ref:'Fruit',
+                ref: 'Fruit',
                 required: true
             },
             quantity: {
                 type: Number,
                 default: 1,
                 min: 1
-            }
         }],
         total: {
             type: Number,

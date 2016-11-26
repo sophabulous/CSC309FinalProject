@@ -104,23 +104,20 @@ function showSingleStore(req, res) {
  */
 function createNewStore(req, res) {
     // Only admin can create a new store
-    authorize.onlyAdmin(req.session.admin, function (err, success) {
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
+
+    let newStore = new Store(req.body);
+
+    newStore.save(function (err, newStore) {
         if (err) {
-            return res.status(409).send(err);
+            console.log(err);
+            return res.status(500).send(dbErrors.handleSaveErrors(err));
         } else {
-
-            let newStore = new Store(req.body);
-
-            newStore.save(function (err, newStore) {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).send(dbErrors.handleSaveErrors(err));
-                } else {
-                    console.log(newStore.storeId +
-                        ' was added to the database.');
-                    return res.send('Success');
-                }
-            })
+            console.log(newStore.storeId +
+                ' was added to the database.');
+            return res.send('Success');
         }
     });
 }
@@ -138,37 +135,29 @@ function createNewStore(req, res) {
  */
 function updateStore(req, res) {
     // Only admins can update a store
-    authorize.onlyAdmin(req.session.admin, function (err, success) {
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
+
+    let storeId = req.params.id.toUpperCase();
+
+    Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
-            return res.status(409).send(err);
-        } else {
-            let storeId = req.params.id.toUpperCase();
-            let updateParams = {};
-
-            // Get update fields from request body
-            if (req.body.name) {
-                updateParams.name = req.body.name;
-            }
-            if (req.body.address) {
-                updateParams.address = req.body.address;
-            }
-            if (req.body.photo) {
-                updateParams.photo = req.body.photo;
-            }
-
-            Store.findOneAndUpdate({storeId: storeId},
-                updateParams,
-                function (err, store) {
-                    if (err) {
-                        console.log(err);
-                        return res.status(500).
-                            send(dbErrors.handleSaveErrors(err));
-                    }
-
-                    console.log('Updated store ', store.storeId);
-                    res.send('Success');
-                });
+            console.log(err);
+            return res.status(500).send(err.message);
         }
+
+        store.name = req.body.name || store.name;
+        store.address = req.body.address || store.address;
+        store.photo = req.body.photo || store.photo;
+
+        store.save(function (err) {
+            if (err) {
+                console.log(err);
+                return res.status(409).send(dbErrors.handleSaveErrors(err));
+            }
+            return res.send('Success');
+        })
     });
 }
 
@@ -182,26 +171,24 @@ function updateStore(req, res) {
  * @param res
  */
 function deleteStore(req, res) {
-    authorize.onlyAdmin(req.session.admin, function (err, success) {
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
+
+    let storeId = req.params.id.toUpperCase();
+    Store.findOneAndRemove({storeId: storeId}, function (err, store) {
         if (err) {
-            return res.status(409).send(err);
-        } else {
-            let storeId = req.params.id.toUpperCase();
-            Store.findOneAndRemove({storeId: storeId}, function (err, store) {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).send(err.message);
-                }
-
-                if (!store) {
-                    console.log('Store ' + storeId + 'not found.');
-                    return res.status(404).send('Store not found');
-                }
-
-                console.log('Deleted store ', storeId);
-                return res.send('Success');
-            });
+            console.log(err);
+            return res.status(500).send(err.message);
         }
+
+        if (!store) {
+            console.log('Store ' + storeId + 'not found.');
+            return res.status(404).send('Store not found');
+        }
+
+        console.log('Deleted store ', storeId);
+        return res.send('Success');
     });
 }
 
@@ -225,41 +212,38 @@ function rateStore(req, res) {
         ratingVal = parseInt(req.body.rating);
 
     // Check that user is logged in.
-    authorize.onlyLoggedIn(username, function (err, success) {
+    if (!authorize.onlyLoggedIn(username)) {
+        return res.status(409).send('Not Authorized.');
+    }
+
+    // Find store
+    Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
-            return res.status(409).send(err);
-        } else {
-            // Find store
-            Store.findOne({storeId: storeId}, function (err, store) {
+            console.log(err);
+            return res.status(500).send(dbErrors.handleSaveErrors(err));
+        }
+
+        // Create and save new rating to database
+        addRating(storeId, username, ratingVal, function (err, rating) {
+            if (err) {
+                console.log(err);
+                return res.status(400).send(err);
+            }
+
+            // Rating was successfully added, so store's rating can be
+            // updated
+            store.rateCount++;
+            store.rateValue += ratingVal;
+            store.save(function (err) {
                 if (err) {
                     console.log(err);
-                    return res.status(500).send(dbErrors.handleSaveErrors(err));
+                    return res.status(409).send(dbErrors.handleSaveErrors(err));
+                } else {
+                    console.log(store.name + ' was rated.');
+                    return res.send('Success');
                 }
-
-                // Create and save new rating to database
-                addRating(storeId, username, ratingVal, function (err, rating) {
-                    if (err) {
-                        console.log(err);
-                        return res.status(400).send(err);
-                    }
-
-                    // Rating was successfully added, so store's rating can be
-                    // updated
-                    store.rateCount++;
-                    store.rateValue += ratingVal;
-                    store.save(function (err) {
-                        if (err) {
-                            console.log(err);
-                            return res.status(500).
-                                send(dbErrors.handleSaveErrors(err));
-                        } else {
-                            console.log(store.name + ' was rated.');
-                            return res.send('Success');
-                        }
-                    });
-                });
             });
-        }
+        });
     });
 }
 

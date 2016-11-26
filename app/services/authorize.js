@@ -9,48 +9,23 @@ module.exports = {
 };
 
 
-function onlyAdmin(admin, callback) {
-    if (!admin) {
-        console.log("Not authorized");
-        callback("Not authorized.");
-    } else {
-        callback(null, true);
-    }
+function onlyAdmin(admin) {
+    return admin;
 }
 
 
-function onlyActiveUserOrAdmin(requestedUser, activeUser, admin, callback) {
-    if (!admin && requestedUser !== activeUser) {
-        console.log("Not authorized");
-        callback("Not authorized.");
-    } else {
-        callback(null, true);
-    }
+function onlyActiveUserOrAdmin(requestedUser, activeUser, admin) {
+    return admin || requestedUser === activeUser;
 }
 
-function onlyLoggedIn(user, callback) {
-    if (!user) {
-        console.log("Not authorized");
-        callback("Not authorized.");
-    } else {
-        callback(null, true);
-    }
+function onlyLoggedIn(user) {
+    return user != null;
 }
 
-function onlyNotLoggedIn(user, callback) {
-    if (user) {
-        console.log("Not authorized");
-        callback("Not authorized.");
-    } else {
-        callback(null, true);
-    }
+function onlyNotLoggedIn(user) {
+    return user == null;
 }
 
-function onlyNotLoggedInOrAdmin(user, admin, callback) {
-    if (user && !admin) {
-        console.log("Not authorized");
-        callback("Not authorized.");
-    } else {
-        callback(null, true);
-    }
+function onlyNotLoggedInOrAdmin(user, admin) {
+    return !user || admin;
 }

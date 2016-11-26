@@ -166,7 +166,8 @@ function modifyCart(req, res) {
                             // Increase quantity of item already in cart
                             amountChanged = Math.min(quantity, fruit.quantity);
                             item.quantity += amountChanged;
-                        } else if (cart.items[i].quantity > Math.abs(quantity)){
+                        } else if (cart.items[i].quantity >
+                            Math.abs(quantity)) {
                             // Decrease quantity of item already in cart
                             amountChanged = quantity;
                             item.quantity += amountChanged;
@@ -180,13 +181,14 @@ function modifyCart(req, res) {
                 }
 
                 // Item not in cart already in the cart
-                if (!item)
+                if (!item) {
                     if (quantity > 0) {
                         item = {fruit: fruit, quantity: quantity};
                         cart.items.push(item);
                         amountChanged = quantity;
                     } else {
                         return res.status(409).send('Nothing to remove');
+                    }
                 }
 
                 cart.total += fruit.price * amountChanged;
@@ -229,20 +231,20 @@ function deleteCart(req, res) {
 
     // Don't need to populate fruit here
     Cart.findOneAndRemove({username: requestUser}, function (err, cart) {
-            if (err) {
-                console.log(err);
-                return res.status(500).send(err.message);
-            }
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err.message);
+        }
 
-            if (!cart) {
-                console.log('Cart not found.');
-                return res.status(404).send('Cart not found');
-            }
+        if (!cart) {
+            console.log('Cart not found.');
+            return res.status(404).send('Cart not found');
+        }
 
-            console.log('Deleted cart for ', requestUser);
-            req.session.cart = {};
-            return res.send('Success');
-        });
+        console.log('Deleted cart for ', requestUser);
+        req.session.cart = {};
+        return res.send('Success');
+    });
 }
 
 

@@ -31,7 +31,6 @@ app.use(session({
     cookie: {
         maxAge: 3600000 // auto-end session in one hour
     },
-    // Don't save sessions
     resave: false,
     saveUninitialized: false
 }));

@@ -33,27 +33,26 @@ module.exports = {
  */
 function showUser(req, res) {
     // Only show profile of user to signed in users
-    authorize.onlyLoggedIn(req.session.username, function (err, success) {
-        if (err) {
-            return res.status(409).send(err);
-        } else {
-            User.findOne({username: username},
-                {password: 0, email: 0, address: 0},
-                function (err, user) {
-                    if (err) {
-                        return res.status(500).send(err.message);
-                    }
+    if (!authorize.onlyLoggedIn(req.session.username)) {
+        return res.status(409).send('Not Authorized.');
+    }
 
-                    if (!user) {
-                        return res.status(404).send('User not found.');
-                    }
 
-                    else {
-                        return res.send(user);
-                    }
-                });
-        }
-    });
+    User.findOne({username: username},
+        {password: 0, email: 0, address: 0},
+        function (err, user) {
+            if (err) {
+                return res.status(500).send(err.message);
+            }
+
+            if (!user) {
+                return res.status(404).send('User not found.');
+            }
+
+            else {
+                return res.send(user);
+            }
+        });
 }
 
 
@@ -74,39 +73,37 @@ function showUser(req, res) {
  * @param res
  */
 function createNewUser(req, res) {
-    authorize.onlyNotLoggedInOrAdmin(req.session.username,
-        req.session.admin,
-        function (err, success) {
-            if (err) {
-                return res.status(409).send(err);
-            } else {
-                // Hash password before storing in database
-                let hashedPwd = bcrypt.hashSync(req.body.password);
+    if (!authorize.onlyNotLoggedInOrAdmin(req.session.username,
+            req.session.admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
 
-                let newUser = new User({
-                    username: req.body.username,
-                    password: hashedPwd,
-                    email: req.body.email,
-                    address: req.body.address
-                });
+    // Hash password before storing in database
+    let hashedPwd = bcrypt.hashSync(req.body.password);
 
-                // Rely on MongoDB validation to check for unique and required
-                // fields and report appropriate errors.
-                newUser.save(newUser, function (err, user) {
-                    if (err) {
-                        console.log(err);
-                        return res.status(409).
-                            send(dbErrors.handleSaveErrors(err));
-                    } else {
-                        req.session.username = user.username;
-                        req.session.admin = false;
-                        console.log('Added new user ', user.username);
-                        console.log(req.session);
-                        return res.send('Success');
-                    }
-                });
-            }
-        });
+    let newUser = new User({
+        username: req.body.username,
+        password: hashedPwd,
+        email: req.body.email,
+        address: req.body.address
+    });
+
+    // Rely on MongoDB validation to check for unique and required
+    // fields and report appropriate errors.
+    newUser.save(newUser, function (err, user) {
+        if (err) {
+            console.log(err);
+            return res.status(409).
+                send(dbErrors.handleSaveErrors(err));
+        } else {
+            req.session.username = user.username;
+            req.session.admin = false;
+            req.session.cart = {};
+            console.log('Added new user ', user.username);
+            console.log(req.session);
+            return res.send('Success');
+        }
+    });
 }
 
 
@@ -124,30 +121,28 @@ function createNewUser(req, res) {
  * @param res
  */
 function loginUser(req, res) {
-    authorize.onlyNotLoggedIn(req.session.username, function (err, success) {
+    if (!authorize.onlyNotLoggedIn(req.session.username)) {
+        return res.status(409).send('Not Authorized.');
+    }
+
+    let username = req.body.username,
+        password = req.body.password;
+
+    User.findOne({username: username}, function (err, user) {
         if (err) {
-            res.status(409).send(err);
-        } else {
-            let username = req.body.username,
-                password = req.body.password;
+            console.log(err);
+            return res.status(500).send(err.message);
+        }
 
-            User.findOne({username: username}, function (err, user) {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).send(err.message);
-                }
-
-                // Verify user exists and password matches stored password
-                if (user && bcrypt.compareSync(password, user.password)) {
-                    req.session.username = user.username;
-                    req.session.admin = user.admin;
-                    return res.send('Success');
-                } else { // user doesn't exist or password match failed
-                    console.log('Invalid login attempt.');
-                    return res.status(409).
-                        send('Invalid username or password.');
-                }
-            })
+        // Verify user exists and password matches stored password
+        if (user && bcrypt.compareSync(password, user.password)) {
+            req.session.username = user.username;
+            req.session.admin = user.admin;
+            return res.send('Success');
+        } else { // user doesn't exist or password match failed
+            console.log('Invalid login attempt.');
+            return res.status(409).
+                send('Invalid username or password.');
         }
     });
 }
@@ -160,7 +155,6 @@ function loginUser(req, res) {
  * A request should include a body with the following format:
  *
  * {
- *      username: String,
  *      address: String (optional),
  *      name: String (optional),
  *      email: String(optional),
@@ -172,52 +166,40 @@ function loginUser(req, res) {
  */
 function updateUserProfile(req, res) {
     let sessionUser = req.session.username,
-        requestUser = req.body.username,
-        isAdmin = req.session.admin;
+        requestUser = req.params.id,
+        admin = req.session.admin;
 
     // Authorize changes only for actual user or admin user
-    authorize.onlyActiveUserOrAdmin(requestUser,
-        sessionUser,
-        admin,
-        function (err, success) {
+    if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
+
+    User.findOne({username: requestUser}, function (err, user) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err.message);
+        }
+
+        if (!user) {
+            console.log('Could not find user ', requestUser);
+            return res.status(404).send('User not found.');
+        }
+
+        user.name = req.body.name || user.name;
+        user.email = req.body.email || user.email;
+        user.address = req.body.address || user.address;
+        user.photo = req.body.photo || user.photo;
+
+        user.save(function (err, user) {
             if (err) {
-                res.status(409).send(err);
-            } else {
-                let updateParams = {};
-
-                // Get update fields from request body
-                if (req.body.name) {
-                    updateParams.name = req.body.name;
-                }
-                if (req.body.email) {
-                    updateParams.email = req.body.email;
-                }
-                if (req.body.address) {
-                    updateParams.address = req.body.address;
-                }
-                if (req.body.photo) {
-                    updateParams.photo = req.body.photo;
-                }
-
-                User.findOneAndUpdate({username: sessionUser},
-                    updateParams,
-                    function (err, user) {
-                        if (err) {
-                            console.log(err);
-                            return res.status(500).
-                                send(dbErrors.handleSaveErrors(err));
-                        }
-
-                        if (!user) {
-                            console.log('Could not find user ', username);
-                            return res.status(404).send('User not found.');
-                        }
-
-                        console.log('Updated user ', user.username);
-                        res.send('Success');
-                    });
+                console.log(err);
+                return res.status(409).send(dbErrors.handleSaveErrors(err));
             }
+
+            console.log('Updated user ', user.username);
+            return res.send('Success');
         });
+    });
 }
 
 
@@ -230,29 +212,25 @@ function updateUserProfile(req, res) {
  * @param res
  */
 function deleteUser(req, res) {
-    authorize.onlyAdmin(req.session.admin, function (err, success) {
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
+
+    let username = req.params.id;
+    User.findOneAndRemove({username: username}, function (err, user) {
         if (err) {
-            res.status(409).send(err);
-        } else {
-            let username = req.params.id;
-            User.findOneAndRemove({username: username},
-                function (err, user) {
-                    if (err) {
-                        console.log(err);
-                        return res.status(500).send(err.message);
-                    }
-
-                    if (!user) {
-                        console.log('User ' + username + 'not found.');
-                        return res.status(404).send('User not found');
-                    }
-
-                    console.log('Deleted user ', username);
-                    return res.send('Success');
-                });
+            console.log(err);
+            return res.status(500).send(err.message);
         }
-    });
 
+        if (!user) {
+            console.log('User ' + username + 'not found.');
+            return res.status(404).send('User not found');
+        }
+
+        console.log('Deleted user ', username);
+        return res.send('Success');
+    });
 }
 
 
@@ -263,7 +241,6 @@ function deleteUser(req, res) {
  * A request should include a body with the following format:
  *
  * {
- *      username: String,
  *      password: String
  * }
  *
@@ -272,46 +249,38 @@ function deleteUser(req, res) {
  */
 function updateUserPassword(req, res) {
     let sessionUser = req.session.username,
-        requestUser = req.body.username,
-        isAdmin = req.session.admin;
+        requestUser = req.params.id,
+        admin = req.session.admin;
 
     // Authorize changes only for actual user or admin user
-    authorize.onlyActiveUserOrAdmin(requestUser,
-        sessionUser,
-        admin,
-        function (err, success) {
+    if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
+
+    // Find the user to update profile
+    User.findOne({username: sessionUser}, function (err, user) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err.message);
+        }
+
+        if (!user) {
+            return res.status(404).send('User not found.');
+        }
+
+        user.password = bcrypt.hashSync(req.body.password);
+
+        // Save to database, rely on MongoDB validation
+        user.save(function (err, user) {
             if (err) {
-                res.status(409).send(err);
-            } else {
-
-                // Find the user to update profile
-                User.findOne({username: requestUser}, function (err, user) {
-                    if (err) {
-                        console.log(err);
-                        return res.status(500).send(err.message);
-                    }
-
-                    if (!user) {
-                        return res.status(404).send('User not found.');
-                    }
-
-                    user.password = bcrypt.hashSync(req.body.password);
-
-                    // Save to database, rely on MongoDB validation
-                    user.save(function (err, user) {
-                        if (err) {
-                            console.log(err);
-                            return res.status(400).
-                                send(dbErrors.handleSaveErrors(err));
-                        }
-
-                        console.log('SUpdated password for  user ',
-                            user.username);
-                        return res.send('Success');
-                    })
-                });
+                console.log(err);
+                return res.status(400).send(dbErrors.handleSaveErrors(err));
             }
-        });
+
+            console.log('SUpdated password for  user ', user.username);
+            return res.send('Success');
+        })
+    });
 }
 
 
