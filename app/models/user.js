@@ -6,7 +6,7 @@ const mongoose = require('mongoose'),
 const ratingsSchema = new Schema(
     {
         _storeId: {
-            type: Schema.ObjectId,
+            type: Schema.ObjectIdId,
             ref: 'Store'
         },
         _userId: {
@@ -14,12 +14,12 @@ const ratingsSchema = new Schema(
             ref: 'User'
         },
         value: {
-            type: Number,
+            type: Integer,
             min: 0,
             max: 5
         }
     },
-    {collection: 'ratings'}
+    {collection: "ratings"},
 );
 
 const usersSchema = new Schema(
@@ -29,25 +29,9 @@ const usersSchema = new Schema(
             required: true,
             unique: true
         },
-        name: {
-            type: String,
-            required: true
-        },
-        password: {
-            type: String,
-            required: true
-        },
-        admin: {
-            type: Boolean,
-            default: false
-        },
-        address: {
-            type: String,
-            required: true
-        },
         ratings: [ratingsSchema]
     },
-    {collection: 'users'}
+    {collection: "users"},
 );
 
 const userModel = mongoose.model('User', usersSchema);

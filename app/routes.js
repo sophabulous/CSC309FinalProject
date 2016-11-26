@@ -5,8 +5,7 @@ const express = require('express'),
     router = express.Router(),
     mainController = require('./controllers/main.controller.js'),
     storesController = require('./controllers/stores.controller.js'),
-    fruitsController = require('./controllers/fruits.controller.js'),
-    usersController = require('./controllers/users.controller.js');
+    fruitsController = require('./controllers/fruits.controller.js');
 
 
 module.exports = router;
@@ -37,7 +36,7 @@ router.delete('/stores/:id', storesController.deleteStore);
 
 
 // Fruit routes
-// Get an array of fruit objects -- query single fruit type with ?type=type
+// Get an array of fruit objects
 router.get('/fruits', fruitsController.showFruits);
 // Get a single fruit object
 router.get('/fruits/:id', fruitsController.showSingleFruit);
@@ -47,13 +46,3 @@ router.post('/fruits/', fruitsController.createNewFruit);
 router.post('/fruits/:id', fruitsController.updateFruit);
 // Delete existing fruit
 router.delete('/fruits/:id', fruitsController.deleteFruit);
-
-// User routes
-// Create new user
-router.post('/signup', usersController.createNewUser);
-// Login
-router.post('/login', usersController.loginUser);
-// Update user
-router.post('/user', usersController.updateUser);
-// Signout user
-router.get('/signout', usersController.signoutUser);
