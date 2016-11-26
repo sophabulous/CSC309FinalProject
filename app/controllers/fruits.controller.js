@@ -5,7 +5,7 @@ const Fruit = require('../models/fruit'),
     authorize = require('../services/authorize');
 
 module.exports = {
-    showCarts: showFruits,
+    showFruits: showFruits,
     showSingleFruit: showSingleFruit,
     createNewFruit: createNewFruit,
     updateFruit: updateFruit,

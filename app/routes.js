@@ -34,7 +34,7 @@ router.post('/rate/:id', storesController.rateStore);
 
 // Fruit routes
 // Get an array of fruit objects -- query with ?type= ?season= ?storeId=
-router.get('/fruits', fruitsController.showCarts);
+router.get('/fruits', fruitsController.showFruits);
 // Get a single fruit object
 router.get('/fruits/:id', fruitsController.showSingleFruit);
 // Create a new fruit
