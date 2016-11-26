@@ -15,7 +15,7 @@ function onlyAdmin(admin) {
 
 
 function onlyActiveUserOrAdmin(requestedUser, activeUser, admin) {
-    return admin || requestedUser === activeUser;
+    return admin || (activeUser && (requestedUser === activeUser));
 }
 
 function onlyLoggedIn(user) {

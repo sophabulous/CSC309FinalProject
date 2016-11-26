@@ -5,7 +5,7 @@ const Fruit = require('../models/fruit'),
     authorize = require('../services/authorize');
 
 module.exports = {
-    showCarts: showFruits,
+    showFruits: showFruits,
     showSingleFruit: showSingleFruit,
     createNewFruit: createNewFruit,
     updateFruit: updateFruit,
@@ -202,6 +202,7 @@ function updateFruit(req, res) {
         fruit.photo = req.body.photo || fruit.photo;
         fruit.price = req.body.price || fruit.price;
         fruit.quantity = req.body.quantity || fruit.quantity;
+        fruit.unit = req.body.unit || fruit.unit;
 
         // Rely on MongoDB validation to check for unique and required
         // fields and report appropriate errors.

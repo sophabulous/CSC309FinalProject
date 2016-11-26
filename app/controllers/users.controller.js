@@ -114,19 +114,21 @@ function createNewUser(req, res) {
         return res.status(409).send('Not Authorized.');
     }
 
+    console.log(req.body);
     // Hash password before storing in database
     let hashedPwd = bcrypt.hashSync(req.body.password);
 
     let newUser = new User({
         username: req.body.username,
         password: hashedPwd,
-        email: req.body.email,
-        address: req.body.address
+        name: req.body.name,
+        address: req.body.address,
+        email: req.body.email
     });
 
     // Rely on MongoDB validation to check for unique and required
     // fields and report appropriate errors.
-    newUser.save(newUser, function (err, user) {
+    newUser.save(function (err, user) {
         if (err) {
             console.log(err);
             return res.status(409).

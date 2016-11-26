@@ -26,6 +26,7 @@ module.exports = {
  *      username: String,
  *      total: Number,
  *      items: [Fruits],
+ *      lastUpdated: Date
  * }]'
  *
  * @param req
@@ -61,6 +62,7 @@ function showCarts(req, res) {
  *      username: String,
  *      total: Number,
  *      items: [Fruits],
+ *      lastUpdated: Date
  * }'
  *
  * Cart is stored in session.
@@ -107,7 +109,17 @@ function showSingleCart(req, res) {
  * Add or delete items to and from the cart. Creates a new cart if user does
  * not yet have a cart.
  *
- * Cart is stored in session
+ * Only admin and active user are authorized.
+ *
+ * Use username as /:id and include the following in the request.
+ *
+ * {
+ *      fruitId: Fruit _id,
+ *      quantity: Number
+ * }
+ *
+ * Cart is stored in session and are only stored in the database for 1 hour
+ * after the last time modified.
  *
  * Sends 'Success' upon success or updates status and sends error message.
  *
@@ -216,6 +228,8 @@ function modifyCart(req, res) {
 
 /**
  * Deletes cart.
+ *
+ * Only authorized for active user and admin.
  *
  * Sends 'Success' upon success or updates status and sends error message.
  *
