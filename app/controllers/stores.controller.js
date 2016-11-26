@@ -37,7 +37,7 @@ function showStores(req, res) {
     console.log('Show all stores:');
 
     // Send all stores from database -- exclude _id field
-    Store.find({}, {_id: 0}, function (err, stores) {
+    Store.find({}, {_id: 0}).populate('comments').exec(function (err, stores) {
         if (err) {
             console.log(err);
             return res.status(500).send(err.message);
@@ -74,20 +74,22 @@ function showSingleStore(req, res) {
 
     // Send store in database that matches unique (enforced) storeId
     // exclude _id field
-    Store.findOne({storeId: storeId}, {_id: 0}, function (err, store) {
-        if (err) {
-            console.log(err);
-            return res.status(500).send(err.message);
-        }
+    Store.findOne({storeId: storeId}, {_id: 0}).
+        populate('comments').
+        exec(function (err, store) {
+            if (err) {
+                console.log(err);
+                return res.status(500).send(err.message);
+            }
 
-        if (!store) {
-            console.log('Store ' + storeId + 'not found.');
-            return res.status(404).send('Store not found');
-        }
+            if (!store) {
+                console.log('Store ' + storeId + 'not found.');
+                return res.status(404).send('Store not found');
+            }
 
-        console.log(store);
-        return res.send(JSON.stringify(store));
-    });
+            console.log(store);
+            return res.send(JSON.stringify(store));
+        });
 }
 
 
@@ -171,8 +173,7 @@ function updateStore(req, res) {
         store.address = req.body.address || store.address;
         store.photo = req.body.photo || store.photo;
 
-        // Rely on MongoDB validation to check for unique and required
-        // fields and report appropriate errors.
+
         store.save(function (err) {
             if (err) {
                 console.log(err);
