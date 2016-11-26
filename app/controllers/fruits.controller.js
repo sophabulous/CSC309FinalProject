@@ -1,75 +1,92 @@
 'use strict';
 
-const Fruit = require('../models/fruit');
+const Fruit = require('../models/fruit'),
+    dbErrors = require('../services/handleDatabaseErrors'),
+    authorize = require('../services/authorize');
 
 module.exports = {
-    showFruits: showFruits,
+    showCarts: showFruits,
     showSingleFruit: showSingleFruit,
     createNewFruit: createNewFruit,
     updateFruit: updateFruit,
-    deleteFruit: deleteFruit,
-    seedFruits: seedFruits
+    deleteFruit: deleteFruit
 };
 
 
 /**
  * Respond to request with a stringified list of all fruit objects.
  *
- * Use type query to get back only fruits of a specific type.
+ * Use type, season or storeId query to get back only fruits of a specific value
  *
- * '[{
- *      _id: ObjectId
- *      storeId: String,
- *      type: String,
- *      photo: String,
- *      season: String (url),
- *      price: Number,
- *      quantity: Number
- * }]'
+ * Example response to /fruits/
+ * '[
+ *  "_id": "5839bb15c2342805668a8863",
+ *  "storeId": "LO126",
+ *  "type": "grapefruit",
+ *  "season": "summer",
+ *  "unit": "approx 500g",
+ *  "comments": [],
+ *  "quantity": 80,
+ *  "price": 1.2,
+ *  "photo":
+ *  "https://cdn.pixabay.com/photo/2016/11/02/16/49/orange-1792233__340.jpg"
+ *  ]'
  *
  * @param req
  * @param res
  */
 function showFruits(req, res) {
-    let type = req.query.type;
-    console.log('Show all ' + type || 'fruits');
+    let type = req.query.type,
+        season = req.query.season,
+        storeId = req.query.storeId,
+        query = {};
+
+    console.log('Show all! Query by type: ' + type || '""'
+        + ' season: ' + season || '""'
+        + ' store: ' + storeId || '""');
 
     if (type) {
         type = type.toLowerCase();
-        Fruit.find({type: type}, function (err, fruits) {
-            if (err) {
-                console.log(err);
-                return res.send(500, 'Something went wrong.');
-            } else {
-                console.log(fruits);
-                return res.send(JSON.stringify(fruits))
-            }
-        });
-    } else {
-        Fruit.find({}, function (err, fruits) {
-            if (err) {
-                console.log(err);
-                return res.send(500, 'Something went wrong.');
-            } else {
-                console.log(fruits);
-                return res.send(JSON.stringify(fruits))
-            }
-        });
+        query.type = type;
     }
+
+    if (season) {
+        season = season.toLowerCase();
+        query.season = season;
+    }
+
+    if (storeId) {
+        storeId = storeId.toUpperCase();
+        query.storeId = storeId;
+    }
+
+    Fruit.find(query, function (err, fruits) {
+        if (err) {
+            console.log(err);
+            return res.status(500).send(err.message);
+        } else {
+            console.log(fruits);
+            return res.send(JSON.stringify(fruits));
+        }
+    });
 }
 
 
 /**
- * Respond to request with a stringified fruit object.
+ * Respond to request with a stringified fruit object of fruit with _id /:id.
  *
+ * Example response to /fruits/5839bb15c2342805668a8863
  * '{
- *      _id: ObjectId
- *      storeId: String,
- *      type: String,
- *      photo: String,
- *      season: String (url),
- *      price: Number,
- *      quantity: Number
+ *   "_id": "5839bb15c2342805668a8863",
+ *   "storeId": "LO126",
+ *   "type": "grapefruit",
+ *   "season": "summer",
+ *   "unit": "approx 500g",
+ *   "comments": [],
+ *   "quantity": 80,
+ *   "price": 1.2,
+ *   "photo":
+ *   "https://cdn.pixabay.com/photo/2016/11/02/16/49/orange-1792233__340.jpg"
  * }'
  *
  * @param req
@@ -81,7 +98,7 @@ function showSingleFruit(req, res) {
     Fruit.findOne({_id: id}, function (err, fruit) {
         if (err) {
             console.log(err);
-            return res.send(500, 'Something went wrong');
+            return res.status(500).send(err.message);
         }
 
         if (!fruit) {
@@ -99,167 +116,135 @@ function showSingleFruit(req, res) {
 /**
  * Create a new fruit object and update the database.
  *
- * A request should include a body with the following format:
+ * Must be admin.
+ *
+ * A request should be a JSON object in the following format
  *
  * {
- *      storeId: String,
- *      type: String,
- *      photo: String (url, optional),
- *      season: String,
- *      price: Number,
- *      quantity: Number
+ *   "storeId": String,
+ *   "type": String,
+ *   "season": String,
+ *   "unit": String,
+ *   "quantity": Number,
+ *   "price": Number,
+ *   "photo": String (optional)
  * }
  *
  *
- * Sends 'Success' upon success or sets status to 400 and sends error message.
+ * Sends 'Success' upon success or sets status to 409 and sends error message.
  *
  * @param req
  * @param res
  */
 function createNewFruit(req, res) {
-    // TODO: only allow admin users to add fruit
-    console.log('createNewFruit');
+    // Only admins can create a fruit
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
 
     let newFruit = new Fruit(req.body);
 
+    // Rely on MongoDB validation to check for unique and required
+    // fields and report appropriate errors.
     newFruit.save(function (err, newFruit) {
         if (err) {
-            // TODO: Experiment with error messages to give user more details
-            // TODO: Test Mongo validation to determine if more is required here
             console.log(err);
-            res.status(400);
-            res.send('Could not add new fruit.');
+            res.status(409).send(dbErrors.handleSaveErrors(err));
         } else {
             console.log(newFruit._id + ' was added to the database.');
             res.send('Success');
         }
-    })
+    });
 }
 
+
 /**
- * Updates an existing fruit object and updates the database.
+ * Updates an existing fruit object and updates the database with /:id as
+ * the fruit _id.
  *
- * Fields that can be updated include 'photo', 'price', 'quantity'.
+ * Must be admin.
  *
- * Sends 'Success' upon success or sends error message.
+ * Fields that can be updated include 'photo', 'price', 'quantity', 'unit'.
+ *
+ * A request should be a JSON object in the following format.
+ *
+ * {
+ *   "unit": String (optional),
+ *   "quantity": Number (optional),
+ *   "price": Number (optional),
+ *   "photo": String (optional)
+ * }
+ *
+ * Sends 'Success' upon success or modifies status and sends error message.
  *
  * @param req
  * @param res
  */
 function updateFruit(req, res) {
-    // TODO: only allow admin users to update fruit
-    console.log('updatefruit: ' + req.params.id);
-    let photo = req.body.photo,
-        price = req.body.price,
-        quantity = req.body.quantity;
+    // Only admins can update a fruit
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
 
-    Fruit.findOne({_id: req.params.id}, function (err, fruit) {
+    let fruitId = req.params.id;
+
+    Fruit.findOne({_id: fruitId}, function (err, fruit) {
         if (err) {
             console.log(err);
-            res.status(404);
-            res.send('Fruit not found.');
-        } else if (fruit) {
-            // only update fields supplied in request
-            fruit.photo = photo || fruit.photo;
-            fruit.price = price || fruit.price;
-            fruit.quantity = quantity || fruit.quantity;
-
-            fruit.save(function (err, fruit) {
-                if (err) {
-                    console.log(err);
-                    res.status(400);
-                    res.send('Could not update fruit.');
-                } else {
-                    console.log('Successfully updated fruit ' + fruit._id);
-                    res.send('Success');
-                }
-            });
-        } else {
-            console.log('Something went wrong.');
-            res.status(500);
-            res.send('Something went wrong.');
+            return res.status(500).send(err.message);
         }
+
+        if (!fruit) {
+            console.log('Fruit not found');
+            return res.status(404).send('Fruit not found');
+        }
+
+        fruit.photo = req.body.photo || fruit.photo;
+        fruit.price = req.body.price || fruit.price;
+        fruit.quantity = req.body.quantity || fruit.quantity;
+
+        // Rely on MongoDB validation to check for unique and required
+        // fields and report appropriate errors.
+        fruit.save(function (err) {
+            if (err) {
+                console.log(err);
+                return res.status(400).send(dbErrors.handleSaveErrors(err));
+            }
+            console.log('Updated fruit ', fruit._id);
+            return res.send('Success');
+        });
     });
 }
 
 
 /**
- * Deletes an existing fruit object and updates the database.
+ * Deletes an existing fruit object and updates the database with /:id as
+ * the fruit _id.
  *
- * Sends 'Success' upon success or sends error message.
+ * Must be admin.
+ *
+ * Sends 'Success' upon success or modifies status and sends error message.
  *
  * @param req
  * @param res
  */
 function deleteFruit(req, res) {
-    // TODO: only allow admin users to delete fruit
-    console.log('deleteFruit: ' + req.params.id);
-    Fruit.findOne({_id: req.params.id}, function (err, fruit) {
+    // Only admins can delete a fruit
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
+
+    Fruit.findByIdAndRemove(req.params.id, function (err, fruit) {
         if (err) {
             console.log(err);
-            res.status(404);
-            res.send('Fruit not found.');
-        } else if (fruit) {
-            fruit.remove(function (err, result) {
-                if (err) {
-                    console.log(err);
-                    res.status(400);
-                    res.send('Could not delete fruit.')
-                } else {
-                    console.log(result);
-                    res.send('Success');
-                }
-            });
-        } else {
-            console.log('Something went wrong.');
-            res.status(500);
-            res.send('Something went wrong.');
+            return res.status(500).send(err.message);
         }
+
+        if (!fruit) {
+            console.log('Fruit not found');
+            return res.status(404).send('Fruit not found');
+        }
+
+        return res.send('Success');
     });
-}
-
-
-/**
- * Seed the database with fruit objects.
- *
- * Sends 'Success' upon success or sends error message.
- *
- * @param req
- * @param res
- */
-function seedFruits(req, res) {
-    const fruits = [
-        {
-            storeId: 'LO123',
-            type: 'apple',
-            season: 'fall',
-            price: 1.00,
-            quantity: 100
-        }, {
-            storeId: 'NF123',
-            type: 'banana',
-            season: 'summer',
-            photo: 'https://cdn.pixabay.com/photo/2016/09/03/20/48/bananas-1642706_960_720.jpg',
-            price: 0.50,
-            quantity: 32
-        }
-    ];
-
-    // Clear database before seeding again
-    Fruit.remove({}, function () {
-        for (let fruit of fruits) {
-            let newFruit = new Fruit(fruit);
-            newFruit.save(function (err) {
-                if (err) {
-                    console.log(err);
-                    res.status(404);
-                    res.send('Could not seed database. ' +
-                        'Error on fruit id ' + fruit._id);
-                }
-                console.log(fruits.storeId + 's' + fruits.type + ' was added to the database.');
-            });
-        }
-    });
-
-    res.send('Success');
 }

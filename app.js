@@ -1,10 +1,12 @@
+'use strict';
+
 require('dotenv').config();
 
 const express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
-    fs = require('fs');
-    session = require('express-session');
+    session = require('express-session'),
+    seed = require('./app/seed/seed');
 
 
 // Database startup (get db url from .env variables)
@@ -13,42 +15,15 @@ mongoose.connect(process.env.DB_URI || 'mongodb://localhost/db', function (err){
         console.log('ERROR connecting to database. ' + err);
     } else {
         console.log('Connected to database.');
+
+        // Allow command line argument to reseed database wih initial data
+        if (process.argv.length > 2 && process.argv[2] === 'reseed') {
+            console.log('Dropping databse');
+            seed.drop();
+        }
+        console.log('Seeding database');
+        setTimeout(seed.seed, 3000);
     }
-});
-
-
-// Seed database if this is the first time running the app
-fs.readFile('./seed-db.json', 'utf-8', function (err, data) {
-    if (err) {throw err;}
-    let d = JSON.parse(data);
-
-    let db = mongoose.connection;
-    let fruitsCollection = db.collection('fruits');
-    let storesCollection = db.collection('stores');
-
-    fruitsCollection.count(function (err, count) {
-        if (!err && count === 0) {
-            fruitsCollection.insertMany(d.fruits, function (err) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('Inserted fruits into db.');
-                }
-            });
-        }
-    });
-
-    storesCollection.count(function (err, count) {
-        if (!err && count === 0){
-            storesCollection.insertMany(d.stores, function (err) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('Inserted stores into db.');
-                }
-            });
-        }
-    });
 });
 
 
@@ -63,7 +38,6 @@ app.use(session({
     cookie: {
         maxAge: 3600000 // auto-end session in one hour
     },
-    // Don't save sessions
     resave: false,
     saveUninitialized: false
 }));

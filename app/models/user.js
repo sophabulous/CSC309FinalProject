@@ -1,41 +1,29 @@
 "use strict";
 
 const mongoose = require('mongoose'),
+    uniqueValidator = require('mongoose-unique-validator'),
     Schema = mongoose.Schema;
-
-const ratingsSchema = new Schema(
-    {
-        _storeId: {
-            type: Schema.ObjectId,
-            ref: 'Store'
-        },
-        _userId: {
-            type: Schema.ObjectId,
-            ref: 'User'
-        },
-        value: {
-            type: Number,
-            min: 0,
-            max: 5
-        }
-    },
-    {collection: 'ratings'}
-);
 
 const usersSchema = new Schema(
     {
-        userName: {
+        username: {
             type: String,
-            required: true,
+            required: [true, 'Must supply a username.'],
             unique: true
+        },
+        email: {
+            type: String,
+            required: [true, 'Must supply an email.'],
+            unique: true,
+            uniqueCaseInsensitive: true
         },
         name: {
             type: String,
-            required: true
+            required: [true, 'Must provide a name.']
         },
         password: {
             type: String,
-            required: true
+            required: [true, 'Must provide a password.']
         },
         admin: {
             type: Boolean,
@@ -43,12 +31,16 @@ const usersSchema = new Schema(
         },
         address: {
             type: String,
-            required: true
+            required: [true, 'Must supply an address.']
         },
-        ratings: [ratingsSchema]
+        photo: {
+            type: String,
+            default: 'https://cdn.pixabay.com/photo/2016/03/31/14/47/avatar-1292817__340.png'
+        }
     },
+    {minimize: false},
     {collection: 'users'}
-);
+).plugin(uniqueValidator, {message: 'Error, expected {PATH} to be unique.'});
 
 const userModel = mongoose.model('User', usersSchema);
 

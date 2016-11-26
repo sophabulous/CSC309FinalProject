@@ -3,10 +3,11 @@
 // create a new express router
 const express = require('express'),
     router = express.Router(),
-    mainController = require('./controllers/main.controller.js'),
-    storesController = require('./controllers/stores.controller.js'),
-    fruitsController = require('./controllers/fruits.controller.js'),
-    usersController = require('./controllers/users.controller.js');
+    mainController = require('./controllers/main.controller'),
+    storesController = require('./controllers/stores.controller'),
+    fruitsController = require('./controllers/fruits.controller'),
+    usersController = require('./controllers/users.controller'),
+    cartsController = require('./controllers/carts.controller');
 
 
 module.exports = router;
@@ -14,11 +15,6 @@ module.exports = router;
 
 // Main index
 router.get('/', mainController.displayHome);
-
-
-// Seed database
-router.get('/stores/seed', storesController.seedStores);
-router.get('/fruits/seed', fruitsController.seedFruits);
 
 
 // Store routes
@@ -30,15 +26,15 @@ router.get('/stores/:id', storesController.showSingleStore);
 router.post('/stores/', storesController.createNewStore);
 // Update existing store
 router.post('/stores/:id', storesController.updateStore);
-// Rate a store
-router.post('/stores/rate/:id', storesController.rateStore);
 // Delete a store
 router.delete('/stores/:id', storesController.deleteStore);
+// Rate a store
+router.post('/rate/:id', storesController.rateStore);
 
 
 // Fruit routes
-// Get an array of fruit objects -- query single fruit type with ?type=type
-router.get('/fruits', fruitsController.showFruits);
+// Get an array of fruit objects -- query with ?type= ?season= ?storeId=
+router.get('/fruits', fruitsController.showCarts);
 // Get a single fruit object
 router.get('/fruits/:id', fruitsController.showSingleFruit);
 // Create a new fruit
@@ -48,12 +44,34 @@ router.post('/fruits/:id', fruitsController.updateFruit);
 // Delete existing fruit
 router.delete('/fruits/:id', fruitsController.deleteFruit);
 
+
 // User routes
+// Show all users
+router.get('/users/', usersController.showUsers);
+// Show user profile
+router.get('/users/:id', usersController.showUser);
 // Create new user
 router.post('/signup', usersController.createNewUser);
 // Login
 router.post('/login', usersController.loginUser);
-// Update user
-router.post('/user', usersController.updateUser);
+// Update user email, name, photo
+router.post('/users/:id', usersController.updateUserProfile);
+// Update user password
+router.post('/password/:id', usersController.updateUserPassword);
+// Delete user
+router.delete('/users/:id', usersController.deleteUser);
 // Signout user
 router.get('/signout', usersController.signoutUser);
+
+
+// Cart routes
+// Show all carts
+router.get('/carts', cartsController.showCarts);
+// Show user's cart
+router.get('/carts/:id', cartsController.showSingleCart);
+// Add to user's cart
+router.post('/carts/:id', cartsController.modifyCart);
+// Delete a user's cart
+router.delete('/carts/:id', cartsController.deleteCart);
+// Checkout
+router.post('/checkout/:id', cartsController.checkout);
