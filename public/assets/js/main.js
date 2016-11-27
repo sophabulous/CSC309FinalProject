@@ -8,6 +8,7 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
     .state('stores', {url: '/stores', templateUrl: 'partials/stores.html', controller: 'storesCtrl'})
     .state('products', {url: '/products', templateUrl: 'partials/products.html', controller: 'storesCtrl'})
     .state('store-detail', {url: '/store-detail',templateUrl: 'partials/store-detail.html', controller: 'storeDetailCtrl'})
+    .state('product-detail', {url: '/product-detail',templateUrl: 'partials/product-detail.html', controller: 'productDetailCtrl'})
     .state('seasons', {url: '/seasons', templateUrl: 'partials/seasons.html', controller: ''})
     ;
 
@@ -19,9 +20,15 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
 
 })
 
-//controller-----------------------------------------------------------------------------------------------------------------------------------------
+//controller---------------------------------------------------------------------------------------------------------------------------
 
 .controller('storeDetailCtrl', function($scope, $rootScope, $stateParams, $state, sweet) {
+
+
+    }   
+)
+
+.controller('productDetailCtrl', function($scope, $rootScope, $stateParams, $state, sweet) {
 
 
     }   
