@@ -1,20 +1,86 @@
 'use strict';
 
 const mongoose = require('mongoose'),
-    Schema = mongoose.Schema,
-    fs = require('fs');
+    Schema = mongoose.Schema;
 
-let fruits, seasons;
+// Enum validation for fruits and seasons.
+const fruitEnum = {
+    values: [
+        'apple',
+        'apricot',
+        'avocado',
+        'banana',
+        'bilberry',
+        'blackberry',
+        'blackcurrant',
+        'blueberry',
+        'boysenberry',
+        'cantaloupe',
+        'currant',
+        'cherry',
+        'cherimoya',
+        'cloudberry',
+        'coconut',
+        'cranberry',
+        'cucumber',
+        'date',
+        'dragonfruit',
+        'durian',
+        'elderberry',
+        'feijoa',
+        'fig',
+        'goji berry',
+        'gooseberry',
+        'grape',
+        'grapefruit',
+        'guava',
+        'honeydew',
+        'jackfruit',
+        'kiwi',
+        'kumquat',
+        'lemon',
+        'lime',
+        'lychee',
+        'mango',
+        'marionberry',
+        'nectarine',
+        'papaya',
+        'passionfruit',
+        'peach',
+        'pear',
+        'persimmon',
+        'plantain',
+        'plum',
+        'pineapple',
+        'pomegranate',
+        'pomelo',
+        'raspberry',
+        'satsuma',
+        'star fruit',
+        'strawberry',
+        'tamarillo',
+        'tamarind',
+        'tomato',
+        'ugli fruit',
+        'yuzu',
+        'blood orange',
+        'clementine',
+        'mandarine',
+        'tangerine',
+        'watermelon'
+    ],
+    message: 'Not a valid fruit type.'
+};
 
-// TODO: Get enum working or find a new way to validate fruit types and seasons
-// fs.readFile('app/models/fruits-data.json', 'utf-8', function (err, data) {
-//     if (err) {
-//         throw err;
-//     }
-//     let d = JSON.parse(data);
-//     fruits = d.fruits;
-//     seasons = d.seasons;
-// });
+const seasonEnum = {
+    values: [
+        'fall',
+        'winter',
+        'spring',
+        'summer',
+    ],
+    message: 'Not a valid season.'
+};
 
 const fruitsSchema = new Schema(
     {
@@ -26,7 +92,7 @@ const fruitsSchema = new Schema(
             type: String,
             lower: true,
             required: true,
-            // enum: fruits
+            enum: fruitEnum
         },
         photo: {
             type: String,
@@ -36,7 +102,7 @@ const fruitsSchema = new Schema(
             type: String,
             lower: true,
             required: true,
-            // enum: seasons
+            enum: seasonEnum
         },
         price: {
             type: Number,
@@ -51,8 +117,18 @@ const fruitsSchema = new Schema(
             set: v => Math.round(v),
             default: 0,
             required: true
-        }
+        },
+        unit: {
+            type: String,
+            lower: true,
+            required: true
+        },
+        comments: [{
+            type: Schema.ObjectId,
+            ref: 'Comment'
+        }]
     },
+    {minimize: false},
     {collection: 'fruits'}
 );
 

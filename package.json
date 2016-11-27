@@ -2,13 +2,16 @@
   "name": "RESTInPeace",
   "version": "1.0.0",
   "main": "app.js",
+  "repository": "https://github.com/CSC309-Fall-2016/RESTInPeace",
   "dependencies": {
+    "bcryptjs": "^2.3.0",
     "body-parser": "^1.15.2",
-    "cookie-parser": "~1.4.3",
     "dotenv": "^2.0.0",
     "express": "^4.14.0",
+    "express-session": "^1.14.2",
     "mongodb": "^2.2.11",
     "mongoose": "^4.6.5",
+    "mongoose-unique-validator": "^1.0.3",
     "nodemon": "^1.11.0"
   }
 }
