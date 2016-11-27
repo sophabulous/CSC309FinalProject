@@ -102,6 +102,14 @@ ul.alert-dropdown {
     width: 200px;
 }
 
+.navbar-fixed-top a{
+    color: #ffffff;
+}
+
+.navbar-fixed-top a:hover{
+    color: #ffffff;
+}
+
 /* Side Navigation */
 
 @media(min-width:768px) {
@@ -474,4 +482,9 @@ ul.alert-dropdown {
    position: absolute;
    left: 0;
    color: gold;
+}
+
+.sign_up{
+    padding-top: 5%;
+    padding-left: 10%;
 }

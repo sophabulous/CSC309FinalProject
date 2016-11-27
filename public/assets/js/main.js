@@ -10,6 +10,8 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
     .state('store-detail', {url: '/store-detail',templateUrl: 'partials/store-detail.html', controller: 'storeDetailCtrl'})
     .state('product-detail', {url: '/product-detail',templateUrl: 'partials/product-detail.html', controller: 'productDetailCtrl'})
     .state('seasons', {url: '/seasons', templateUrl: 'partials/seasons.html', controller: ''})
+    .state('signup', {url: '/signup', templateUrl: 'partials/signup.html', controller: ''})
+    .state('signin', {url: '/signin', templateUrl: 'partials/signin.html', controller: ''})
     ;
 
     $urlRouterProvider.otherwise('/stores');
