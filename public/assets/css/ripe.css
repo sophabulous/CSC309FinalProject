@@ -249,14 +249,24 @@ ul.alert-dropdown {
 /*Product Detail Page*/
 
 /*Comments Section*/
+.comments_panel{
+    padding: 5%;
+    padding-right: 0;
+}
+
 .detailBox {
     width: 80%;
-    margin:50px;
+    /*margin:50px;*/
+}
+
+.store_detail .detailBox {
+    width: 100%;
+    /*margin:50px;*/
 }
 .titleBox {
     background-color:#fdfdfd;
-    padding:10px;
-    font-size: 3em;
+/*    padding:10px;*/
+    font-size: 2em;
 }
 .titleBox label{
   color:#444;
@@ -367,3 +377,101 @@ ul.alert-dropdown {
    background: #ffffff;
    color: #d88d1e;
    }
+
+
+.crop { 
+    width: 41%; 
+    height: 300px; 
+    overflow: hidden; 
+}
+.crop img { 
+    width: 100%;
+}
+
+
+
+/*Store Details*/
+.store_detail{
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    padding: 10%;
+    padding-top: 5%;
+}
+.store_detail h6{
+    font-size: 20px;
+}
+.store_det_name{
+    text-align: left;
+    font-size: 3em;
+}
+
+.store_info_panel{
+    padding-bottom: 2%;
+    border-bottom:1px solid #bbb;
+}
+
+.store_info p, .map_area p{
+    font-size: 12px;
+}
+
+.store_info_header{
+    color: #D88D1E;
+    font-weight: bold;
+}
+
+.store_products_panel{
+    margin-top: 5%;
+    border-right:1px solid #bbb;
+}
+.store_products_panel label{
+    font-size: 2em;
+    
+}
+.product_thumb_link, .product_thumb_link a{
+    font-size: 14px;
+    width: 25%;
+    height: 300px;
+    color: #444; 
+    overflow: hidden; 
+}
+
+.product_thumb_link img{
+    width: 100%; 
+    opacity: 0.5;
+}  
+
+.product_thumb_link img:hover{
+    opacity: 1;
+}   
+
+.leftcap{
+    float: left;
+}
+
+.rightcap{
+    float: right;
+}
+
+/*star rating*/
+
+.rating {
+  /*unicode-bidi: bidi-override;*/
+  font-size: 2em;
+  direction: rtl;
+  text-align: left;
+}
+.rating > span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+}
+.rating > span:hover,
+.rating > span:hover ~ span {
+  color: transparent;
+}
+.rating > span:hover:before,
+.rating > span:hover ~ span:before {
+   content: "\2605";
+   position: absolute;
+   left: 0;
+   color: gold;
+}
