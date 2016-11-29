@@ -6,31 +6,30 @@ const express = require('express'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
     session = require('express-session'),
-    seed = require('./app/seed/seed');
+    expressValidator = require('express-validator'),
+    seed = require('./app/controllers/seed.controller');
 
 
 // Database startup (get db url from .env variables)
-mongoose.connect(process.env.DB_URI || 'mongodb://localhost/db', function (err){
-    if (err) {
-        console.log('ERROR connecting to database. ' + err);
-    } else {
-        console.log('Connected to database.');
-
-        // Allow command line argument to reseed database wih initial data
-        if (process.argv.length > 2 && process.argv[2] === 'reseed') {
-            console.log('Dropping databse');
-            seed.drop();
+mongoose.connect(process.env.DB_URI || 'mongodb://localhost/db',
+    function (err) {
+        if (err) {
+            console.log('ERROR connecting to database. ' + err);
+        } else {
+            console.log('Connected to database.');
+            console.log('Seeding...');
+            seed.seedStores((msg) => console.log(msg));
+            seed.seedFruits((msg) => console.log(msg));
+            seed.seedUsers((msg) => console.log(msg));
         }
-        console.log('Seeding database');
-        setTimeout(seed.seed, 3000);
-    }
-});
+    });
 
 
 // Node startup
 let app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(expressValidator());
 app.use(express.static(__dirname + '/public/'));
 app.use(session({
     secret: process.env.SESSION_SECRET || 'secret', // get secret from .env
@@ -44,7 +43,7 @@ app.use(session({
 
 
 // Allow front end to access session variables (ie. session.username)
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.locals.session = req.session;
     next();
 });

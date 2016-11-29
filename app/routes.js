@@ -4,6 +4,7 @@
 const express = require('express'),
     router = express.Router(),
     mainController = require('./controllers/main.controller'),
+    seedController = require('./controllers/seed.controller'),
     storesController = require('./controllers/stores.controller'),
     fruitsController = require('./controllers/fruits.controller'),
     usersController = require('./controllers/users.controller'),
@@ -18,6 +19,8 @@ module.exports = router;
 // Main index
 router.get('/', mainController.displayHome);
 
+// Seed database
+router.get('/seed', seedController.seed);
 
 // Store routes
 // Get array of store objects
