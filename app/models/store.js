@@ -17,9 +17,22 @@ const storesSchema = new Schema(
             required: [true, 'Store name required']
         },
         address: {
-            type: String,
-            required: [true, 'Store address required'],
-            unique: true
+            street: {
+                type: String,
+                required: true
+            },
+            city: {
+                type: String,
+                required: true
+            },
+            province: {
+                type: String,
+                required: true
+            },
+            postalcode: {
+                type: String,
+                required: true
+            },
         },
         photo: {
             type: String,

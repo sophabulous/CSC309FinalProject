@@ -55,10 +55,10 @@ function showComments(req, res) {
     Comment.find(query, function (err, comments) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         } else {
             console.log(comments);
-            return res.send(JSON.stringify(comments));
+            return res.json(comments);
         }
     });
 }
@@ -89,7 +89,7 @@ function commentOnFruit(req, res) {
         admin = req.session.admin;
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     let comment = {
@@ -105,18 +105,20 @@ function commentOnFruit(req, res) {
     newComment.save(function (err, newComment) {
         if (err) {
             console.log(err);
-            return res.status(409).send(dbErrors.handleSaveErrors(err));
+            return res.status(409).
+                json({'msg': dbErrors.handleSaveErrors(err)});
         }
 
         Fruit.findOneAndUpdate({_id: fruitId}, {$push: {comments: newComment}},
             {safe: true}, function (err, fruit) {
                 if (err) {
                     console.log(err);
-                    return res.status(409).send(dbErrors.handleSaveErrors(err));
+                    return res.status(409).
+                        json({'msg': dbErrors.handleSaveErrors(err)});
                 }
 
                 fruit.comments.push(newComment);
-                return res.send('Success');
+                return res.json({'msg': 'Success'});
             })
     });
 }
@@ -148,7 +150,7 @@ function commentOnStore(req, res) {
         storeId = req.body.storeId;
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     let comment = {
@@ -164,7 +166,8 @@ function commentOnStore(req, res) {
     newComment.save(function (err, newComment) {
         if (err) {
             console.log(err);
-            return res.status(409).send(dbErrors.handleSaveErrors(err));
+            return res.status(409).
+                json({'msg': dbErrors.handleSaveErrors(err)});
         }
 
         Store.findOneAndUpdate({storeId: storeId},
@@ -173,10 +176,11 @@ function commentOnStore(req, res) {
             function (err, store) {
                 if (err) {
                     console.log(err);
-                    return res.status(409).send(dbErrors.handleSaveErrors(err));
+                    return res.status(409).
+                        json({'msg': dbErrors.handleSaveErrors(err)});
                 }
 
-                return res.send('Success');
+                return res.json({'msg': 'Success'});
             })
     });
 }
@@ -196,20 +200,20 @@ function commentOnStore(req, res) {
 function deleteComment(req, res) {
     // Only admins can delete a comment
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     Comment.findByIdAndRemove(req.params.id, function (err, comment) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         }
 
         if (!comment) {
             console.log('Comment not found');
-            return res.status(404).send('Comment not found');
+            return res.status(404).json({'msg': 'Comment not found'});
         }
 
-        return res.send('Success');
+        return res.json({'msg': 'Success'});
     });
 }
