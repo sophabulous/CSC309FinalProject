@@ -12,6 +12,8 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
     .state('seasons', {url: '/seasons', templateUrl: 'partials/seasons.html', controller: ''})
     .state('signup', {url: '/signup', templateUrl: 'partials/signup.html', controller: ''})
     .state('signin', {url: '/signin', templateUrl: 'partials/signin.html', controller: ''})
+    .state('account', {url: '/account', templateUrl: 'partials/account.html', controller: ''})
+    .state('cart', {url: '/cart', templateUrl: 'partials/cart.html', controller: ''})
     ;
 
     $urlRouterProvider.otherwise('/stores');
