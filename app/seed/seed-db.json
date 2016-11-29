@@ -1,0 +1,214 @@
+{
+  "stores": [
+    {
+      "storeId": "LO123",
+      "name": "Loblaws",
+      "address": "11 Redway Road",
+      "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
+      "rateCount": 2,
+      "rateValue": 4,
+      "comments": []
+    },
+    {
+      "storeId": "LO124",
+      "name": "Loblaws",
+      "address": "396 St Clair Ave W",
+      "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
+      "rateCount": 0,
+      "rateValue": 0,
+      "comments": []
+    },
+    {
+      "storeId": "LO125",
+      "name": "Loblaws",
+      "address": "650 Dupont St",
+      "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
+      "rateCount": 9,
+      "rateValue": 30,
+      "comments": []
+    },
+    {
+      "storeId": "LO126",
+      "name": "Loblaws",
+      "address": "60 Carlton St",
+      "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
+      "rateCount": 0,
+      "rateValue": 0,
+      "comments": []
+    },
+    {
+      "storeId": "LO127",
+      "name": "Loblaws",
+      "address": "301 Moore Ave",
+      "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
+      "rateCount": 0,
+      "rateValue": 0,
+      "comments": []
+    },
+    {
+      "storeId": "LO128",
+      "name": "Loblaws",
+      "address": "585 Queen St W",
+      "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
+      "rateCount": 0,
+      "rateValue": 0,
+      "comments": []
+    },
+    {
+      "storeId": "NO213",
+      "name": "No Frills",
+      "address": "243 Alberta Ave",
+      "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
+      "rateCount": 0,
+      "rateValue": 0,
+      "comments": []
+    },
+    {
+      "storeId": "NO214",
+      "name": "No Frills",
+      "address": "1951 Eglinton Ave W",
+      "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
+      "rateCount": 5,
+      "rateValue": 0,
+      "comments": []
+    },
+    {
+      "storeId": "NO215",
+      "name": "No Frills",
+      "address": "900 Dufferin St",
+      "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
+      "rateCount": 0,
+      "rateValue": 0,
+      "comments": []
+    },
+    {
+      "storeId": "NO216",
+      "name": "No Frills",
+      "address": "449 Parliament S",
+      "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
+      "rateCount": 0,
+      "rateValue": 0,
+      "comments": []
+    },
+    {
+      "storeId": "MO456",
+      "name": "Metro",
+      "address": "425 Bloor St W",
+      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Metro_Inc._logo.svg/189px-Metro_Inc._logo.svg.png",
+      "rateCount": 0,
+      "rateValue": 0,
+      "comments": []
+    },
+    {
+      "storeId": "MO457",
+      "name": "Metro",
+      "address": "2300 Yonge St",
+      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Metro_Inc._logo.svg/189px-Metro_Inc._logo.svg.png",
+      "rateCount": 0,
+      "rateValue": 0,
+      "comments": []
+    },
+    {
+      "storeId": "MO458",
+      "name": "Metro",
+      "address": "735 College St",
+      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Metro_Inc._logo.svg/189px-Metro_Inc._logo.svg.png",
+      "rateCount": 0,
+      "rateValue": 0,
+      "comments": []
+    }
+  ],
+  "fruits": [
+    {
+      "storeId": "LO126",
+      "type": "grapefruit",
+      "photo": "https://cdn.pixabay.com/photo/2016/11/02/16/49/orange-1792233__340.jpg",
+      "season": "summer",
+      "price": 1.20,
+      "unit": "approx 500g",
+      "quantity": 80
+    },
+    {
+      "storeId": "LO126",
+      "type": "apple",
+      "photo": "https://cdn.pixabay.com/photo/2013/11/20/22/59/green-214134__340.jpg",
+      "season": "fall",
+      "price": 0.99,
+      "unit": "approx 125g",
+      "quantity": 900
+    },
+    {
+      "storeId": "LO126",
+      "type": "avocado",
+      "photo": "https://cdn.pixabay.com/photo/2016/01/31/16/30/avocado-1171725__340.jpg",
+      "season": "summer",
+      "price": 0.80,
+      "unit": "approx 100g",
+      "quantity": 12
+    },
+    {
+      "storeId": "MO458",
+      "type": "banana",
+      "photo": "https://cdn.pixabay.com/photo/2016/09/03/20/48/bananas-1642706__340.jpg",
+      "season": "summer",
+      "price": 0.50,
+      "unit": "approx 500g",
+      "quantity": 2
+    },
+    {
+      "storeId": "MO458",
+      "type": "grapefruit",
+      "photo": "https://cdn.pixabay.com/photo/2016/09/05/19/44/grapefruit-1647507__340.jpg",
+      "season": "summer",
+      "price": 1.00,
+      "unit": "approx 500g",
+      "quantity": 33
+    },
+    {
+      "storeId": "MO458",
+      "type": "avocado",
+      "photo": "https://cdn.pixabay.com/photo/2016/10/03/19/30/avocado-1712583__340.jpg",
+      "season": "summer",
+      "price": 1.20,
+      "unit": "approx 100g",
+      "quantity": 345
+    },
+    {
+      "storeId": "MO458",
+      "type": "apple",
+      "photo": "https://cdn.pixabay.com/photo/2016/08/14/11/56/apple-1592588__340.jpg",
+      "season": "fall",
+      "price": 0.75,
+      "unit": "approx 125g",
+      "quantity": 23
+    },
+    {
+      "storeId": "NO213",
+      "type": "apple",
+      "photo": "https://cdn.pixabay.com/photo/2016/08/12/22/38/apple-1589874__340.jpg",
+      "season": "fall",
+      "price": 0.80,
+      "unit": "approx 125g",
+      "quantity": 2000
+    },
+    {
+      "storeId": "NO214",
+      "type": "banana",
+      "photo": "https://cdn.pixabay.com/photo/2011/03/24/10/12/banana-5734__340.jpg",
+      "season": "summer",
+      "price": 0.55,
+      "unit": "approx 180g",
+      "quantity": 100
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "password": "$2a$10$QHwSOxeg.e6B7HAWWY8lfOxRQ2TKB99SVm4CqObzcSIFMwFTIFkXu",
+      "name": "admin",
+      "email": "1@1.com",
+      "admin": true,
+      "address": "RIPeace"
+    }
+  ]
+}
