@@ -32,6 +32,14 @@ Create a directory to store the database and start the database server:
         
 `mongod --dbpath=$PWD/data`
 
+## Run Node
+
+`node app.js` 
+
+The first time Node starts up, it will automatically seed the datbase. In order to reseed the database, use the following command when starting node:
+
+`node app.js reseed`
+
 ## Express API
 
 | Route                 |QUERY PARAMS                | GET                          | POST                                                               | DELETE          |
