@@ -3,7 +3,12 @@
     {
       "storeId": "LO123",
       "name": "Loblaws",
-      "address": "11 Redway Road",
+      "address": {
+        "street": "11 Redway Road",
+        "city": "East York",
+        "province": "ON",
+        "postalcode": "M4H 1P6"
+      },
       "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
       "rateCount": 2,
       "rateValue": 4,
@@ -12,7 +17,12 @@
     {
       "storeId": "LO124",
       "name": "Loblaws",
-      "address": "396 St Clair Ave W",
+      "address": {
+        "street": "396 St Clair Ave W",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5P 3N3"
+      },
       "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
       "rateCount": 0,
       "rateValue": 0,
@@ -21,7 +31,12 @@
     {
       "storeId": "LO125",
       "name": "Loblaws",
-      "address": "650 Dupont St",
+      "address": {
+        "street": "650 Dupont St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M6G 4B1"
+      },
       "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
       "rateCount": 9,
       "rateValue": 30,
@@ -30,7 +45,12 @@
     {
       "storeId": "LO126",
       "name": "Loblaws",
-      "address": "60 Carlton St",
+      "address": {
+        "street": "60 Carlton St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5B 1J2"
+      },
       "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
       "rateCount": 0,
       "rateValue": 0,
@@ -39,7 +59,12 @@
     {
       "storeId": "LO127",
       "name": "Loblaws",
-      "address": "301 Moore Ave",
+      "address": {
+        "street": "301 Moore Ave",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M4G 1E1"
+      },
       "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
       "rateCount": 0,
       "rateValue": 0,
@@ -48,7 +73,12 @@
     {
       "storeId": "LO128",
       "name": "Loblaws",
-      "address": "585 Queen St W",
+      "address": {
+        "street": "585 Queen St W",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5V 2B7"
+      },
       "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
       "rateCount": 0,
       "rateValue": 0,
@@ -57,7 +87,12 @@
     {
       "storeId": "NO213",
       "name": "No Frills",
-      "address": "243 Alberta Ave",
+      "address": {
+        "street": "243 Alberta Ave",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M6C 1C6"
+      },
       "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
       "rateCount": 0,
       "rateValue": 0,
@@ -66,7 +101,12 @@
     {
       "storeId": "NO214",
       "name": "No Frills",
-      "address": "1951 Eglinton Ave W",
+      "address": {
+        "street": "1951 Eglinton Ave W",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M6E 2J7"
+      },
       "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
       "rateCount": 5,
       "rateValue": 0,
@@ -75,7 +115,12 @@
     {
       "storeId": "NO215",
       "name": "No Frills",
-      "address": "900 Dufferin St",
+      "address": {
+        "street": "900 Dufferin St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M6H 1K8"
+      },
       "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
       "rateCount": 0,
       "rateValue": 0,
@@ -84,7 +129,12 @@
     {
       "storeId": "NO216",
       "name": "No Frills",
-      "address": "449 Parliament S",
+      "address": {
+        "street": "449 Parliament S",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5A 3A3"
+      },
       "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
       "rateCount": 0,
       "rateValue": 0,
@@ -93,7 +143,12 @@
     {
       "storeId": "MO456",
       "name": "Metro",
-      "address": "425 Bloor St W",
+      "address": {
+        "street": "425 Bloor St W",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5S 1X6"
+      },
       "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Metro_Inc._logo.svg/189px-Metro_Inc._logo.svg.png",
       "rateCount": 0,
       "rateValue": 0,
@@ -102,7 +157,12 @@
     {
       "storeId": "MO457",
       "name": "Metro",
-      "address": "2300 Yonge St",
+      "address": {
+        "street": "2300 Yonge St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M4P 1E4"
+      },
       "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Metro_Inc._logo.svg/189px-Metro_Inc._logo.svg.png",
       "rateCount": 0,
       "rateValue": 0,
@@ -111,7 +171,12 @@
     {
       "storeId": "MO458",
       "name": "Metro",
-      "address": "735 College St",
+      "address": {
+        "street": "735 College St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M6G 1C5"
+      },
       "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Metro_Inc._logo.svg/189px-Metro_Inc._logo.svg.png",
       "rateCount": 0,
       "rateValue": 0,
@@ -205,10 +270,16 @@
     {
       "username": "admin",
       "password": "$2a$10$QHwSOxeg.e6B7HAWWY8lfOxRQ2TKB99SVm4CqObzcSIFMwFTIFkXu",
-      "name": "admin",
+      "firstname": "admin",
+      "lastname": "admin",
       "email": "1@1.com",
       "admin": true,
-      "address": "RIPeace"
+      "address": {
+        "street": "40 St George St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5S 2E4"
+      }
     }
   ]
 }
