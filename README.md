@@ -14,24 +14,6 @@ Create a directory to store the database and start the database server:
         
 `mongod --dbpath=$PWD/data`
 
-## Express API
-
-#RESTInPeace
-
-## Set up .env (optional)
-
-To specify environment variables, create a new file named `.env` and see `
-.env.example` to see which variables can be specified.
-
-
-## Setup Database
-
-Create a directory to store the database and start the database server:
-
-`mkdir data`
-        
-`mongod --dbpath=$PWD/data`
-
 ## Run Node
 
 `node app.js` 
