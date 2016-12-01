@@ -71,12 +71,12 @@
 
                     </div>
                     <div class="col-lg-6 product_info_panel">
-                        <img class="product-pic" src="http://freenology.com/images/71442946288pineapple.jpg" alt="">
+                        <img class="product-pic" ng-src="{{fruitDetail.photo}}" alt="">
                         <div>
-                           <label class="product_det_name">Product Name</label>
+                           <label class="product_det_name">{{fruitDetail.type}}</label>
                             <div class="product_detail">
-                                <h3>Price: </h3>
-                                <p class="productid">Product ID</p>
+                                <h3>Price: {{fruitDetail.price}}</h3>
+                                <p class="productid">{{fruitDetail._id}}</p>
                                 Size: 
                                 <select>
                                   <option value="small">Small</option>

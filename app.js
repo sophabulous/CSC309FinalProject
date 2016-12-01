@@ -53,7 +53,6 @@ app.use(function(req, res, next) {
 // Routing
 app.use(require('./app/routes'));
 
-
 // Use .env to store port or default to port 3000
 let port = process.env.PORT || 3000;
 app.listen(port);

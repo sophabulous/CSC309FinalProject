@@ -27,7 +27,7 @@
                                         <i class="fa fa-home fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">38</div>
+                                        <div class="huge">{{storesList.length}}</div>
                                         <div>Stores</div>
                                     </div>
                                 </div>
@@ -52,14 +52,20 @@
                                         <th>Picture</th>
                                         <th>Name</th>
                                         <th>ID</th>
+                                        <th>Address</th>
+                                        <th>Rate Count</th>
+                                        <th>Rate Value</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>001</td>                                     
-                                        <td ui-sref="store-detail"><img src="https://s-media-cache-ak0.pinimg.com/236x/8e/50/2e/8e502ebced2324e6b580e9e5d984cead.jpg" alt=""></td>
-                                        <td>RIPE ONe</td>
-                                        <td>{{id}}</td>
+                                    <tr ng-repeat="store in storesList track by $index">
+                                        <td>{{$index}}</td>                                     
+                                        <td ui-sref="store-detail({storeid: store.storeId})"><img ng-src="{{store.photo}}" alt=""></td>
+                                        <td>{{store.name}}</td>
+                                        <td>{{store.storeId}}</td>
+                                        <td>{{store.address}}</td>
+                                        <td>{{store.rateCount}}</td>
+                                        <td>{{store.rateValue}}</td>
                                     </tr>
                                 </tbody>
                             </table>
