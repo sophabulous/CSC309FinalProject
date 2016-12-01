@@ -11,7 +11,7 @@ const express = require('express'),
 
 
 // Database startup (get db url from .env variables)
-mongoose.connect(process.env.DB_URI || 'mongodb://localhost/db',
+mongoose.connect(process.env.DB_URI,
     function (err) {
         if (err) {
             console.log('ERROR connecting to database. ' + err);
