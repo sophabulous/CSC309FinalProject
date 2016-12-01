@@ -19,7 +19,7 @@ mongoose.connect(process.env.DB_URI || 'mongodb://localhost/db',
             console.log('Connected to database.');
             // Allow command line argument to reseed database wih initial data
             if (process.argv.length > 2 && process.argv[2] === 'reseed') {
-                console.log('Dropping databse');
+                console.log('Dropping database');
                 seed.drop();
             }
             console.log('Seeding database');
