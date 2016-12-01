@@ -27,7 +27,7 @@
                                         <i class="fa fa-home fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">395</div>
+                                        <div class="huge">{{fruitsList.length}}</div>
                                         <div>Products</div>
                                     </div>
                                 </div>
@@ -50,16 +50,22 @@
                                     <tr>
                                         <th>No.</th>
                                         <th>Picture</th>
-                                        <th>Name</th>
-                                        <th>ID</th>
+                                        <th>Type</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Season</th>
+                                        <th>Unit</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>001</td>                                     
-                                        <td class="thumbnail" ui-sref="product-detail"><img src="http://freenology.com/images/71442946288pineapple.jpg" alt=""></td>
-                                        <td>Pineapples</td>
-                                        <td>{{id}}</td>
+                                    <tr ng-repeat="fruit in fruitsList track by $index">
+                                        <td>{{$index}}</td>                                     
+                                        <td ui-sref="fruit-detail({fruitid: fruit._id})"><img ng-src="{{fruit.photo}}" alt=""></td>
+                                        <td>{{fruit.type}}</td>
+                                        <td>{{fruit.price}}</td>
+                                        <td>{{fruit.quantity}}</td>
+                                        <td>{{fruit.season}}</td>
+                                        <td>{{fruit.unit}}</td>
                                     </tr>
                                 </tbody>
                             </table>
