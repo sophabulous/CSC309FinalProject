@@ -1,6 +1,7 @@
 'use strict';
 
 const Store = require('../models/store'),
+    Fruit = require('../models/fruit'),
     Rating = require('../models/rating'),
     dbErrors = require('../services/handleDatabaseErrors'),
     authorize = require('../services/authorize');
@@ -74,9 +75,9 @@ function showSingleStore(req, res) {
 
     // Send store in database that matches unique (enforced) storeId
     // exclude _id field
-    Store.findOne({storeId: storeId}, {_id: 0}).
-        populate('comments').
-        exec(function (err, store) {
+    Store.findOne({storeId: storeId}, {_id: 0})
+        .populate('comments')
+        .exec(function (err, store) {
             if (err) {
                 console.log(err);
                 return res.status(500).json({'msg': err.message});
@@ -87,8 +88,16 @@ function showSingleStore(req, res) {
                 return res.status(404).json({'msg': 'Store not found'});
             }
 
-            console.log(store);
-            return res.json(store);
+            Fruit.find({storeId: storeId}, function (err, fruits) {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json({'msg': err.message});
+                }
+                console.log('this is running');
+                console.log({"store": store, "fruits": fruits});
+                return res.json({store: store, fruits: fruits});
+            })
+
         });
 }
 

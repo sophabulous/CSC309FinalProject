@@ -14,5 +14,9 @@
     "mongoose": "^4.6.5",
     "mongoose-unique-validator": "^1.0.3",
     "nodemon": "^1.11.0"
+  },
+  "scripts": {
+    "start": "mongod --dbpath data  && --fork node app.js",
+    "reseed": "mongod --dbpath data  && --fork node app.js reseed"
   }
 }
