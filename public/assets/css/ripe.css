@@ -359,6 +359,10 @@ ul.alert-dropdown {
     font-size: 3em;
 }
 
+.product_store{
+    font-size: 2em;
+}
+
 .product_info_panel select, .product_info_panel input{
     margin-bottom: 2%;
     padding: 5px;

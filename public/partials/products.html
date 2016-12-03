@@ -62,7 +62,7 @@
                                         <td>{{$index}}</td>                                     
                                         <td ui-sref="fruit-detail({fruitid: fruit._id})"><img ng-src="{{fruit.photo}}" alt=""></td>
                                         <td>{{fruit.type}}</td>
-                                        <td>{{fruit.price}}</td>
+                                        <td>${{fruit.price | number : 2}}</td>
                                         <td>{{fruit.quantity}}</td>
                                         <td>{{fruit.season}}</td>
                                         <td>{{fruit.unit}}</td>
