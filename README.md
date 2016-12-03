@@ -11,16 +11,14 @@ To specify environment variables, create a new file named `.env` and see `
 Create a directory to store the database and start the database server:
 
 `mkdir data`
-        
-`mongod --dbpath=$PWD/data`
 
-## Run Node
+## Start Node and MongoDB
 
-`node app.js` 
+`npm start`
 
-The first time Node starts up, it will automatically seed the datbase. In order to reseed the database, use the following command when starting node:
+The first time Node starts up, it will automatically seed the database. In order to clear the database and restart with the initial seed use the following command when starting node:
 
-`node app.js reseed`
+`npm reseed`
 
 ## Express API
 

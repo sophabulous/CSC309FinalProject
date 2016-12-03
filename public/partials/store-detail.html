@@ -1,23 +1,25 @@
-<div ng-app="starApp" id="wrapper">        
+<div ng-app="starApp" id="wrapper" xmlns="http://www.w3.org/1999/html">
 
         <div id="page-wrapper">
             <div class="container-fluid">
                 <div class="row store_detail">
-                    <label class="store_det_name">{{storeDetail.address}}</label><br/>
+                    <label class="store_det_name">
+                        {{storeDetail.store.name}}</br>
+                        {{storeDetail.store.address.city}},{{storeDetail.store.address.province}}</label><br/>
                     <div class="col-lg-12">
                         <div class="rating">
                             <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
                         </div>
-                        <h6>Store ID: {{storeDetail.storeId}}</h6>
+                        <h6>Store ID: {{storeDetail.store.storeId}}</h6>
                     </div>
                     <div class="col-lg-12 row store_info_panel">
                         
                         <div class="col-lg-5 crop">
-                            <img ng-src="{{storeDetail.photo}}">
+                            <img ng-src="{{storeDetail.store.photo}}">
                         </div>
                         <div class="col-lg-4 map_area">
                             <iframe src="https://www.google.com/maps/embed?pb=!1m23!1m12!1m3!1d92371.59313268925!2d-79.46299102735114!3d43.65623431891778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m8!3e6!4m0!4m5!1s0x882b34c63f9b87ed%3A0x100ad4ac9f066076!2sBaldwin+Naturals%2C+16+Baldwin+St%2C+Toronto%2C+ON+M5T+1L2!3m2!1d43.656255699999996!2d-79.3929512!5e0!3m2!1sen!2sca!4v1480190512318" width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>
-                            <p class="store_info_header"><i class="fa fa-map-marker" aria-hidden="true"></i> {{storeDetail.address}}</p>
+                            <p class="store_info_header"><i class="fa fa-map-marker" aria-hidden="true"></i> {{storeDetail.store.address.street}}, {{storeDetail.store.address.city}}, {{storeDetail.store.address.province}}, {{storeDetail.store.address.postalcode}}</p>
                             <p class="store_info_header"><i class="fa fa-phone" aria-hidden="true"></i> (416) 979-1777</p>
                         </div>
                         <div class="col-lg-3 store_info">
@@ -39,7 +41,15 @@
                     <div class="col-lg-12 row">
                         <div class="col-lg-8 row store_products_panel">
                             <label>Products</label><br/>
-                            <!-- {% for %} -->
+                            <div ng-repeat="fruit in storeDetail.fruits">
+                                <div class="col-lg-3 product_thumb_link">
+                                    <span ui-sref="fruit-detail({fruitid: fruit._id})"><img ng-src="{{fruit.photo}}" alt=""></span>
+                                    <p>
+                                        <span class="leftcap">{{fruit.type}}</span>
+                                        <span class="rightcap">{{fruit.price}}</span>
+                                    </p>
+                                </div>
+                            </div>
                             <div class="col-lg-3 product_thumb_link">
                                 <a href=""><img src="http://freenology.com/images/71442946288pineapple.jpg">
                                 <p><span class="leftcap">ProductName</span><span class="rightcap">$Price</span></p>
@@ -52,50 +62,16 @@
                                   <label>Comments</label>
                                 </div>
                                 <div class="actionBox">
-                                    <ul class="commentList">
+                                    <ul class="commentList" ng-repeat="comment in storeDetail.store.comments">
                                         <li>
                                             <div class="commenterImage">
                                               <img src="http://placekitten.com/50/50" />
                                             </div>
-                                            <div class="commentText">
-                                                <p class="">This is honestly my favourite store on earth</p> <span class="date sub-text">on March 5th, 2014</span>
-
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="commenterImage">
-                                              <img src="http://placekitten.com/45/45" />
+                                            <div class="commenterText">
+                                                <p class="">{{comment.username}}</p>
                                             </div>
                                             <div class="commentText">
-                                                <p class="">They have the best watermelons</p> <span class="date sub-text">on March 5th, 2014</span>
-
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="commenterImage">
-                                              <img src="http://placekitten.com/40/40" />
-                                            </div>
-                                            <div class="commentText">
-                                                <p class="">My kid loves their grapes! Don't know how they grew them but they just taste fresh!</p> <span class="date sub-text">on March 5th, 2014</span>
-
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="commenterImage">
-                                              <img src="http://placekitten.com/40/41" />
-                                            </div>
-                                            <div class="commentText">
-                                                <p class="">Lol this store is not that great ok guys chill</p> <span class="date sub-text">on March 5th, 2014</span>
-
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="commenterImage">
-                                              <img src="http://placekitten.com/40/45" />
-                                            </div>
-                                            <div class="commentText">
-                                                <p class="">Visited it last week and the owner was really nice, he even read my fortune for me!</p> <span class="date sub-text">on March 5th, 2014</span>
-
+                                                <p class="">{{comment.message}}</p> <span class="date sub-text">on {{comment.created}}</span>
                                             </div>
                                         </li>
                                     </ul>

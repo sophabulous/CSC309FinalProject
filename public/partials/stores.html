@@ -53,8 +53,7 @@
                                         <th>Name</th>
                                         <th>ID</th>
                                         <th>Address</th>
-                                        <th>Rate Count</th>
-                                        <th>Rate Value</th>
+                                        <th>Rating</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -63,9 +62,8 @@
                                         <td ui-sref="store-detail({storeid: store.storeId})"><img ng-src="{{store.photo}}" alt=""></td>
                                         <td>{{store.name}}</td>
                                         <td>{{store.storeId}}</td>
-                                        <td>{{store.address}}</td>
-                                        <td>{{store.rateCount}}</td>
-                                        <td>{{store.rateValue}}</td>
+                                        <td>{{store.address.street}}, {{store.address.city}}, {{store.address.province}}, {{store.address.postalcode}}</td>
+                                        <td>{{store.rateValue / store.rateCount | number : 0}}</td>
                                     </tr>
                                 </tbody>
                             </table>
