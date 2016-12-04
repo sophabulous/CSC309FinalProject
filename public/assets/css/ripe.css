@@ -9,6 +9,10 @@ body {
     }
 }
 
+title{
+    font-family: 'Lobster', cursive;
+}
+
 #wrapper {
     padding-left: 0;
 }
@@ -494,7 +498,7 @@ font-family: 'Lobster', cursive;
 }
 
 .product_thumb_link img{
-    /*width: 100%;		  
+    /*width: 100%;
     opacity: 0.5;*/
     /*position: absolute;*/
     opacity: 0.5;

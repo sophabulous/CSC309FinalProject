@@ -9,7 +9,6 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     .state('products', {url: '/products', templateUrl: 'partials/products.html', controller: 'fruitsCtrl'})
     .state('store-detail', {url: '/store-detail/?storeid',templateUrl: 'partials/store-detail.html', controller: 'storeDetailCtrl'})
     .state('fruit-detail', {url: '/product-detail/?fruitid',templateUrl: 'partials/product-detail.html', controller: 'fruitDetailCtrl'})
-    .state('seasons', {url: '/seasons', templateUrl: 'partials/seasons.html', controller: ''})
     .state('signup', {url: '/signup', templateUrl: 'partials/signup.html', controller: 'signupCtrl'})
     .state('signin', {url: '/signin', templateUrl: 'partials/signin.html', controller: 'signinCtrl'})
     .state('account', {url: '/account', templateUrl: 'partials/account.html', controller: 'accountCtrl'})
@@ -65,6 +64,14 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 url: "/fruits"
              });
     };
+
+    this.getFruitsForSeason = function(season) {
+            return $http({
+                method: 'GET',
+                url: "/fruits?season=" + season
+             });
+    };
+
 
     this.modifyFruitDetail = function() {
             return $http({
@@ -248,7 +255,11 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
         };
         $scope.getFruitsForSeason = function(season){
              $scope.season = season;
-             console.log(season);
+             console.log("got fruits for" + season)
+             getData.getFruitsForSeason(season).success(function(dataResponse){
+                 $scope.fruitsList = dataResponse;
+                //  $state.reload();
+             });
         };
     });
 })
