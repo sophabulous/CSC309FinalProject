@@ -23,8 +23,10 @@ module.exports = {
  *
  *  Example response to /user/
  *  [{
- *      username: 'String,
- *      name: String,
+ *      _id: ObjectId
+ *      username: String,
+ *      firstname: String,
+ *      lastname: String,
  *      address: {
  *          street: String,
  *          city: String
@@ -58,9 +60,18 @@ function showUsers(req, res) {
  * Example response to /user/:id
  *
  * '{
+ *      _id: ObjectId
  *      username: String,
- *      name: String,
- *      photo: String (url)
+ *      firstname: String,
+ *      lastname: String,
+ *      address: {
+ *          street: String,
+ *          city: String
+ *          province: String,
+ *          postalcode: String
+ *          }
+ *      email: String
+ *      photo: String
  * }'
  *
  * @param req
@@ -254,7 +265,8 @@ function loginUser(req, res) {
  *          province: String,
  *          postalcode: String
  *          }
- *      name: String (optional),
+ *      firstname: String (optional),
+ *      lastname: String (optional),
  *      email: String(optional),
  *      photo: String (optional)
  * }

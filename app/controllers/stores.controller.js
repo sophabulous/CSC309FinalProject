@@ -43,7 +43,7 @@ function showStores(req, res) {
     console.log('Show all stores:');
 
     // Send all stores from database -- exclude _id field
-    Store.find({}, {_id: 0, fruits: 0}, function (err, stores) {
+    Store.find({}, function (err, stores) {
         if (err) {
             console.log(err);
             return res.status(500).json({'msg': err.message});

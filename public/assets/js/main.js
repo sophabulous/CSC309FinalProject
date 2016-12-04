@@ -124,7 +124,21 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
              });
     };
 
+    this.postStoreComment = function() {
+        return $http({
+            method: 'POST',
+            data: $rootScope.storeComment,
+            url: "/comments/stores"
+        });
+    };
 
+    this.postFruitComment = function() {
+        return $http({
+            method: 'POST',
+            data: $rootScope.fruitComment,
+            url: "/comments/stores"
+        });
+    };
 })
 
 //controller---------------------------------------------------------------------------------------------------------------------------
@@ -178,6 +192,18 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 });
             }
 
+            $rootScope.storeComment = {
+                storeId: $scope.storeDetail.storeId,
+                message: "",
+                username: $rootScope.username
+            };
+
+            $scope.commentOnStore = function() {
+                getData.postStoreComment().success(function(dataResponse) {
+                    console.log(dataResponse);
+                });
+            }
+
         });
 
     }   
@@ -225,6 +251,18 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 
             $scope.modCurrentFruit = function(){
                 getData.modifyFruitDetail().success(function(dataResponse){
+                    console.log(dataResponse);
+                });
+            }
+
+            $rootScope.fruitComment = {
+                storeId: $location.search().fruitid,
+                message: "",
+                username: $rootScope.username
+            };
+
+            $scope.commentOnFruit = function() {
+                getData.postFruitComment().success(function(dataResponse) {
                     console.log(dataResponse);
                 });
             }
