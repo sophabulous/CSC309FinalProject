@@ -162,28 +162,36 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     };
 
     this.postStoreComment = function() {
-        return $http({
-            method: 'POST',
-            data: $rootScope.storeComment,
-            url: "/comments/stores/" + $location.search().storeid
-        });
+            return $http({
+                method: 'POST',
+                data: $rootScope.storeComment,
+                url: "/comments/stores/" + $location.search().storeid
+            });
     };
 
     this.postFruitComment = function() {
-        return $http({
-            method: 'POST',
-            data: $rootScope.fruitComment,
-            url: "/comments/fruits/" + $location.search().fruitid
-        });
+            return $http({
+                method: 'POST',
+                data: $rootScope.fruitComment,
+                url: "/comments/fruits/" + $location.search().fruitid
+            });
     };
 
     this.postCheckout = function() {
-        return $http({
-            method: 'POST',
-            data: $rootScope.userCart,
-            url: "/checkout/" + $rootScope.username
-        });
+            return $http({
+                method: 'POST',
+                data: $rootScope.userCart,
+                url: "/checkout/" + $rootScope.username
+            });
     };
+
+    this.updateCart = function() {
+            return $http({
+                method: 'POST',
+                data: $rootScope.selectedProduct,
+                url: "/carts/" + $rootScope.username
+            });
+    }
 })
 
 
@@ -336,6 +344,18 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                     console.log(dataResponse);
                     $state.reload();
                 });
+            }
+
+            $rootScope.selectedProduct = {
+                fruitId: $scope.fruitDetail._id,
+                quantity: ""
+            };
+
+            $scope.addToCart = function() {
+                getData.updateCart().success(function(dataResponse) {
+                    console.log(dataResponse);
+                    $state.reload();
+                })
             }
 
         });
