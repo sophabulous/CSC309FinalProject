@@ -35,14 +35,14 @@ module.exports = {
 function showCarts(req, res) {
     // Only admins can see all carts
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).json({'msg': 'Not Authorized.'});
+        return res.json({'msg': 'Not Authorized.'});
     }
 
     // Must populate fruit to get details about the fruit in the response.
     Cart.find({}).populate('items.fruit').exec(function (err, carts) {
         if (err) {
             console.log(err);
-            return res.status(500).json({'msg': err.message});
+            return res.json({'msg': err.message});
         } else {
             console.log(carts);
             return res.json(carts);
@@ -76,7 +76,7 @@ function showSingleCart(req, res) {
         admin = req.session.admin;
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, activeUser, admin)) {
-        return res.status(409).json({'msg': 'Not authorized.'});
+        return res.json({'msg': 'Not authorized.'});
     }
 
     console.log('Show cart for ' + requestUser);
@@ -90,12 +90,12 @@ function showSingleCart(req, res) {
         exec(function (err, cart) {
             if (err) {
                 console.log(err);
-                return res.status(500).json({'msg': err.message});
+                return res.json({'msg': err.message});
             }
 
             if (!cart) {
                 console.log('Cart for user ' + requestUser + ' not found.');
-                return res.status(404).json({'msg': 'Cart not found'});
+                return res.json({'msg': 'Cart not found'});
             }
 
             req.session.cart = cart.populate('items.fruit');
@@ -134,22 +134,22 @@ function modifyCart(req, res) {
         quantity = parseInt(req.body.quantity, 10);
 
     if (!quantity) {
-        return res.status(409).
+        return res.
             json({'msg': 'Please provide a numeric quantity.'});
     }
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, activeUser, admin)) {
-        return res.status(409).json({'msg': 'Not authorized.'});
+        return res.json({'msg': 'Not authorized.'});
     }
 
     Fruit.findOne({_id: fruitId}, function (err, fruit) {
         if (err) {
             console.log(err);
-            return res.status(500).json({'msg': err.message});
+            return res.json({'msg': err.message});
         }
 
         if (!fruit) {
-            return res.status(400).json({'msg': 'Fruit not found'});
+            return res.json({'msg': 'Fruit not found'});
         }
 
         // Must populate fruit
@@ -158,13 +158,13 @@ function modifyCart(req, res) {
             exec(function (err, cart) {
                 if (err) {
                     console.log(err);
-                    return res.status(500).json({'msg': err.message});
+                    return res.json({'msg': err.message});
                 }
 
                 // Create new cart if this is the first item accessing the cart
                 if (!cart) {
                     if (quantity < 1) {
-                        return res.status(409).
+                        return res.
                             json({'msg': 'Cart is already empty.'});
                     }
                     cart = new Cart({
@@ -205,7 +205,7 @@ function modifyCart(req, res) {
                         cart.items.push(item);
                         amountChanged = quantity;
                     } else {
-                        return res.status(409).
+                        return res.
                             json({'msg': 'Nothing to remove'});
                     }
                 }
@@ -215,7 +215,7 @@ function modifyCart(req, res) {
                 cart.save(function (err, cart) {
                     if (err) {
                         console.log(err);
-                        return res.status(409).
+                        return res.
                             json({'msg': dbErrors.handleSaveErrors(err)});
                     }
 
@@ -245,19 +245,19 @@ function deleteCart(req, res) {
         admin = req.session.admin;
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, activeUser, admin)) {
-        return res.status(409).json({'msg': 'Not authorized.'});
+        return res.json({'msg': 'Not authorized.'});
     }
 
     // Don't need to populate fruit here
     Cart.findOneAndRemove({username: requestUser}, function (err, cart) {
         if (err) {
             console.log(err);
-            return res.status(500).json({'msg': err.message});
+            return res.json({'msg': err.message});
         }
 
         if (!cart) {
             console.log('Cart not found.');
-            return res.status(404).json({'msg': 'Cart not found'});
+            return res.json({'msg': 'Cart not found'});
         }
 
         console.log('Deleted cart for ', requestUser);
@@ -289,7 +289,7 @@ function checkout(req, res) {
         admin = req.session.admin;
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, activeUser, admin)) {
-        return res.status(409).json({'msg': 'Not authorized.'});
+        return res.json({'msg': 'Not authorized.'});
     }
 
     // Must populate fruit
@@ -298,17 +298,17 @@ function checkout(req, res) {
         exec(function (err, cart) {
             if (err) {
                 console.log(err);
-                return res.status(500).json({'msg': err.message});
+                return res.json({'msg': err.message});
             }
 
             if (!cart) {
                 console.log('Cart not found.');
-                return res.status(404).json({'msg': 'Cart not found.'});
+                return res.json({'msg': 'Cart not found.'});
             }
 
             if (cart.items.length === 0) {
                 console.log('No items in cart.');
-                return res.status(409).json({'msg': 'No items in cart.'})
+                return res.json({'msg': 'No items in cart.'})
             }
 
             let newOrderObj = {
@@ -356,7 +356,7 @@ function checkout(req, res) {
             newOrder.save(function (err) {
                 if (err) {
                     console.log(err);
-                    return res.status(500).
+                    return res.
                         json({'msg': 'Could not complete order'});
                 }
 

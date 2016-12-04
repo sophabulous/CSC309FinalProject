@@ -39,13 +39,13 @@ module.exports = {
  */
 function showUsers(req, res) {
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send({'msg': 'Not Authorized.'});
+        return res.send({'msg': 'Not Authorized.'});
     }
 
     User.find({}, {password: 0}, function (err, users) {
         if (err) {
             console.log(err);
-            return res.status(500).send({'msg': err.message});
+            return res.send({'msg': err.message});
         } else {
             return res.json(users);
         }
@@ -85,7 +85,7 @@ function showUser(req, res) {
 
     // Only show profile of user to signed in users
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
-        return res.status(409).send({'msg': 'Not Authorized.'});
+        return res.send({'msg': 'Not Authorized.'});
     }
 
 
@@ -94,11 +94,11 @@ function showUser(req, res) {
         function (err, user) {
             if (err) {
                 console.log(err);
-                return res.status(500).send({'msg': err.message});
+                return res.send({'msg': err.message});
             }
 
             if (!user) {
-                return res.status(404).send({'msg': 'User not found.'});
+                return res.send({'msg': 'User not found.'});
             }
 
             else {
@@ -137,7 +137,7 @@ function showUser(req, res) {
 function createNewUser(req, res) {
     if (!authorize.onlyNotLoggedInOrAdmin(req.session.username,
             req.session.admin)) {
-        return res.status(409).send({'msg': 'Not Authorized.'});
+        return res.send({'msg': 'Not Authorized.'});
     }
 
     // validation
@@ -177,7 +177,7 @@ function createNewUser(req, res) {
     newUser.save(function (err, newUser) {
         if (err) {
             console.log(err);
-            return res.status(409).
+            return res.
                 send({'msg': dbErrors.handleSaveErrors(err)});
         } else {
             req.session.username = newUser.username;
@@ -214,7 +214,7 @@ function createNewUser(req, res) {
  */
 function loginUser(req, res) {
     if (!authorize.onlyNotLoggedIn(req.session.username)) {
-        return res.status(409).send('Not Authorized.');
+        return res.send('Not Authorized.');
     }
 
     // validation
@@ -232,7 +232,7 @@ function loginUser(req, res) {
     User.findOne({username: username}, function (err, user) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.send(err.message);
         }
 
         // Verify user exists and password matches stored password
@@ -245,7 +245,7 @@ function loginUser(req, res) {
                 'msg': 'Success'});
         } else { // user doesn't exist or password match failed
             console.log('Invalid login attempt.');
-            return res.status(409).send('Invalid username or password.');
+            return res.send('Invalid username or password.');
         }
     });
 }
@@ -283,18 +283,18 @@ function updateUserProfile(req, res) {
 
     // Authorize changes only for actual user or admin user
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.send('Not Authorized.');
     }
 
     User.findOne({username: requestUser}, function (err, user) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.send(err.message);
         }
 
         if (!user) {
             console.log('Could not find user ', requestUser);
-            return res.status(404).send('User not found.');
+            return res.send('User not found.');
         }
 
         user.firstname = req.body.firstname || user.firstname;
@@ -308,7 +308,7 @@ function updateUserProfile(req, res) {
         user.save(function (err, user) {
             if (err) {
                 console.log(err);
-                return res.status(409).send(dbErrors.handleSaveErrors(err));
+                return res.send(dbErrors.handleSaveErrors(err));
             }
 
             console.log('Updated user ', user.username);
@@ -331,19 +331,19 @@ function updateUserProfile(req, res) {
  */
 function deleteUser(req, res) {
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.send('Not Authorized.');
     }
 
     let username = req.params.id;
     User.findOneAndRemove({username: username}, function (err, user) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.send(err.message);
         }
 
         if (!user) {
             console.log('User ' + username + 'not found.');
-            return res.status(404).send('User not found');
+            return res.send('User not found');
         }
 
         console.log('Deleted user ', username);
@@ -375,18 +375,18 @@ function updateUserPassword(req, res) {
 
     // Authorize changes only for actual user or admin user
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.send('Not Authorized.');
     }
 
     // Find the user to update profile
     User.findOne({username: sessionUser}, function (err, user) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.send(err.message);
         }
 
         if (!user) {
-            return res.status(404).send('User not found.');
+            return res.send('User not found.');
         }
 
         user.password = bcrypt.hashSync(req.body.password);
@@ -395,7 +395,7 @@ function updateUserPassword(req, res) {
         user.save(function (err, user) {
             if (err) {
                 console.log(err);
-                return res.status(400).send(dbErrors.handleSaveErrors(err));
+                return res.send(dbErrors.handleSaveErrors(err));
             }
 
             console.log('SUpdated password for  user ', user.username);
