@@ -15,12 +15,14 @@ module.exports = {
 
 
 /**
- * Respond to request with a stringified list of all comment objects.
+ * Respond to request with a list of all comment objects.
  *
- * Query by username, fruitId, storeId.
+ * Query by fruitId, storeId.
+ *
+ * Requires admin.
  *
  * Example response to /comments/
- * '[{
+ * [{
  *   "_id": "583a1330d11ab20ce3a67443",
  *   "username": "admin",
  *   "message": "this place is great!",
@@ -32,7 +34,7 @@ module.exports = {
  *   "message": "not ripe!",
  *   "fruitId": "583a1330h11ab20ce3a67456",
  *   "created": "2016-11-26T22:58:33.938Z"
- * }]'
+ * }]
  *
  * @param req
  * @param res
@@ -40,8 +42,8 @@ module.exports = {
 function showComments(req, res) {
     let query = {};
 
-    if (req.query.username) {
-        query.username = req.query.username;
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     if (req.query.fruitId) {
@@ -52,7 +54,7 @@ function showComments(req, res) {
         query.storeId = req.query.storeId;
     }
 
-    Comment.find(query, function (err, comments) {
+    Comment.find(query).exec(function (err, comments) {
         if (err) {
             console.log(err);
             return res.status(500).json({'msg': err.message});

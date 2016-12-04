@@ -11,36 +11,7 @@
       },
       "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
       "rateCount": 2,
-      "rateValue": 4,
-      "comments": []
-    },
-    {
-      "storeId": "LO124",
-      "name": "Loblaws",
-      "address": {
-        "street": "396 St Clair Ave W",
-        "city": "Toronto",
-        "province": "ON",
-        "postalcode": "M5P 3N3"
-      },
-      "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
-      "rateCount": 0,
-      "rateValue": 0,
-      "comments": []
-    },
-    {
-      "storeId": "LO125",
-      "name": "Loblaws",
-      "address": {
-        "street": "650 Dupont St",
-        "city": "Toronto",
-        "province": "ON",
-        "postalcode": "M6G 4B1"
-      },
-      "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
-      "rateCount": 9,
-      "rateValue": 30,
-      "comments": []
+      "rateValue": 4
     },
     {
       "storeId": "LO126",
@@ -53,36 +24,46 @@
       },
       "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
       "rateCount": 0,
-      "rateValue": 0,
-      "comments": []
+      "rateValue": 0
     },
     {
-      "storeId": "LO127",
-      "name": "Loblaws",
+      "storeId": "KT456",
+      "name": "The Kitchen Table",
       "address": {
-        "street": "301 Moore Ave",
+        "street": "389 Spadina Rd",
         "city": "Toronto",
-        "province": "ON",
-        "postalcode": "M4G 1E1"
+        "province": "Ontario",
+        "postalcode": "M5P 2W1"
       },
-      "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
-      "rateCount": 0,
-      "rateValue": 0,
-      "comments": []
+      "photo": "http://www.thekitchentable.ca/images/ktbanner.jpg",
+      "rateCount": 3,
+      "rateValue": 13
     },
     {
-      "storeId": "LO128",
-      "name": "Loblaws",
+      "storeId": "ML356",
+      "name": "The Market by Longo's",
       "address": {
-        "street": "585 Queen St W",
+        "street": "100 Bloor St E",
         "city": "Toronto",
         "province": "ON",
-        "postalcode": "M5V 2B7"
+        "postalcode": "M4W 1A7"
       },
-      "photo": "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
+      "photo": "http://fresh.longos.com/hs-fs/hubfs/1465239851243-1-1.png?t=1480712123227&width=165&name=1465239851243-1-1.png",
+      "rateCount": 10,
+      "rateValue": 450
+    },
+    {
+      "storeId": "BC128",
+      "name": "The Big Carrot",
+      "address": {
+        "street": "348 Danforth Ave",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M4K 1N8"
+      },
+      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Big_Carrot_courtyard.JPG/800px-Big_Carrot_courtyard.JPG",
       "rateCount": 0,
-      "rateValue": 0,
-      "comments": []
+      "rateValue": 0
     },
     {
       "storeId": "NO213",
@@ -95,8 +76,7 @@
       },
       "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
       "rateCount": 0,
-      "rateValue": 0,
-      "comments": []
+      "rateValue": 0
     },
     {
       "storeId": "NO214",
@@ -109,64 +89,33 @@
       },
       "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
       "rateCount": 5,
-      "rateValue": 0,
-      "comments": []
+      "rateValue": 5
     },
     {
-      "storeId": "NO215",
-      "name": "No Frills",
+      "storeId": "FK346",
+      "name": "Fruit King",
       "address": {
-        "street": "900 Dufferin St",
+        "street": "479 Danforth Avenue",
         "city": "Toronto",
         "province": "ON",
-        "postalcode": "M6H 1K8"
+        "postalcode": "M4K 1P1"
       },
-      "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
-      "rateCount": 0,
-      "rateValue": 0,
-      "comments": []
+      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Fruit_store_Danforth_Logan.JPG/800px-Fruit_store_Danforth_Logan.JPG",
+      "rateCount": 5,
+      "rateValue": 20
     },
     {
-      "storeId": "NO216",
-      "name": "No Frills",
+      "storeId": "KS568",
+      "name": "Kedija Grocery Store",
       "address": {
-        "street": "449 Parliament S",
-        "city": "Toronto",
+        "street": " 2080 Lawrence Ave W",
+        "city": "York",
         "province": "ON",
-        "postalcode": "M5A 3A3"
+        "postalcode": "M9N 1J1"
       },
-      "photo": "http://nofrills.flyerify.com/uploads/companies/thumb/141/nofrills.png",
-      "rateCount": 0,
-      "rateValue": 0,
-      "comments": []
-    },
-    {
-      "storeId": "MO456",
-      "name": "Metro",
-      "address": {
-        "street": "425 Bloor St W",
-        "city": "Toronto",
-        "province": "ON",
-        "postalcode": "M5S 1X6"
-      },
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Metro_Inc._logo.svg/189px-Metro_Inc._logo.svg.png",
-      "rateCount": 0,
-      "rateValue": 0,
-      "comments": []
-    },
-    {
-      "storeId": "MO457",
-      "name": "Metro",
-      "address": {
-        "street": "2300 Yonge St",
-        "city": "Toronto",
-        "province": "ON",
-        "postalcode": "M4P 1E4"
-      },
-      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Metro_Inc._logo.svg/189px-Metro_Inc._logo.svg.png",
-      "rateCount": 0,
-      "rateValue": 0,
-      "comments": []
+      "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Kedijgrocsom.jpg/492px-Kedijgrocsom.jpg",
+      "rateCount": 84,
+      "rateValue": 420
     },
     {
       "storeId": "MO458",
@@ -179,11 +128,248 @@
       },
       "photo": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Metro_Inc._logo.svg/189px-Metro_Inc._logo.svg.png",
       "rateCount": 0,
-      "rateValue": 0,
-      "comments": []
+      "rateValue": 0
+    },
+    {
+      "storeId": "BF456",
+      "name": "Bloor Fruit Market",
+      "address": {
+        "street": "662 Bloor St W",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M6G 2W3"
+      },
+      "photo": "https://celebratecanada.files.wordpress.com/2009/01/bloor-fruit-market1.jpg?w=655",
+      "rateCount": 0,
+      "rateValue": 0
     }
   ],
   "fruits": [
+    {
+      "storeId": "LO123",
+      "type": "raspberry",
+      "photo": "https://cdn.pixabay.com/photo/2016/06/19/00/17/raspberry-1465988__180.jpg",
+      "season": "summer",
+      "price": 4.20,
+      "unit": "500g pkg",
+      "quantity": 800
+    },
+    {
+      "storeId": "LO123",
+      "type": "strawberry",
+      "photo": "https://cdn.pixabay.com/photo/2016/04/24/19/41/strawberries-1350482__180.jpg",
+      "season": "summer",
+      "price": 5.20,
+      "unit": "500g pkg",
+      "quantity": 60
+    },
+    {
+      "storeId": "LO123",
+      "type": "lemon",
+      "photo": "https://cdn.pixabay.com/photo/2015/11/05/18/56/lemon-1024641__180.jpg",
+      "season": "summer",
+      "price": 1.00,
+      "unit": "approx 50g",
+      "quantity": 900
+    },
+    {
+      "storeId": "LO123",
+      "type": "pomegranate",
+      "photo": "https://cdn.pixabay.com/photo/2016/09/05/22/49/pomegranate-1647930__180.jpg",
+      "season": "fall",
+      "price": 3.50,
+      "unit": "approx 2500g",
+      "quantity": 70
+    },
+    {
+      "storeId": "LO123",
+      "type": "apricot",
+      "photo": "https://cdn.pixabay.com/photo/2016/09/16/11/56/fruit-1673871__180.jpg",
+      "season": "spring",
+      "price": 1.00,
+      "unit": "approx 40g",
+      "quantity": 8
+    },
+    {
+      "storeId": "LO126",
+      "type": "pineapple",
+      "photo": "https://cdn.pixabay.com/photo/2015/08/01/12/24/pineapple-870217__180.jpg",
+      "season": "spring",
+      "price": 5.20,
+      "unit": "approx 900g",
+      "quantity": 40
+    },
+    {
+      "storeId": "LO126",
+      "type": "grapefruit",
+      "photo": "https://cdn.pixabay.com/photo/2016/11/02/16/49/orange-1792233__340.jpg",
+      "season": "summer",
+      "price": 1.20,
+      "unit": "approx 500g",
+      "quantity": 80
+    },
+    {
+      "storeId": "LO126",
+      "type": "apricot",
+      "photo": "https://cdn.pixabay.com/photo/2016/05/29/08/51/apricots-1422590__180.jpg",
+      "season": "spring",
+      "price": 1.00,
+      "unit": "approx 40g",
+      "quantity": 8
+    },
+    {
+      "storeId": "LO126",
+      "type": "tangerine",
+      "photo": "https://cdn.pixabay.com/photo/2016/10/07/13/36/tangerines-1721590__180.jpg",
+      "season": "winter",
+      "price": 3.30,
+      "unit": "approx 500g",
+      "quantity": 80
+    },
+    {
+      "storeId": "LO126",
+      "type": "cranberry",
+      "photo": "https://cdn.pixabay.com/photo/2015/09/25/15/24/cranberries-957583__180.jpg",
+      "season": "winter",
+      "price": 4.20,
+      "unit": "approx 500g",
+      "quantity": 460
+    },
+    {
+      "storeId": "KT456",
+      "type": "tangerine",
+      "photo": "https://cdn.pixabay.com/photo/2016/10/09/23/43/tangerines-1727372__180.jpg",
+      "season": "winter",
+      "price": 3.00,
+      "unit": "approx 500g",
+      "quantity": 654
+    },
+    {
+      "storeId": "KT456",
+      "type": "grapefruit",
+      "photo": "https://cdn.pixabay.com/photo/2016/09/13/08/50/grapefruit-1666706__180.jpg",
+      "season": "summer",
+      "price": 1.00,
+      "unit": "approx 500g",
+      "quantity": 346
+    },
+    {
+      "storeId": "KT456",
+      "type": "kiwi",
+      "photo": "https://cdn.pixabay.com/photo/2014/07/23/11/51/kiwifruit-400143__180.jpg",
+      "season": "winter",
+      "price": 1.20,
+      "unit": "approx 70g",
+      "quantity": 34
+    },
+    {
+      "storeId": "ML356",
+      "type": "persimmon",
+      "photo": "https://cdn.pixabay.com/photo/2016/10/15/00/02/persimmons-1741545__180.jpg",
+      "season": "winter",
+      "price": 3.50,
+      "unit": "500g pkg",
+      "quantity": 547
+    },
+    {
+      "storeId": "BC128",
+      "type": "clementine",
+      "photo": "https://cdn.pixabay.com/photo/2016/10/07/13/20/tangerines-1721563__180.jpg",
+      "season": "winter",
+      "price": 4.00,
+      "unit": "500g pkg",
+      "quantity": 80
+    },
+    {
+      "storeId": "FK346",
+      "type": "pear",
+      "photo": "https://cdn.pixabay.com/photo/2010/12/13/10/06/food-2280__180.jpg",
+      "season": "fall",
+      "price": 1.00,
+      "unit": "approx 80g",
+      "quantity": 435
+    },
+    {
+      "storeId": "FK346",
+      "type": "plantain",
+      "photo": "https://cdn.pixabay.com/photo/2016/11/22/19/39/plantain-1850267__180.jpg",
+      "season": "summer",
+      "price": 1.50,
+      "unit": "400g bunch",
+      "quantity": 635
+    },
+    {
+      "storeId": "FK346",
+      "type": "star fruit",
+      "photo": "https://cdn.pixabay.com/photo/2016/07/22/09/59/bio-1534493__180.jpg",
+      "season": "summer",
+      "price": 0.70,
+      "unit": "approx 600g",
+      "quantity": 856
+    },
+    {
+      "storeId": "KS568",
+      "type": "star fruit",
+      "photo": "https://cdn.pixabay.com/photo/2016/07/22/09/59/bio-1534493__180.jpg",
+      "season": "summer",
+      "price": 0.60,
+      "unit": "approx 600g",
+      "quantity": 856
+    },
+    {
+      "storeId": "KS568",
+      "type": "banana",
+      "photo": "https://cdn.pixabay.com/photo/2015/03/30/12/43/bananas-698608__180.jpg",
+      "season": "summer",
+      "price": 1.75,
+      "unit": "400g bunch",
+      "quantity": 635
+    },
+    {
+      "storeId": "KS568",
+      "type": "grapefruit",
+      "photo": "https://cdn.pixabay.com/photo/2015/01/20/16/36/grapefruit-605630__180.jpg",
+      "season": "summer",
+      "price": 1.20,
+      "unit": "approx 500g",
+      "quantity": 80
+    },
+    {
+      "storeId": "BF456",
+      "type": "kiwi",
+      "photo": "https://cdn.pixabay.com/photo/2016/04/06/13/13/kiwi-1311734__180.jpg",
+      "season": "winter",
+      "price": 1.00,
+      "unit": "approx 70g",
+      "quantity": 639
+    },
+    {
+      "storeId": "BF456",
+      "type": "strawberry",
+      "photo": "https://cdn.pixabay.com/photo/2015/06/27/19/58/strawberries-823782__180.jpg",
+      "season": "summer",
+      "price": 6.20,
+      "unit": "1000g pkg",
+      "quantity": 656
+    },
+    {
+      "storeId": "BF456",
+      "type": "avocado",
+      "photo": "https://cdn.pixabay.com/photo/2015/08/10/12/02/hass-avocado-882635__180.jpg",
+      "season": "summer",
+      "price": 0.80,
+      "unit": "approx 100g",
+      "quantity": 124
+    },
+    {
+      "storeId": "BF456",
+      "type": "apple",
+      "photo": "https://cdn.pixabay.com/photo/2011/03/24/20/16/apple-5880__180.jpg",
+      "season": "fall",
+      "price": 0.80,
+      "unit": "approx 125g",
+      "quantity": 945
+    },
     {
       "storeId": "LO126",
       "type": "grapefruit",

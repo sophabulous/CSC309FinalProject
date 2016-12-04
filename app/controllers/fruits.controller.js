@@ -14,12 +14,12 @@ module.exports = {
 
 
 /**
- * Respond to request with a stringified list of all fruit objects.
+ * Respond to request with a list of all fruit objects.
  *
  * Use type, season or storeId query to get back only fruits of a specific value
  *
  * Example response to /fruits/
- * '[
+ * [
  *  "_id": "5839bb15c2342805668a8863",
  *  "storeId": "LO126",
  *  "type": "grapefruit",
@@ -30,7 +30,7 @@ module.exports = {
  *  "price": 1.2,
  *  "photo":
  *  "https://cdn.pixabay.com/photo/2016/11/02/16/49/orange-1792233__340.jpg"
- *  ]'
+ *  ]
  *
  * @param req
  * @param res
@@ -73,10 +73,10 @@ function showFruits(req, res) {
 
 
 /**
- * Respond to request with a stringified fruit object of fruit with _id /:id.
+ * Respond to request with a fruit object of fruit with _id /:id.
  *
  * Example response to /fruits/5839bb15c2342805668a8863
- * '{
+ * {
  *   "_id": "5839bb15c2342805668a8863",
  *   "storeId": "LO126",
  *   "type": "grapefruit",
@@ -87,7 +87,7 @@ function showFruits(req, res) {
  *   "price": 1.2,
  *   "photo":
  *   "https://cdn.pixabay.com/photo/2016/11/02/16/49/orange-1792233__340.jpg"
- * }'
+ * }
  *
  * @param req
  * @param res
