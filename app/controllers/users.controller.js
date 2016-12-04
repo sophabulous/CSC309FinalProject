@@ -22,14 +22,18 @@ module.exports = {
  * Must be admin.
  *
  *  Example response to /user/
- *  '[{
- *      username: 'Alice123',
- *      name: 'Alice',
- *      address: '123 fake street'
- *      email: 'alice@alice.com'
- *      photo:
- *      'https://cdn.pixabay.com/photo/2016/03/31/14/47/avatar-1292817__340.png'
- *  }]'
+ *  [{
+ *      username: 'String,
+ *      name: String,
+ *      address: {
+ *          street: String,
+ *          city: String
+ *          province: String,
+ *          postalcode: String
+ *          }
+ *      email: String
+ *      photo: String
+ *  }]
  */
 function showUsers(req, res) {
     if (!authorize.onlyAdmin(req.session.admin)) {
@@ -71,7 +75,7 @@ function showUser(req, res) {
 
 
     User.findOne({username: req.session.username},
-        {password: 0, email: 0, address: 0},
+        {password: 0},
         function (err, user) {
             if (err) {
                 console.log(err);
@@ -161,10 +165,10 @@ function createNewUser(req, res) {
             return res.status(409).
                 send({'msg': dbErrors.handleSaveErrors(err)});
         } else {
-            req.session.username = user.username;
+            req.session.username = newUser.username;
             req.session.admin = false;
             req.session.cart = {};
-            console.log('Added new user ', user.username);
+            console.log('Added new user ', newUser.username);
             console.log(req.session);
             return res.json({'msg': 'Success'});
         }
@@ -233,7 +237,12 @@ function loginUser(req, res) {
  * A request should include a body with the following format:
  *
  * {
- *      address: String (optional),
+ *      address: {
+ *          street: String,
+ *          city: String
+ *          province: String,
+ *          postalcode: String
+ *          }
  *      name: String (optional),
  *      email: String(optional),
  *      photo: String (optional)

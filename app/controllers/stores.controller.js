@@ -17,19 +17,24 @@ module.exports = {
 
 
 /**
- * Respond to request with a stringified list of all store objects.
+ * Respond to request with a list of all store objects.
  *
  * Example response to /stores/
- * '[{
+ * [{
  *   "storeId": "LO123",
  *   "name": "Loblaws",
- *   "address": "11 Redway Road",
+ *   "address": {
+ *          "street": String,
+ *          "city": String
+ *          "province": String,
+ *          "postalcode": String
+ *          }
  *   "photo":
  *   "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
  *   "rateCount": 2,
  *   "rateValue": 4,
  *   "comments": []
- * }]'
+ * }]
  *
  * @param req
  * @param res
@@ -38,7 +43,7 @@ function showStores(req, res) {
     console.log('Show all stores:');
 
     // Send all stores from database -- exclude _id field
-    Store.find({}, {_id: 0}).populate('comments').exec(function (err, stores) {
+    Store.find({}, {_id: 0}).exec(function (err, stores) {
         if (err) {
             console.log(err);
             return res.status(500).json({'msg': err.message});
@@ -54,16 +59,21 @@ function showStores(req, res) {
  * Respond to request with a strigified store object with /:id as the storeId.
  *
  * Example response to /stores/LO123
- * '{
+ * {
  *   "storeId": "LO123",
  *   "name": "Loblaws",
- *   "address": "11 Redway Road",
+ *   "address": {
+ *          "street": String,
+ *          "city": String
+ *          "province": String,
+ *          "postalcode": String
+ *          }
  *   "photo":
  *   "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
  *   "rateCount": 2,
  *   "rateValue": 4,
  *   "comments": []
- * }'
+ * }
  *
  * @param req
  * @param res
@@ -76,29 +86,31 @@ function showSingleStore(req, res) {
     // Send store in database that matches unique (enforced) storeId
     // exclude _id field
     Store.findOne({storeId: storeId}, {_id: 0})
-        .populate('comments')
-        .exec(function (err, store) {
+    .populate('comments')
+    .populate('comments.user')
+    .populate('fruits')
+    .exec(function (err, store) {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({'msg': err.message});
+        }
+
+        if (!store) {
+            console.log('Store ' + storeId + 'not found.');
+            return res.status(404).json({'msg': 'Store not found'});
+        }
+
+        Fruit.find({storeId: storeId}, function (err, fruits) {
             if (err) {
                 console.log(err);
                 return res.status(500).json({'msg': err.message});
             }
+            console.log('this is running');
+            console.log({"store": store, "fruits": fruits});
+            return res.json(store);
+        })
 
-            if (!store) {
-                console.log('Store ' + storeId + 'not found.');
-                return res.status(404).json({'msg': 'Store not found'});
-            }
-
-            Fruit.find({storeId: storeId}, function (err, fruits) {
-                if (err) {
-                    console.log(err);
-                    return res.status(500).json({'msg': err.message});
-                }
-                console.log('this is running');
-                console.log({"store": store, "fruits": fruits});
-                return res.json({store: store, fruits: fruits});
-            })
-
-        });
+    });
 }
 
 
@@ -141,7 +153,7 @@ function createNewStore(req, res) {
     req.checkBody('address.province', 'province is required').notEmpty();
     req.checkBody('address.postalcode', 'postalcode is required').notEmpty();
 
-    var errors = req.validationErrors();
+    let errors = req.validationErrors();
     if (errors) {
         return res.json(errors);
     }
