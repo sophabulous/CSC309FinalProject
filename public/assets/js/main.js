@@ -2,7 +2,7 @@
 
 angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 
-.config(function($stateProvider, $urlRouterProvider, $locationProvider){
+.config(function($stateProvider, $urlRouterProvider, $locationProvider){  
 
   $stateProvider
     .state('stores', {url: '/stores', templateUrl: 'partials/stores.html', controller: 'storesCtrl'})
@@ -12,10 +12,11 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     .state('seasons', {url: '/seasons', templateUrl: 'partials/seasons.html', controller: ''})
     .state('signup', {url: '/signup', templateUrl: 'partials/signup.html', controller: 'signupCtrl'})
     .state('signin', {url: '/signin', templateUrl: 'partials/signin.html', controller: 'signinCtrl'})
-    .state('account', {url: '/account', templateUrl: 'partials/account.html', controller: ''})
-    .state('cart', {url: '/cart', templateUrl: 'partials/cart.html', controller: ''})
+    .state('account', {url: '/account', templateUrl: 'partials/account.html', controller: 'accountCtrl'})
+    .state('cart', {url: '/cart', templateUrl: 'partials/cart.html', controller: 'cartCtrl'})
     .state('users', {url: '/users', templateUrl: 'partials/users.html', controller: 'usersCtrl'})
     .state('carts', {url: '/carts', templateUrl: 'partials/carts.html', controller: 'cartsCtrl'})
+    .state('orders', {url: '/orders', templateUrl: 'partials/orders.html', controller: 'ordersCtrl'})
     ;
 
     $urlRouterProvider.otherwise('/stores');
@@ -88,11 +89,18 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     };
 
     this.validateLogin = function() {
-        return $http({
-            method: 'POST',
-            data: $rootScope.userCred,
-            url: "/login"
-        });
+            return $http({
+                method: 'POST',
+                data: $rootScope.userCred,
+                url: "/login"
+             });
+    };
+
+    this.logout = function() {
+            return $http({
+                method: 'GET',
+                url: "/signout"
+             });
     };
 
     this.signThisPersonUp = function() {
@@ -107,6 +115,35 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             return $http({
                 method: 'GET',
                 url: "/users"
+             });
+    };
+
+    this.getUserCart = function() {
+            return $http({
+                method: 'GET',
+                url: "/carts/" + $rootScope.username
+             });
+    };
+
+    this.getOrders = function() {
+            return $http({
+                method: 'GET',
+                url: "/orders"
+             });
+    };
+
+    this.getCurrentUser = function() {
+            return $http({
+                method: 'GET',
+                url: "/users/" + $rootScope.username
+             });
+    };
+
+    this.modifyUserDetail = function() {
+            return $http({
+                method: 'POST',
+                data:$rootScope.modUserObj,
+                url: "/users/" + $rootScope.username
              });
     };
 
@@ -139,12 +176,31 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             url: "/comments/fruits/" + $location.search().fruitid
         });
     };
+
+    this.postCheckout = function() {
+        return $http({
+            method: 'POST',
+            data: $rootScope.userCart,
+            url: "/checkout/" + $rootScope.username
+        });
+    };
+})
+
+
+
+.run(function($rootScope, $location, $timeout, $state, $cookies, $http, $window){
+    $rootScope.loggedIn =  $cookies.get('loggedIn');
+    $rootScope.isAdmin = $cookies.get('isAdmin');
+    $rootScope.username = $cookies.get('username');
+
+    console.log($rootScope.loggedIn, $rootScope.isAdmin);
+        
 })
 
 //controller---------------------------------------------------------------------------------------------------------------------------
 
 .controller('storesCtrl', function($scope, $rootScope, $state, getData) {
-
+ 	
     getData.getStores().success(function(dataResponse){
         console.log(dataResponse);
         $scope.storesList = dataResponse;
@@ -164,10 +220,6 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
         getData.getStoreDetail().success(function(dataResponse){
             console.log(dataResponse);
             $scope.storeDetail = dataResponse;
-
-            $scope.googleMapSearchStr = 'https://www.google.com/maps/embed/v1/search?q=' + dataResponse.address.street + dataResponse.address.city + '&key=' + 'AIzaSyCDZtYC0RJupz5nw3uU4FEY_LW0OemniuE';
-            console.log($scope.googleMapSearchStr);
-
             $scope.editMode = false;
 
             $scope.toggleEdit = function(){
@@ -204,16 +256,17 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $scope.commentOnStore = function() {
                 getData.postStoreComment().success(function(dataResponse) {
                     console.log(dataResponse);
+                    $state.reload();
                 });
             }
 
         });
 
-    }
+    }   
 )
 
 .controller('fruitsCtrl', function($scope, $rootScope, $state, $location, getData) {
-
+    
     getData.getFruits().success(function(dataResponse){
         console.log(dataResponse);
         $scope.fruitsList = dataResponse;
@@ -227,11 +280,6 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 });
             }
     });
-
-    $scope.getFruitsForSeason = function(season){
-        $scope.season = season;
-        console.log(season);
-    };
 })
 
 .controller('fruitDetailCtrl', function($scope, $rootScope, $stateParams, $state, getData, sweet) {
@@ -239,6 +287,14 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             console.log(dataResponse);
             $scope.fruitDetail = dataResponse;
             $scope.editMode = false;
+
+            $scope.addToCart = function(){
+                if($scope.editMode == true){
+                    $scope.editMode = false;
+                }else{
+                    $scope.editMode = true;
+                }
+            }
 
             $scope.toggleEdit = function(){
                 if($scope.editMode == true){
@@ -271,12 +327,13 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $scope.commentOnFruit = function() {
                 getData.postFruitComment().success(function(dataResponse) {
                     console.log(dataResponse);
+                    $state.reload();
                 });
             }
 
         });
 
-    }
+    }   
 )
 
 .controller('signinCtrl', function($scope, $rootScope, $state, $location, $cookies, getData) {
@@ -288,11 +345,69 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     $scope.signIn = function(){
         getData.validateLogin().success(function(dataResponse){
             console.log(dataResponse);
-            console.log("is admin:", $cookies.get('user.admin'));
-
+            $rootScope.loggedIn = true;
+            $rootScope.isAdmin = dataResponse.isAdmin;
+            $rootScope.username = dataResponse.username;
+            $cookies.put('loggedIn', true);
+            $cookies.put('isAdmin', dataResponse.isAdmin);
+            $cookies.put('username', dataResponse.username);
         });
     }
+    
+})
 
+.controller('accountCtrl', function($scope, $rootScope, $state, $location, $cookies, getData) {
+    getData.getCurrentUser().success(function(dataResponse){
+            console.log(dataResponse);
+            $scope.userInfo = dataResponse;
+            $scope.editMode = false;
+
+            $scope.toggleEdit = function(){
+                if($scope.editMode == true){
+                    $scope.editMode = false;
+                }else{
+                    $scope.editMode = true;
+                }
+            }
+
+            $rootScope.modUserObj = {
+               address: {
+                   street: $scope.userInfo.address.street,
+                   city: $scope.userInfo.address.city,
+                   province: $scope.userInfo.address.province,
+                   postalcode: $scope.userInfo.address.postalcode
+                   },
+               firstname: $scope.userInfo.firstname,
+               lastname: $scope.userInfo.lastname,
+               email: $scope.userInfo.email,
+               photo: $scope.userInfo.photo
+  
+            };
+
+            $scope.modCurrentUser = function(){
+                getData.modifyUserDetail().success(function(dataResponse){
+                    console.log(dataResponse);
+                    $state.reload();
+                });
+            }
+
+        });
+
+    $scope.logout = function(){
+        getData.logout().success(function(dataResponse){
+            console.log(dataResponse);
+            $rootScope.loggedIn = false;
+            $rootScope.isAdmin = false;
+            $rootScope.username = '';
+
+            $cookies.put('loggedIn', false);
+            $cookies.put('isAdmin', false);
+            $cookies.put('username', '');
+
+            $state.reload();
+        });
+    }
+    
 })
 
 .controller('signupCtrl', function($scope, $rootScope, $state, $location, $cookies, getData) {
@@ -314,17 +429,17 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 
     $scope.signUp = function(){
         getData.signThisPersonUp().success(function(dataResponse){
-            console.log(dataResponse);
+            console.log(dataResponse);           
         });
     }
-
+    
 })
 
 .controller('usersCtrl', function($scope, $rootScope, $state, $location, getData) {
-
+    
     getData.getUsers().success(function(dataResponse){
         console.log(dataResponse);
-        $scope.fruitsList = dataResponse;
+        $scope.usersList = dataResponse;
 
         $scope.deleteThisUser = function(userid){
                 $rootScope.deleteUserId = userid;
@@ -337,11 +452,37 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     });
 })
 
-.controller('cartsCtrl', function($scope, $rootScope, $state, $location, getData) {
+.controller('cartCtrl', function($scope, $rootScope, $state, $location, getData) {
+    
+    getData.getUserCart().success(function(dataResponse){
+        console.log(dataResponse);
+        $scope.userCart = dataResponse;
 
+
+        $scope.checkout = function() {
+            getData.postCheckout().success(function(dataResponse) {
+                console.log(dataResponse);
+                $state.reload();
+            });
+        }
+    });
+
+
+})
+
+.controller('cartsCtrl', function($scope, $rootScope, $state, $location, getData) {
+    
     getData.getCarts().success(function(dataResponse){
         console.log(dataResponse);
         $scope.cartsList = dataResponse;
+    });
+})
+
+.controller('ordersCtrl', function($scope, $rootScope, $state, $location, getData) {
+    
+    getData.getOrders().success(function(dataResponse){
+        console.log(dataResponse);
+        $scope.ordersList = dataResponse;
 
     });
 })

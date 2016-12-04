@@ -25,40 +25,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td data-th="Product">
+                    <tr ng-repeat="item in userCart.items track by $index">
+                        <td data-th="Product" ui-sref="fruit-detail({fruitid: item.fruit._id})">
                             <div class="row">
-                                <div class="col-sm-2 hidden-xs"><img src="http://juliandance.org/wp-content/uploads/2016/01/RedApple.jpg" alt="..." class="img-responsive"/></div>
+                                <div class="col-sm-2 hidden-xs">
+                                    <img ng-src="{{item.fruit.photo}}" alt="..." class="img-responsive"/></div>
                                 <div class="col-sm-10">
-                                    <h4 class="nomargin">Apple</h4>
-                                    <p>The quintessential fruit.</p>
+                                    <h4 class="nomargin">{{item.fruit.type}}</h4>
                                 </div>
                             </div>
                         </td>
-                        <td data-th="Price">$0.99</td>
+                        <td data-th="Price">${{item.fruit.price | number : 2}}</td>
                         <td data-th="Quantity">
-                            <input type="number" class="form-control text-center" value="1">
+                            <input type="number" class="form-control text-center" ng-value="{{item.quantity}}">
                         </td>
-                        <td data-th="Subtotal" class="text-center">0.99</td>
-                        <td class="actions" data-th="">
-                            <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td data-th="Product">
-                            <div class="row">
-                                <div class="col-sm-2 hidden-xs"><img src="http://www.mlevinco.com/wp-content/uploads/2013/06/Peach.jpg" alt="..." class="img-responsive"/></div>
-                                <div class="col-sm-10">
-                                    <h4 class="nomargin">Peach</h4>
-                                    <p>The best fruit.</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td data-th="Price">$0.99</td>
-                        <td data-th="Quantity">
-                            <input type="number" class="form-control text-center" value="1">
-                        </td>
-                        <td data-th="Subtotal" class="text-center">0.99</td>
+                        <td data-th="Subtotal" class="text-center">${{item.quantity * item.fruit.price | number : 2}}</td>
                         <td class="actions" data-th="">
                             <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
                         </td>
@@ -66,13 +47,13 @@
                     </tbody>
                     <tfoot>
                     <tr class="visible-xs">
-                        <td class="text-center"><strong>Total 1.98</strong></td>
+                        <td class="text-center"><strong>Total ${{userCart.total | number : 2}}</strong></td>
                     </tr>
                     <tr>
-                        <td><a href="#" class="btn btn-warning"><i class="fa fa-angle-left"></i> Back</a></td>
                         <td colspan="2" class="hidden-xs"></td>
-                        <td class="hidden-xs text-center"><strong>Total $1.98</strong></td>
-                        <td><a href="#" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a></td>
+                        <td class="hidden-xs text-center"><strong>Total ${{userCart.total | number : 2}}</strong></td>
+                        <td><a href="#" ng-click="checkout()" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a>
+                        </td>
                     </tr>
                     </tfoot>
                 </table>
