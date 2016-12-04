@@ -68,13 +68,17 @@ function showUsers(req, res) {
  * @returns {*}
  */
 function showUser(req, res) {
+    let sessionUser = req.session.username,
+        requestUser = req.params.id,
+        admin = req.session.admin;
+
     // Only show profile of user to signed in users
-    if (!authorize.onlyLoggedIn(req.session.username)) {
+    if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
         return res.status(409).send({'msg': 'Not Authorized.'});
     }
 
 
-    User.findOne({username: req.session.username},
+    User.findOne({username: requestUser},
         {password: 0},
         function (err, user) {
             if (err) {
