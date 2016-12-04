@@ -46,6 +46,10 @@ function showComments(req, res) {
         return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
+    if (req.query.username) {
+        query.username = req.query.username;
+    }
+
     if (req.query.fruitId) {
         query.commentId = req.query.fruitId;
     }

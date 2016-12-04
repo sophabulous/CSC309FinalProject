@@ -94,4 +94,4 @@ router.post('/comments/fruits', commentsController.commentOnFruit);
 // Add a store comment
 router.post('/comments/stores', commentsController.commentOnStore);
 // Delete a comment
-router.delete('/comments', commentsController.deleteComment);
+router.delete('/comments/:id', commentsController.deleteComment);
