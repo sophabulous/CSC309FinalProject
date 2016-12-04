@@ -9,8 +9,10 @@ body {
     }
 }
 
-title{
+.sitetitle{
     font-family: 'Lobster', cursive;
+    font-weight: 4em;
+    font-size: 30px;
 }
 
 #wrapper {
