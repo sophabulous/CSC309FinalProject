@@ -28,13 +28,14 @@
             </div>
 
             <div class="row store_detail" ng-if="!editMode">
-                <label class="store_det_name">
-                    {{storeDetail.name}}</br> <button type="button" ng-click="toggleEdit()">EDIT</button>
-                    {{storeDetail.address.city}},{{storeDetail.address.province}}</label><br/>
+                <label class="store_det_name">{{storeDetail.name}}</label>
+                <button type="button" ng-click="toggleEdit()">EDIT</button>
                 <div class="col-lg-12">
+                    <p>{{storeDetail.address.city}}, {{storeDetail.address.province}}</p>
                     <div class="rating">
                         <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
                     </div>
+
                     <h6>Store ID: {{storeDetail.storeId}}</h6>
                 </div>
                 <div class="col-lg-12 row store_info_panel">
