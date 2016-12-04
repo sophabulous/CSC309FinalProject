@@ -2,7 +2,7 @@
 
 angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 
-.config(function($stateProvider, $urlRouterProvider, $locationProvider){  
+.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 
   $stateProvider
     .state('stores', {url: '/stores', templateUrl: 'partials/stores.html', controller: 'storesCtrl'})
@@ -144,7 +144,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 //controller---------------------------------------------------------------------------------------------------------------------------
 
 .controller('storesCtrl', function($scope, $rootScope, $state, getData) {
- 	
+
     getData.getStores().success(function(dataResponse){
         console.log(dataResponse);
         $scope.storesList = dataResponse;
@@ -164,6 +164,10 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
         getData.getStoreDetail().success(function(dataResponse){
             console.log(dataResponse);
             $scope.storeDetail = dataResponse;
+
+            $scope.googleMapSearchStr = 'https://www.google.com/maps/embed/v1/search?q=' + dataResponse.address.street + dataResponse.address.city + '&key=' + 'AIzaSyCDZtYC0RJupz5nw3uU4FEY_LW0OemniuE';
+            console.log($scope.googleMapSearchStr);
+
             $scope.editMode = false;
 
             $scope.toggleEdit = function(){
@@ -206,11 +210,11 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 
         });
 
-    }   
+    }
 )
 
 .controller('fruitsCtrl', function($scope, $rootScope, $state, $location, getData) {
-    
+
     getData.getFruits().success(function(dataResponse){
         console.log(dataResponse);
         $scope.fruitsList = dataResponse;
@@ -224,6 +228,11 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 });
             }
     });
+
+    $scope.getFruitsForSeason = function(season){
+        $scope.season = season;
+        console.log(season);
+    };
 })
 
 .controller('fruitDetailCtrl', function($scope, $rootScope, $stateParams, $state, getData, sweet) {
@@ -269,7 +278,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 
         });
 
-    }   
+    }
 )
 
 .controller('signinCtrl', function($scope, $rootScope, $state, $location, $cookies, getData) {
@@ -282,10 +291,10 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
         getData.validateLogin().success(function(dataResponse){
             console.log(dataResponse);
             console.log("is admin:", $cookies.get('user.admin'));
-           
+
         });
     }
-    
+
 })
 
 .controller('signupCtrl', function($scope, $rootScope, $state, $location, $cookies, getData) {
@@ -307,14 +316,14 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 
     $scope.signUp = function(){
         getData.signThisPersonUp().success(function(dataResponse){
-            console.log(dataResponse);           
+            console.log(dataResponse);
         });
     }
-    
+
 })
 
 .controller('usersCtrl', function($scope, $rootScope, $state, $location, getData) {
-    
+
     getData.getUsers().success(function(dataResponse){
         console.log(dataResponse);
         $scope.fruitsList = dataResponse;
@@ -331,7 +340,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 })
 
 .controller('cartsCtrl', function($scope, $rootScope, $state, $location, getData) {
-    
+
     getData.getCarts().success(function(dataResponse){
         console.log(dataResponse);
         $scope.cartsList = dataResponse;
