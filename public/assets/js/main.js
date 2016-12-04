@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('cv-noc', ['ui.router','hSweetAlert'])
+angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 
 .config(function($stateProvider, $urlRouterProvider, $locationProvider){  
 
@@ -10,10 +10,12 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
     .state('store-detail', {url: '/store-detail/?storeid',templateUrl: 'partials/store-detail.html', controller: 'storeDetailCtrl'})
     .state('fruit-detail', {url: '/product-detail/?fruitid',templateUrl: 'partials/product-detail.html', controller: 'fruitDetailCtrl'})
     .state('seasons', {url: '/seasons', templateUrl: 'partials/seasons.html', controller: ''})
-    .state('signup', {url: '/signup', templateUrl: 'partials/signup.html', controller: ''})
-    .state('signin', {url: '/signin', templateUrl: 'partials/signin.html', controller: ''})
+    .state('signup', {url: '/signup', templateUrl: 'partials/signup.html', controller: 'signupCtrl'})
+    .state('signin', {url: '/signin', templateUrl: 'partials/signin.html', controller: 'signinCtrl'})
     .state('account', {url: '/account', templateUrl: 'partials/account.html', controller: ''})
     .state('cart', {url: '/cart', templateUrl: 'partials/cart.html', controller: ''})
+    .state('users', {url: '/users', templateUrl: 'partials/users.html', controller: 'usersCtrl'})
+    .state('carts', {url: '/carts', templateUrl: 'partials/carts.html', controller: 'cartsCtrl'})
     ;
 
     $urlRouterProvider.otherwise('/stores');
@@ -41,10 +43,40 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
              });
     };
 
+    this.deleteStore = function() {
+            return $http({
+                method: 'DELETE',
+                url: "/stores/" + $rootScope.deleteStoreId
+             });
+    };
+
+    this.modifyStoreDetail = function() {
+            return $http({
+                method: 'POST',
+                data:$rootScope.modStoreObj,
+                url: "/stores/" + $location.search().storeid
+             });
+    };
+
     this.getFruits = function() {
             return $http({
                 method: 'GET',
                 url: "/fruits"
+             });
+    };
+
+    this.modifyFruitDetail = function() {
+            return $http({
+                method: 'POST',
+                data:$rootScope.modFruitObj,
+                url: "/fruits/" + $location.search().fruitid
+             });
+    };
+
+    this.deleteFruit = function() {
+            return $http({
+                method: 'DELETE',
+                url: "/fruits/" + $rootScope.deleteFruitId
              });
     };
 
@@ -55,6 +87,44 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
              });
     };
 
+    this.validateLogin = function() {
+            return $http({
+                method: 'POST',
+                data: $rootScope.userSignup,
+                url: "/login"
+             });
+    };
+
+    this.signThisPersonUp = function() {
+            return $http({
+                method: 'POST',
+                data: $rootScope.userSignup,
+                url: "/signup"
+             });
+    };
+
+    this.getUsers = function() {
+            return $http({
+                method: 'GET',
+                url: "/users"
+             });
+    };
+
+    this.deleteUser = function() {
+            return $http({
+                method: 'DELETE',
+                url: "/users/" + $rootScope.deleteUserId
+             });
+    };
+
+    this.getCarts = function() {
+            return $http({
+                method: 'GET',
+                url: "/carts"
+             });
+    };
+
+
 })
 
 //controller---------------------------------------------------------------------------------------------------------------------------
@@ -64,6 +134,15 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
     getData.getStores().success(function(dataResponse){
         console.log(dataResponse);
         $scope.storesList = dataResponse;
+
+        $scope.deleteThisStore = function(storeid){
+                $rootScope.deleteStoreId = storeid;
+                console.log("delete called");
+                getData.deleteStore().success(function(dataResponse){
+                    console.log(dataResponse);
+                    $state.reload();
+                });
+            }
     });
 })
 
@@ -71,6 +150,34 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
         getData.getStoreDetail().success(function(dataResponse){
             console.log(dataResponse);
             $scope.storeDetail = dataResponse;
+            $scope.editMode = false;
+
+            $scope.toggleEdit = function(){
+                if($scope.editMode == true){
+                    $scope.editMode = false;
+                }else{
+                    $scope.editMode = true;
+                }
+            }
+
+            $rootScope.modStoreObj = {
+                storeId: $scope.storeDetail.storeId,
+                name: $scope.storeDetail.name,
+                address: {
+                  street: "String",
+                  city: "String",
+                  province: "String",
+                  postalcode: "String"
+                },
+                photo: $scope.storeDetail.photo
+            };
+
+            $scope.modCurrentStore = function(){
+                getData.modifyStoreDetail().success(function(dataResponse){
+                    console.log(dataResponse);
+                });
+            }
+
         });
 
     }   
@@ -81,6 +188,15 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
     getData.getFruits().success(function(dataResponse){
         console.log(dataResponse);
         $scope.fruitsList = dataResponse;
+
+        $scope.deleteThisFruit = function(fruitid){
+                $rootScope.deleteFruitId = fruitid;
+                console.log("delete called");
+                getData.deleteFruit().success(function(dataResponse){
+                    console.log(dataResponse);
+                    $state.reload();
+                });
+            }
     });
 })
 
@@ -88,9 +204,101 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
         getData.getFruitDetail().success(function(dataResponse){
             console.log(dataResponse);
             $scope.fruitDetail = dataResponse;
+            $scope.editMode = false;
+
+            $scope.toggleEdit = function(){
+                if($scope.editMode == true){
+                    $scope.editMode = false;
+                }else{
+                    $scope.editMode = true;
+                }
+            }
+
+            $rootScope.modFruitObj = {
+                storeId: $scope.fruitDetail.storeId,
+                price: $scope.fruitDetail.price,
+                photo: $scope.fruitDetail.photo,
+                unit: $scope.fruitDetail.unit,
+                season: $scope.fruitDetail.season,
+                type: $scope.fruitDetail.type
+            };
+
+            $scope.modCurrentFruit = function(){
+                getData.modifyFruitDetail().success(function(dataResponse){
+                    console.log(dataResponse);
+                });
+            }
+
         });
 
     }   
 )
+
+.controller('signinCtrl', function($scope, $rootScope, $state, $location, $cookies, getData) {
+    $rootScope.userCred = {
+        username: '',
+        password: ''
+    }
+
+    $scope.signIn = function(){
+        getData.validateLogin().success(function(dataResponse){
+            console.log(dataResponse);
+            console.log("is admin:", $cookies.get('user.admin'));
+           
+        });
+    }
+    
+})
+
+.controller('signupCtrl', function($scope, $rootScope, $state, $location, $cookies, getData) {
+    $rootScope.userSignup = {
+        username: '',
+        password: '',
+        confirmpassword: '',
+        firstname: '',
+        lastname: '',
+        address: {
+           street: "String",
+           city: "String",
+           province: "String",
+           postalcode: "String"
+           },
+
+        email: ''
+    }
+
+    $scope.signUp = function(){
+        getData.signThisPersonUp().success(function(dataResponse){
+            console.log(dataResponse);           
+        });
+    }
+    
+})
+
+.controller('usersCtrl', function($scope, $rootScope, $state, $location, getData) {
+    
+    getData.getUsers().success(function(dataResponse){
+        console.log(dataResponse);
+        $scope.fruitsList = dataResponse;
+
+        $scope.deleteThisUser = function(userid){
+                $rootScope.deleteUserId = userid;
+                console.log("delete called");
+                getData.deleteUser().success(function(dataResponse){
+                    console.log(dataResponse);
+                    $state.reload();
+                });
+            }
+    });
+})
+
+.controller('cartsCtrl', function($scope, $rootScope, $state, $location, getData) {
+    
+    getData.getCarts().success(function(dataResponse){
+        console.log(dataResponse);
+        $scope.cartsList = dataResponse;
+
+    });
+})
 
 ;
