@@ -1,24 +1,25 @@
-<div id="wrapper">        
+<div id="wrapper">
 
-        <div id="page-wrapper">
+    <div id="page-wrapper">
 
-            <div class="container-fluid sign_up">
-                <h1>Sign Up</h1>
-                <br/>
-                <form>
-                    <p>First name: <input type="text" name="firstname"></p>
-                    <p>Last name: <input type="text" name="lastname"></p>
-                    <p>Address: <input type="text" name="lastname"></p>
-                    <p>Email: <input type="email" name="email"></p>
-                    <p>Password: <input type="password" name="psw"></p>
-                    <p>Confirm Password: <input type="password" name="confirmpsw"></p>
-                    <input type="submit" value="Submit">
-                </form>
-            </div>
-            <!-- /.container-fluid -->
-
+        <div class="container-fluid sign_up">
+            <h1>Sign Up</h1>
+            <br/>
+            <form>
+                <p>First name: <input type="text" name="firstname" ng-model="userSignup.firstname"></p>
+                <p>Last name: <input type="text" name="lastname" ng-model="userSignup.lastname"></p>
+                <p>User name: <input type="text" name="lastname" ng-model="userSignup.username"></p>
+                <!-- <p>Address: <input type="text" name="lastname"></p> -->
+                <p>Email: <input type="email" name="email" ng-model="userSignup.email"></p>
+                <p>Password: <input type="password" name="psw" ng-model="userSignup.password"></p>
+                <p>Confirm Password: <input type="password" name="confirmpsw" ng-model="userSignup.confirmpassword"></p>
+                <button ng-click="signUp()">Sign Up</button>
+            </form>
         </div>
-        <!-- /#page-wrapper -->
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- /#page-wrapper -->
 
 </div>
 <!-- /#wrapper -->
