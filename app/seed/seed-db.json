@@ -280,6 +280,20 @@
         "province": "ON",
         "postalcode": "M5S 2E4"
       }
+    },
+    {
+      "username": "peteylovesfruits",
+      "password": "3456abc",
+      "firstname": "Peter",
+      "lastname": "Long",
+      "email": "peter@gmail.com",
+      "admin": false,
+      "address": {
+        "street": "39 St George St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5S 2E5"
+      }
     }
   ]
 }
