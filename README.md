@@ -1,10 +1,15 @@
 #RESTInPeace
 
+Checkout out the live website [here](https://ripefruitsuoft.herokuapp.com).
+
+
 ## Set up .env (optional)
 
-To specify environment variables, create a new file named `.env` and see `
-.env.example` to see which variables can be specified.
+To specify environment variables, create a new file named `.env` and see `.env.example` to see which variables can be specified. You can do this manually or run the following command:
 
+`node setup.js`
+
+Node that the admin seed was created using a secret SECRET variable. To have access to an admin, you will need to hash a password using your own secret and replace the admin password in `app/seed/seed-db.json`
 
 ## Setup Database
 
