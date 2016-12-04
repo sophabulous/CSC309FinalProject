@@ -22,26 +22,30 @@ module.exports = {
  * Must be admin.
  *
  *  Example response to /user/
- *  '[{
- *      username: 'Alice123',
- *      name: 'Alice',
- *      address: '123 fake street'
- *      email: 'alice@alice.com'
- *      photo:
- *      'https://cdn.pixabay.com/photo/2016/03/31/14/47/avatar-1292817__340.png'
- *  }]'
+ *  [{
+ *      username: 'String,
+ *      name: String,
+ *      address: {
+ *          street: String,
+ *          city: String
+ *          province: String,
+ *          postalcode: String
+ *          }
+ *      email: String
+ *      photo: String
+ *  }]
  */
 function showUsers(req, res) {
-    if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
-    }
+    // if (!authorize.onlyAdmin(req.session.admin)) {
+    //     return res.status(409).send({'msg': 'Not Authorized.'});
+    // }
 
     User.find({}, {password: 0}, function (err, users) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).send({'msg': err.message});
         } else {
-            return res.send(users);
+            return res.json(users);
         }
     })
 }
@@ -64,26 +68,30 @@ function showUsers(req, res) {
  * @returns {*}
  */
 function showUser(req, res) {
+    let sessionUser = req.session.username,
+        requestUser = req.params.id,
+        admin = req.session.admin;
+
     // Only show profile of user to signed in users
-    if (!authorize.onlyLoggedIn(req.session.username)) {
-        return res.status(409).send('Not Authorized.');
+    if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
+        return res.status(409).send({'msg': 'Not Authorized.'});
     }
 
 
-    User.findOne({username: req.session.username},
-        {password: 0, email: 0, address: 0},
+    User.findOne({username: requestUser},
+        {password: 0},
         function (err, user) {
             if (err) {
                 console.log(err);
-                return res.status(500).send(err.message);
+                return res.status(500).send({'msg': err.message});
             }
 
             if (!user) {
-                return res.status(404).send('User not found.');
+                return res.status(404).send({'msg': 'User not found.'});
             }
 
             else {
-                return res.send(user);
+                return res.json(user);
             }
         });
 }
@@ -99,8 +107,15 @@ function showUser(req, res) {
  * {
  *      username: String,
  *      password: String,
- *      name: String,
- *      address: String,
+ *      confirmpassword: String,
+ *      firstname: String,
+ *      lastname: String,
+ *      address: {
+ *          street: String,
+ *          city: String
+ *          province: String,
+ *          postalcode: String
+ *          }
  *      email: String
  * }
  *
@@ -109,37 +124,57 @@ function showUser(req, res) {
  * @param res
  */
 function createNewUser(req, res) {
-    if (!authorize.onlyNotLoggedInOrAdmin(req.session.username,
-            req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
+    // if (!authorize.onlyNotLoggedInOrAdmin(req.session.username,
+    //         req.session.admin)) {
+    //     return res.status(409).send({'msg': 'Not Authorized.'});
+    // }
+
+    // validation
+    req.checkBody('username', 'username is required').notEmpty();
+    req.checkBody('password', 'password is required').notEmpty();
+    req.checkBody('confirmpassword', 'confirmpassword is required').notEmpty();
+    req.checkBody('firstname', 'firstname is required').notEmpty();
+    req.checkBody('lastname', 'firstname is required').notEmpty();
+    req.checkBody('address.street', 'street is required').notEmpty();
+    req.checkBody('address.city', 'city is required').notEmpty();
+    req.checkBody('address.province', 'province is required').notEmpty();
+    req.checkBody('address.postalcode', 'postalcode is required').notEmpty();
+    req.checkBody('email', 'email is required').notEmpty();
+    req.checkBody('email', 'Not a valid email').isEmail();
+    req.assert('confirmpassword', 'Passwords do not match').
+        equals(req.body.password);
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.json(errors);
     }
 
-    console.log(req.body);
     // Hash password before storing in database
     let hashedPwd = bcrypt.hashSync(req.body.password);
 
     let newUser = new User({
         username: req.body.username,
         password: hashedPwd,
-        name: req.body.name,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
         address: req.body.address,
         email: req.body.email
     });
 
     // Rely on MongoDB validation to check for unique and required
     // fields and report appropriate errors.
-    newUser.save(function (err, neuserwUser) {
+    newUser.save(function (err, newUser) {
         if (err) {
             console.log(err);
             return res.status(409).
-                send(dbErrors.handleSaveErrors(err));
+                send({'msg': dbErrors.handleSaveErrors(err)});
         } else {
-            req.session.username = user.username;
+            req.session.username = newUser.username;
             req.session.admin = false;
             req.session.cart = {};
-            console.log('Added new user ', user.username);
+            console.log('Added new user ', newUser.username);
             console.log(req.session);
-            return res.send('Success');
+            return res.json({'msg': 'Success'});
         }
     });
 }
@@ -163,8 +198,17 @@ function createNewUser(req, res) {
  * @param res
  */
 function loginUser(req, res) {
-    if (!authorize.onlyNotLoggedIn(req.session.username)) {
-        return res.status(409).send('Not Authorized.');
+    // if (!authorize.onlyNotLoggedIn(req.session.username)) {
+    //     return res.status(409).send('Not Authorized.');
+    // }
+
+    // validation
+    req.checkBody('username', 'username is required').notEmpty();
+    req.checkBody('password', 'password is required').notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.json(errors);
     }
 
     let username = req.body.username,
@@ -180,7 +224,7 @@ function loginUser(req, res) {
         if (user && bcrypt.compareSync(password, user.password)) {
             req.session.username = user.username;
             req.session.admin = user.admin;
-            return res.send('Success');
+            return res.json({'msg': 'Success'});
         } else { // user doesn't exist or password match failed
             console.log('Invalid login attempt.');
             return res.status(409).send('Invalid username or password.');
@@ -197,7 +241,12 @@ function loginUser(req, res) {
  * A request should include a body with the following format:
  *
  * {
- *      address: String (optional),
+ *      address: {
+ *          street: String,
+ *          city: String
+ *          province: String,
+ *          postalcode: String
+ *          }
  *      name: String (optional),
  *      email: String(optional),
  *      photo: String (optional)
@@ -229,7 +278,8 @@ function updateUserProfile(req, res) {
             return res.status(404).send('User not found.');
         }
 
-        user.name = req.body.name || user.name;
+        user.firstname = req.body.firstname || user.firstname;
+        user.lastname = req.body.lastname || user.lastname;
         user.email = req.body.email || user.email;
         user.address = req.body.address || user.address;
         user.photo = req.body.photo || user.photo;
@@ -243,14 +293,15 @@ function updateUserProfile(req, res) {
             }
 
             console.log('Updated user ', user.username);
-            return res.send('Success');
+            return res.json('Success');
         });
     });
 }
 
 
 /**
- * Deletes an existing user object and updates the database with :id as the username.
+ * Deletes an existing user object and updates the database with :id as the
+ * username.
  *
  * Must be admin.
  *
@@ -260,9 +311,9 @@ function updateUserProfile(req, res) {
  * @param res
  */
 function deleteUser(req, res) {
-    if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
-    }
+    // if (!authorize.onlyAdmin(req.session.admin)) {
+    //     return res.status(409).send('Not Authorized.');
+    // }
 
     let username = req.params.id;
     User.findOneAndRemove({username: username}, function (err, user) {
@@ -277,7 +328,7 @@ function deleteUser(req, res) {
         }
 
         console.log('Deleted user ', username);
-        return res.send('Success');
+        return res.json('Success');
     });
 }
 
@@ -329,7 +380,7 @@ function updateUserPassword(req, res) {
             }
 
             console.log('SUpdated password for  user ', user.username);
-            return res.send('Success');
+            return res.json('Success');
         })
     });
 }
@@ -345,5 +396,5 @@ function updateUserPassword(req, res) {
  */
 function signoutUser(req, res) {
     req.session.destroy();
-    return res.send('Success');
+    return res.json({'msg': 'Success'});
 }

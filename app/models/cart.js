@@ -26,7 +26,7 @@ const cartsSchema = new Schema(
         total: {
             type: Number,
             min: 0,
-            default: 0,
+            default: 0
         },
         lastUpdated: {
             type: Date,
@@ -37,8 +37,11 @@ const cartsSchema = new Schema(
     },
     {minimize: false},
     {collection: 'carts'}
-).plugin(uniqueValidator, {message: 'Error, only one cart per user.'})
-.pre('save', function (next) {
+);
+
+cartsSchema.plugin(uniqueValidator, {message: 'Only one cart per user.'});
+
+cartsSchema.pre('save', function (next) {
     this.lastUpdated = Date.now();
     next();
 });

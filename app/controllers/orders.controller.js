@@ -11,14 +11,14 @@ module.exports = {
 
 
 /**
- * Respond to request with a stringified list of all order objects.
+ * Respond to request with a list of all order objects.
  *
  * Query by username.
  *
  * Only authorized for admin.
  *
  * Example response to /orders/
- * '[{
+ * [{
  *  "_id": "5839fa4e6837b30812b3a963",
  *  "username": "admin",
  *  "createdAt": "2016-11-26T21:10:38.831Z",
@@ -33,7 +33,7 @@ module.exports = {
  *      "_id": "5839fa4e6837b30812b3a964"
  *    }
  *  ]
- * }]'
+ * }]
  *
  * @param req
  * @param res
@@ -44,7 +44,7 @@ function showOrders(req, res) {
         admin = req.session.admin;
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     let query = {};
@@ -56,20 +56,20 @@ function showOrders(req, res) {
     Order.find(query, function (err, orders) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         } else {
             console.log(orders);
-            return res.send(JSON.stringify(orders));
+            return res.json(orders);
         }
     });
 }
 
 
 /**
- * Respond to request with a stringified order object with order _id as /:id.
+ * Respond to request with a order object with order _id as /:id.
  *
  * Example response to /orders/5839fa4e6837b30812b3a963
- * '{
+ * {
  *  "_id": "5839fa4e6837b30812b3a963",
  *  "username": "admin",
  *  "createdAt": "2016-11-26T21:10:38.831Z",
@@ -84,7 +84,7 @@ function showOrders(req, res) {
  *      "_id": "5839fa4e6837b30812b3a964"
  *    }
  *  ]
- * }'
+ * }
  *
  * @param req
  * @param res
@@ -99,19 +99,21 @@ function showSingleOrder(req, res) {
     Order.findOne({_id: id}, function (err, order) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         }
 
         if (!order) {
             console.log('Order ' + id + 'not found.');
-            return res.send(404, 'Order not found');
+            return res.status(404).json({'msg': 'Order not found'});
         }
 
-        if (!authorize.onlyActiveUserOrAdmin(order.username, sessionUser, admin)) {
-            return res.status(409).send('Not Authorized.');
+        if (!authorize.onlyActiveUserOrAdmin(order.username,
+                sessionUser,
+                admin)) {
+            return res.status(409).json({'msg': 'Not Authorized.'});
         }
 
         console.log(order);
-        return res.send(JSON.stringify(order));
+        return res.json(order);
     });
 }

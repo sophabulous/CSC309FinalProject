@@ -55,17 +55,19 @@
                                         <th>Quantity</th>
                                         <th>Season</th>
                                         <th>Unit</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="fruit in fruitsList track by $index">
-                                        <td>{{$index}}</td>                                     
+                                        <td>{{$index+1}}</td>                                     
                                         <td ui-sref="fruit-detail({fruitid: fruit._id})"><img ng-src="{{fruit.photo}}" alt=""></td>
                                         <td>{{fruit.type}}</td>
-                                        <td>{{fruit.price}}</td>
+                                        <td>${{fruit.price | number : 2}}</td>
                                         <td>{{fruit.quantity}}</td>
                                         <td>{{fruit.season}}</td>
                                         <td>{{fruit.unit}}</td>
+                                        <td><button ng-click="deleteThisFruit(fruit._id)">DELETE</button></td>
                                     </tr>
                                 </tbody>
                             </table>

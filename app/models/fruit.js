@@ -122,15 +122,19 @@ const fruitsSchema = new Schema(
             type: String,
             lower: true,
             required: true
-        },
-        comments: [{
-            type: Schema.ObjectId,
-            ref: 'Comment'
-        }]
+        }
     },
-    {minimize: false},
-    {collection: 'fruits'}
+    {
+        collection: 'fruits',
+        toJSON: {virtuals: true}
+    }
 );
+
+fruitsSchema.virtual('comments', {
+    ref: 'Comment',
+    localField: '_id',
+    foreignField: 'fruitId'
+});
 
 const fruitModel = mongoose.model('Fruit', fruitsSchema);
 

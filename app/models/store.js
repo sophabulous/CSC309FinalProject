@@ -17,9 +17,22 @@ const storesSchema = new Schema(
             required: [true, 'Store name required']
         },
         address: {
-            type: String,
-            required: [true, 'Store address required'],
-            unique: true
+            street: {
+                type: String,
+                required: true
+            },
+            city: {
+                type: String,
+                required: true
+            },
+            province: {
+                type: String,
+                required: true
+            },
+            postalcode: {
+                type: String,
+                required: true
+            },
         },
         photo: {
             type: String,
@@ -37,13 +50,25 @@ const storesSchema = new Schema(
             set: v => Math.round(v),
             default: 0
         },
-        comments: [{
-            type: Schema.ObjectId,
-            ref: 'Comment'
-        }]
     },
-    {collection: 'stores'}
+    {
+        collection: 'stores',
+        toJSON: {virtuals: true}
+    }
 ).plugin(uniqueValidator, {message: 'Error, expected {PATH} to be unique.'});
+
+
+storesSchema.virtual('comments', {
+    ref: 'Comment',
+    localField: 'storeId',
+    foreignField: 'storeId'
+});
+
+storesSchema.virtual('fruits', {
+    ref: 'Fruit',
+    localField: 'storeId',
+    foreignField: 'storeId'
+});
 
 const storeModel = mongoose.model('Store', storesSchema);
 

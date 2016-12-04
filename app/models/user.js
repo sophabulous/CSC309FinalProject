@@ -17,9 +17,13 @@ const usersSchema = new Schema(
             unique: true,
             uniqueCaseInsensitive: true
         },
-        name: {
+        firstname: {
             type: String,
-            required: [true, 'Must provide a name.']
+            required: [true, 'Must provide a first name.']
+        },
+        lastname: {
+            type: String,
+            required: [true, 'Must provide a last name.']
         },
         password: {
             type: String,
@@ -30,8 +34,22 @@ const usersSchema = new Schema(
             default: false
         },
         address: {
-            type: String,
-            required: [true, 'Must supply an address.']
+            street: {
+                type: String,
+                required: true
+            },
+            city: {
+                type: String,
+                required: true
+            },
+            province: {
+                type: String,
+                required: true
+            },
+            postalcode: {
+                type: String,
+                required: true
+            },
         },
         photo: {
             type: String,

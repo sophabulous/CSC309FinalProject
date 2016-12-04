@@ -16,7 +16,7 @@ module.exports = {
 
 
 /**
- * Respond to request with a stringified list of all cart objects.
+ * Respond to request with a list of all cart objects.
  *
  * Only authorized for admin.
  *
@@ -34,36 +34,36 @@ module.exports = {
  */
 function showCarts(req, res) {
     // Only admins can see all carts
-    if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
-    }
+    // if (!authorize.onlyAdmin(req.session.admin)) {
+    //     return res.status(409).json({'msg': 'Not Authorized.'});
+    // }
 
     // Must populate fruit to get details about the fruit in the response.
     Cart.find({}).populate('items.fruit').exec(function (err, carts) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         } else {
             console.log(carts);
-            return res.send(JSON.stringify(carts));
+            return res.json(carts);
         }
     });
 }
 
 
 /**
- * Respond to request with a stringified cart object.
+ * Respond to request with a cart object.
  *
  * Only authorized for admin or active user.
  *
  * Responds with
- * '{
+ * {
  *      _id: ObjectId,
  *      username: String,
  *      total: Number,
  *      items: [Fruits],
  *      lastUpdated: Date
- * }'
+ * }
  *
  * Cart is stored in session.
  *
@@ -76,7 +76,7 @@ function showSingleCart(req, res) {
         admin = req.session.admin;
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, activeUser, admin)) {
-        return res.status(409).send('Not authorized.');
+        return res.status(409).json({'msg': 'Not authorized.'});
     }
 
     console.log('Show cart for ' + requestUser);
@@ -90,17 +90,17 @@ function showSingleCart(req, res) {
         exec(function (err, cart) {
             if (err) {
                 console.log(err);
-                return res.status(500).send(err.message);
+                return res.status(500).json({'msg': err.message});
             }
 
             if (!cart) {
                 console.log('Cart for user ' + requestUser + ' not found.');
-                return res.status(404).send('Cart not found');
+                return res.status(404).json({'msg': 'Cart not found'});
             }
 
             req.session.cart = cart.populate('items.fruit');
             console.log(req.session.cart);
-            return res.send(JSON.stringify(cart));
+            return res.json(cart);
         });
 }
 
@@ -133,22 +133,23 @@ function modifyCart(req, res) {
         fruitId = req.body.fruitId,
         quantity = parseInt(req.body.quantity, 10);
 
-    if (quantity === NaN) {
-        return res.status(409).send('Please provide a numeric quantity.');
+    if (!quantity) {
+        return res.status(409).
+            json({'msg': 'Please provide a numeric quantity.'});
     }
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, activeUser, admin)) {
-        return res.status(409).send('Not authorized.');
+        return res.status(409).json({'msg': 'Not authorized.'});
     }
 
     Fruit.findOne({_id: fruitId}, function (err, fruit) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         }
 
         if (!fruit) {
-            return res.status(400).send('Fruit not found');
+            return res.status(400).json({'msg': 'Fruit not found'});
         }
 
         // Must populate fruit
@@ -157,13 +158,14 @@ function modifyCart(req, res) {
             exec(function (err, cart) {
                 if (err) {
                     console.log(err);
-                    return res.status(500).send(err.message);
+                    return res.status(500).json({'msg': err.message});
                 }
 
                 // Create new cart if this is the first item accessing the cart
                 if (!cart) {
                     if (quantity < 1) {
-                        return res.status(409).send('Cart is already empty.');
+                        return res.status(409).
+                            json({'msg': 'Cart is already empty.'});
                     }
                     cart = new Cart({
                         username: requestUser,
@@ -203,7 +205,8 @@ function modifyCart(req, res) {
                         cart.items.push(item);
                         amountChanged = quantity;
                     } else {
-                        return res.status(409).send('Nothing to remove');
+                        return res.status(409).
+                            json({'msg': 'Nothing to remove'});
                     }
                 }
 
@@ -213,13 +216,13 @@ function modifyCart(req, res) {
                     if (err) {
                         console.log(err);
                         return res.status(409).
-                            send(dbErrors.handleSaveErrors(err));
+                            json({'msg': dbErrors.handleSaveErrors(err)});
                     }
 
                     // Make cart available to session
                     req.session.cart = cart;
                     console.log(req.session.cart);
-                    return res.send('Success');
+                    return res.json({'msg': 'Success'});
                 });
             });
     });
@@ -242,24 +245,24 @@ function deleteCart(req, res) {
         admin = req.session.admin;
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, activeUser, admin)) {
-        return res.status(409).send('Not authorized.');
+        return res.status(409).json({'msg': 'Not authorized.'});
     }
 
     // Don't need to populate fruit here
     Cart.findOneAndRemove({username: requestUser}, function (err, cart) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         }
 
         if (!cart) {
             console.log('Cart not found.');
-            return res.status(404).send('Cart not found');
+            return res.status(404).json({'msg': 'Cart not found'});
         }
 
         console.log('Deleted cart for ', requestUser);
         req.session.cart = {};
-        return res.send('Success');
+        return res.json({'msg': 'Success'});
     });
 }
 
@@ -286,7 +289,7 @@ function checkout(req, res) {
         admin = req.session.admin;
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, activeUser, admin)) {
-        return res.status(409).send('Not authorized.');
+        return res.status(409).json({'msg': 'Not authorized.'});
     }
 
     // Must populate fruit
@@ -295,17 +298,17 @@ function checkout(req, res) {
         exec(function (err, cart) {
             if (err) {
                 console.log(err);
-                return res.status(500).send(err.message);
+                return res.status(500).json({'msg': err.message});
             }
 
             if (!cart) {
                 console.log('Cart not found.');
-                return res.status(404).send('Cart not found.');
+                return res.status(404).json({'msg': 'Cart not found.'});
             }
 
             if (cart.items.length === 0) {
                 console.log('No items in cart.');
-                return res.status(409).send('No items in cart.')
+                return res.status(409).json({'msg': 'No items in cart.'})
             }
 
             let newOrderObj = {
@@ -353,7 +356,8 @@ function checkout(req, res) {
             newOrder.save(function (err) {
                 if (err) {
                     console.log(err);
-                    return res.status(500).send('Could not complete order');
+                    return res.status(500).
+                        json({'msg': 'Could not complete order'});
                 }
 
                 cart.remove();
@@ -361,10 +365,10 @@ function checkout(req, res) {
 
                 if (allAvailable) {
                     console.log('Successfully created new order');
-                    return res.send('Success');
+                    return res.json({'msg': 'Success'});
                 } else {
                     console.log('Successfully created partial order');
-                    return res.send('Partial Success');
+                    return res.json({'msg': 'Partial Success'});
                 }
             });
         });

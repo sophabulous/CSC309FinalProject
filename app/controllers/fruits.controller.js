@@ -14,12 +14,12 @@ module.exports = {
 
 
 /**
- * Respond to request with a stringified list of all fruit objects.
+ * Respond to request with a list of all fruit objects.
  *
  * Use type, season or storeId query to get back only fruits of a specific value
  *
  * Example response to /fruits/
- * '[
+ * [
  *  "_id": "5839bb15c2342805668a8863",
  *  "storeId": "LO126",
  *  "type": "grapefruit",
@@ -30,7 +30,7 @@ module.exports = {
  *  "price": 1.2,
  *  "photo":
  *  "https://cdn.pixabay.com/photo/2016/11/02/16/49/orange-1792233__340.jpg"
- *  ]'
+ *  ]
  *
  * @param req
  * @param res
@@ -60,23 +60,23 @@ function showFruits(req, res) {
         query.storeId = storeId;
     }
 
-    Fruit.find(query).populate('comments').exec(function (err, fruits) {
+    Fruit.find(query).exec(function (err, fruits) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         } else {
             console.log(fruits);
-            return res.send(JSON.stringify(fruits));
+            return res.json(fruits);
         }
     });
 }
 
 
 /**
- * Respond to request with a stringified fruit object of fruit with _id /:id.
+ * Respond to request with a fruit object of fruit with _id /:id.
  *
  * Example response to /fruits/5839bb15c2342805668a8863
- * '{
+ * {
  *   "_id": "5839bb15c2342805668a8863",
  *   "storeId": "LO126",
  *   "type": "grapefruit",
@@ -87,27 +87,37 @@ function showFruits(req, res) {
  *   "price": 1.2,
  *   "photo":
  *   "https://cdn.pixabay.com/photo/2016/11/02/16/49/orange-1792233__340.jpg"
- * }'
+ * }
  *
  * @param req
  * @param res
  */
 function showSingleFruit(req, res) {
     let id = req.params.id;
+
     console.log('Show fruit ' + id);
-    Fruit.findOne({_id: id}).populate('comments').exec(function (err, fruit) {
+
+    Fruit.findOne({_id: id})
+    .populate({
+        path: 'comments',
+        populate: {
+            path: 'user',
+            select: 'photo username'
+        }
+    })
+    .exec(function (err, fruit) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         }
 
         if (!fruit) {
             console.log('Fruit ' + id + 'not found.');
-            return res.send(404, 'Fruit not found');
+            return res.status(404).json({'msg': 'Fruit not found'});
         }
 
         console.log(fruit);
-        return res.send(JSON.stringify(fruit));
+        return res.json(fruit);
 
     });
 }
@@ -139,7 +149,7 @@ function showSingleFruit(req, res) {
 function createNewFruit(req, res) {
     // Only admins can create a fruit
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     let newFruit = new Fruit(req.body);
@@ -149,10 +159,11 @@ function createNewFruit(req, res) {
     newFruit.save(function (err, newFruit) {
         if (err) {
             console.log(err);
-            return res.status(409).send(dbErrors.handleSaveErrors(err));
+            return res.status(409).
+                json({'msg': dbErrors.handleSaveErrors(err)});
         } else {
             console.log(newFruit._id + ' was added to the database.');
-            return res.send('Success');
+            return res.json({'msg': 'Success'});
         }
     });
 }
@@ -183,7 +194,7 @@ function createNewFruit(req, res) {
 function updateFruit(req, res) {
     // Only admins can update a fruit
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     let fruitId = req.params.id;
@@ -191,12 +202,12 @@ function updateFruit(req, res) {
     Fruit.findOne({_id: fruitId}, function (err, fruit) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         }
 
         if (!fruit) {
             console.log('Fruit not found');
-            return res.status(404).send('Fruit not found');
+            return res.status(404).json({'msg': 'Fruit not found'});
         }
 
         fruit.photo = req.body.photo || fruit.photo;
@@ -209,10 +220,11 @@ function updateFruit(req, res) {
         fruit.save(function (err) {
             if (err) {
                 console.log(err);
-                return res.status(400).send(dbErrors.handleSaveErrors(err));
+                return res.status(400).
+                    json({'msg': dbErrors.handleSaveErrors(err)});
             }
             console.log('Updated fruit ', fruit._id);
-            return res.send('Success');
+            return res.json({'msg': 'Success'});
         });
     });
 }
@@ -232,20 +244,20 @@ function updateFruit(req, res) {
 function deleteFruit(req, res) {
     // Only admins can delete a fruit
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     Fruit.findByIdAndRemove(req.params.id, function (err, fruit) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         }
 
         if (!fruit) {
             console.log('Fruit not found');
-            return res.status(404).send('Fruit not found');
+            return res.status(404).json({'msg': 'Fruit not found'});
         }
 
-        return res.send('Success');
+        return res.json({'msg': 'Success'});
     });
 }

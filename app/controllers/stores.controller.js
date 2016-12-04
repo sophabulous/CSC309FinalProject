@@ -1,6 +1,7 @@
 'use strict';
 
 const Store = require('../models/store'),
+    Fruit = require('../models/fruit'),
     Rating = require('../models/rating'),
     dbErrors = require('../services/handleDatabaseErrors'),
     authorize = require('../services/authorize');
@@ -16,19 +17,24 @@ module.exports = {
 
 
 /**
- * Respond to request with a stringified list of all store objects.
+ * Respond to request with a list of all store objects.
  *
  * Example response to /stores/
- * '[{
+ * [{
  *   "storeId": "LO123",
  *   "name": "Loblaws",
- *   "address": "11 Redway Road",
+ *   "address": {
+ *          "street": String,
+ *          "city": String
+ *          "province": String,
+ *          "postalcode": String
+ *          }
  *   "photo":
  *   "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
  *   "rateCount": 2,
  *   "rateValue": 4,
  *   "comments": []
- * }]'
+ * }]
  *
  * @param req
  * @param res
@@ -37,13 +43,13 @@ function showStores(req, res) {
     console.log('Show all stores:');
 
     // Send all stores from database -- exclude _id field
-    Store.find({}, {_id: 0}).populate('comments').exec(function (err, stores) {
+    Store.find({}, {_id: 0, fruits: 0}, function (err, stores) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         } else {
             console.log(stores);
-            return res.send(JSON.stringify(stores))
+            return res.json(stores);
         }
     });
 }
@@ -53,16 +59,21 @@ function showStores(req, res) {
  * Respond to request with a strigified store object with /:id as the storeId.
  *
  * Example response to /stores/LO123
- * '{
+ * {
  *   "storeId": "LO123",
  *   "name": "Loblaws",
- *   "address": "11 Redway Road",
+ *   "address": {
+ *          "street": String,
+ *          "city": String
+ *          "province": String,
+ *          "postalcode": String
+ *          }
  *   "photo":
  *   "https://upload.wikimedia.org/wikipedia/en/thumb/e/e2/Loblaws.svg/250px-Loblaws.svg.png",
  *   "rateCount": 2,
  *   "rateValue": 4,
  *   "comments": []
- * }'
+ * }
  *
  * @param req
  * @param res
@@ -72,24 +83,36 @@ function showSingleStore(req, res) {
 
     console.log('Show store ' + storeId);
 
-    // Send store in database that matches unique (enforced) storeId
-    // exclude _id field
-    Store.findOne({storeId: storeId}, {_id: 0}).
-        populate('comments').
-        exec(function (err, store) {
+    Store.findOne({storeId: storeId}, {_id: 0})
+    .populate({
+        path: 'comments',
+        populate: {
+            path: 'user',
+            select: 'photo username'
+        }
+    })
+    .populate('fruits')
+    .exec(function (err, store) {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({'msg': err.message});
+        }
+
+        if (!store) {
+            console.log('Store ' + storeId + 'not found.');
+            return res.status(404).json({'msg': 'Store not found'});
+        }
+
+        Fruit.find({storeId: storeId}, function (err, fruits) {
             if (err) {
                 console.log(err);
-                return res.status(500).send(err.message);
+                return res.status(500).json({'msg': err.message});
             }
+            console.log(store.toJSON());
+            return res.json(store);
+        })
 
-            if (!store) {
-                console.log('Store ' + storeId + 'not found.');
-                return res.status(404).send('Store not found');
-            }
-
-            console.log(store);
-            return res.send(JSON.stringify(store));
-        });
+    })
 }
 
 
@@ -103,7 +126,12 @@ function showSingleStore(req, res) {
  * {
  *      storeId: String,
  *      name: String,
- *      address: String,
+ *      address: {
+ *          street: String,
+ *          city: String
+ *          province: String,
+ *          postalcode: String
+ *          }
  *      photo: String (url, optional),
  * }
  *
@@ -116,15 +144,33 @@ function showSingleStore(req, res) {
 function createNewStore(req, res) {
     // Only admin can create a new store
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
+    }
+
+    // validation
+    req.checkBody('storeId', 'storeId is required').notEmpty();
+    req.checkBody('name', 'name is required').notEmpty();
+    req.checkBody('address.street', 'street is required').notEmpty();
+    req.checkBody('address.city', 'city is required').notEmpty();
+    req.checkBody('address.province', 'province is required').notEmpty();
+    req.checkBody('address.postalcode', 'postalcode is required').notEmpty();
+
+    let errors = req.validationErrors();
+    if (errors) {
+        return res.json(errors);
     }
 
     // Don't allow setting ratings upfront so selectively build store object
     // from request
     let newStore = new Store({
-        storeId: req.body.storeId ? req.body.storeId.toUpperCase() : '',
+        storeId: req.body.storeId.toUpperCase(),
         name: req.body.name,
-        address: req.body.address
+        address: {
+            street: req.body.street,
+            city: req.body.city,
+            province: req.body.province,
+            postalcode: req.body.postalcode,
+        }
     });
 
     // Allow default photo to be used if photo is not provided
@@ -133,11 +179,12 @@ function createNewStore(req, res) {
     newStore.save(function (err, newStore) {
         if (err) {
             console.log(err);
-            return res.status(500).send(dbErrors.handleSaveErrors(err));
+            return res.status(500).
+                json({'msg': dbErrors.handleSaveErrors(err)});
         } else {
             console.log(newStore.storeId +
                 ' was added to the database.');
-            return res.send('Success');
+            return res.json({'msg': 'Success'});
         }
     });
 }
@@ -158,7 +205,7 @@ function createNewStore(req, res) {
 function updateStore(req, res) {
     // Only admins can update a store
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     let storeId = req.params.id.toUpperCase();
@@ -166,20 +213,25 @@ function updateStore(req, res) {
     Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         }
 
         store.name = req.body.name || store.name;
-        store.address = req.body.address || store.address;
+        store.address.street = req.body.address.street || store.address.street;
+        store.address.city = req.body.address.city || store.address.city;
+        store.address.province =
+            req.body.address.province || store.address.province;
+        store.address.postalcode =
+            req.body.address.postalcode || store.address.postalcode;
         store.photo = req.body.photo || store.photo;
-
 
         store.save(function (err) {
             if (err) {
                 console.log(err);
-                return res.status(409).send(dbErrors.handleSaveErrors(err));
+                return res.status(409).
+                    json({'msg': dbErrors.handleSaveErrors(err)});
             }
-            return res.send('Success');
+            return res.json({'msg': 'Success'});
         })
     });
 }
@@ -197,23 +249,23 @@ function updateStore(req, res) {
  */
 function deleteStore(req, res) {
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     let storeId = req.params.id.toUpperCase();
     Store.findOneAndRemove({storeId: storeId}, function (err, store) {
         if (err) {
             console.log(err);
-            return res.status(500).send(err.message);
+            return res.status(500).json({'msg': err.message});
         }
 
         if (!store) {
             console.log('Store ' + storeId + 'not found.');
-            return res.status(404).send('Store not found');
+            return res.status(404).json({'msg': 'Store not found'});
         }
 
         console.log('Deleted store ', storeId);
-        return res.send('Success');
+        return res.json({'msg': 'Success'});
     });
 }
 
@@ -240,25 +292,26 @@ function rateStore(req, res) {
 
     // Check that user is logged in.
     if (!authorize.onlyLoggedIn(username)) {
-        return res.status(409).send('Not Authorized.');
+        return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
     if (!ratingVal || ratingVal < 0 || ratingVal > 5) {
-        return res.status(409).send('Invalid rating value.');
+        return res.status(409).json({'msg': 'Invalid rating value.'});
     }
 
     // Find store
     Store.findOne({storeId: storeId}, function (err, store) {
         if (err) {
             console.log(err);
-            return res.status(500).send(dbErrors.handleSaveErrors(err));
+            return res.status(500).
+                json({'msg': dbErrors.handleSaveErrors(err)});
         }
 
         // Create and save new rating to database
         addRating(storeId, username, ratingVal, function (err, rating) {
             if (err) {
                 console.log(err);
-                return res.status(400).send(err.message);
+                return res.status(400).json({'msg': err.message});
             }
 
             // Rating was successfully added, so store's rating can be
@@ -271,10 +324,11 @@ function rateStore(req, res) {
             store.save(function (err) {
                 if (err) {
                     console.log(err);
-                    return res.status(409).send(dbErrors.handleSaveErrors(err));
+                    return res.status(409).
+                        json({'msg': dbErrors.handleSaveErrors(err)});
                 } else {
                     console.log(store.name + ' was rated.');
-                    return res.send('Success');
+                    return res.json({'msg': 'Success'});
                 }
             });
         });

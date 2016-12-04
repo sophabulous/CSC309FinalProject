@@ -17,7 +17,6 @@ const commentsSchema = new Schema(
         },
         username: {
             type: String,
-            ref: 'User',
             required: true
         },
         message: {
@@ -30,8 +29,17 @@ const commentsSchema = new Schema(
             required: true
         }
     },
-    {collection: 'comments'}
+    {
+        collection: 'comments',
+        toJSON: {virtuals: true}
+    }
 );
+
+commentsSchema.virtual('user', {
+    ref: 'User',
+    localField: 'username',
+    foreignField: 'username'
+});
 
 const commentModel = mongoose.model('Comment', commentsSchema);
 
