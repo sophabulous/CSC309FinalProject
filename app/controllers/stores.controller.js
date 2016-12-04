@@ -43,7 +43,7 @@ function showStores(req, res) {
     console.log('Show all stores:');
 
     // Send all stores from database -- exclude _id field
-    Store.find({}, {_id: 0}).exec(function (err, stores) {
+    Store.find({}, {_id: 0, fruits: 0}, function (err, stores) {
         if (err) {
             console.log(err);
             return res.status(500).json({'msg': err.message});
@@ -83,11 +83,14 @@ function showSingleStore(req, res) {
 
     console.log('Show store ' + storeId);
 
-    // Send store in database that matches unique (enforced) storeId
-    // exclude _id field
     Store.findOne({storeId: storeId}, {_id: 0})
-    .populate('comments')
-    .populate('comments.user')
+    .populate({
+        path: 'comments',
+        populate: {
+            path: 'user',
+            select: 'photo username'
+        }
+    })
     .populate('fruits')
     .exec(function (err, store) {
         if (err) {
@@ -105,12 +108,11 @@ function showSingleStore(req, res) {
                 console.log(err);
                 return res.status(500).json({'msg': err.message});
             }
-            console.log('this is running');
-            console.log({"store": store, "fruits": fruits});
+            console.log(store.toJSON());
             return res.json(store);
         })
 
-    });
+    })
 }
 
 
@@ -163,7 +165,12 @@ function createNewStore(req, res) {
     let newStore = new Store({
         storeId: req.body.storeId.toUpperCase(),
         name: req.body.name,
-        address: req.body.address
+        address: {
+            street: req.body.street,
+            city: req.body.city,
+            province: req.body.province,
+            postalcode: req.body.postalcode,
+        }
     });
 
     // Allow default photo to be used if photo is not provided
@@ -210,9 +217,13 @@ function updateStore(req, res) {
         }
 
         store.name = req.body.name || store.name;
-        store.address = req.body.address || store.address;
+        store.address.street = req.body.address.street || store.address.street;
+        store.address.city = req.body.address.city || store.address.city;
+        store.address.province =
+            req.body.address.province || store.address.province;
+        store.address.postalcode =
+            req.body.address.postalcode || store.address.postalcode;
         store.photo = req.body.photo || store.photo;
-
 
         store.save(function (err) {
             if (err) {

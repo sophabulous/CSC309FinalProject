@@ -16,7 +16,8 @@ const commentsSchema = new Schema(
             ref: 'Fruit'
         },
         username: {
-            type: String
+            type: String,
+            required: true
         },
         message: {
             type: String,
