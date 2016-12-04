@@ -9,8 +9,7 @@ const usersSchema = new Schema(
         username: {
             type: String,
             required: [true, 'Must supply a username.'],
-            unique: true,
-            index: true,
+            unique: true
         },
         email: {
             type: String,

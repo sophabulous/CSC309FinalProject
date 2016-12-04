@@ -16,7 +16,7 @@ module.exports = {
 
 
 /**
- * Respond to request with a stringified list of all cart objects.
+ * Respond to request with a list of all cart objects.
  *
  * Only authorized for admin.
  *
@@ -52,18 +52,18 @@ function showCarts(req, res) {
 
 
 /**
- * Respond to request with a stringified cart object.
+ * Respond to request with a cart object.
  *
  * Only authorized for admin or active user.
  *
  * Responds with
- * '{
+ * {
  *      _id: ObjectId,
  *      username: String,
  *      total: Number,
  *      items: [Fruits],
  *      lastUpdated: Date
- * }'
+ * }
  *
  * Cart is stored in session.
  *

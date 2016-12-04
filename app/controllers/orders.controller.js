@@ -11,14 +11,14 @@ module.exports = {
 
 
 /**
- * Respond to request with a stringified list of all order objects.
+ * Respond to request with a list of all order objects.
  *
  * Query by username.
  *
  * Only authorized for admin.
  *
  * Example response to /orders/
- * '[{
+ * [{
  *  "_id": "5839fa4e6837b30812b3a963",
  *  "username": "admin",
  *  "createdAt": "2016-11-26T21:10:38.831Z",
@@ -33,7 +33,7 @@ module.exports = {
  *      "_id": "5839fa4e6837b30812b3a964"
  *    }
  *  ]
- * }]'
+ * }]
  *
  * @param req
  * @param res
@@ -66,10 +66,10 @@ function showOrders(req, res) {
 
 
 /**
- * Respond to request with a stringified order object with order _id as /:id.
+ * Respond to request with a order object with order _id as /:id.
  *
  * Example response to /orders/5839fa4e6837b30812b3a963
- * '{
+ * {
  *  "_id": "5839fa4e6837b30812b3a963",
  *  "username": "admin",
  *  "createdAt": "2016-11-26T21:10:38.831Z",
@@ -84,7 +84,7 @@ function showOrders(req, res) {
  *      "_id": "5839fa4e6837b30812b3a964"
  *    }
  *  ]
- * }'
+ * }
  *
  * @param req
  * @param res

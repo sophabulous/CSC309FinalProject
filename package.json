@@ -10,13 +10,13 @@
     "express": "^4.14.0",
     "express-session": "^1.14.2",
     "express-validator": "^3.0.0",
-    "mongodb": "^2.2.11",
+    "mongodb": "^2.2.12",
     "mongoose": "^4.6.5",
     "mongoose-unique-validator": "^1.0.3",
     "nodemon": "^1.11.0"
   },
   "scripts": {
-    "start": "mongod --dbpath data --fork --logpath data/mongodb.log  &&  node app.js",
+    "start": "mongod --dbpath data /d  &&  node app.js",
     "reseed": "mongod --dbpath data --fork --logpath data/mongodb.log  &&  node app.js reseed",
     "nodemon": "mongod --dbpath data --fork --logpath data/mongodb.log &&  nodemon",
     "poststop": "mongo admin --eval 'db.shutdownServer()'"
