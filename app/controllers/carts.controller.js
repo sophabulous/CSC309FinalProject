@@ -34,9 +34,9 @@ module.exports = {
  */
 function showCarts(req, res) {
     // Only admins can see all carts
-    // if (!authorize.onlyAdmin(req.session.admin)) {
-    //     return res.status(409).json({'msg': 'Not Authorized.'});
-    // }
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).json({'msg': 'Not Authorized.'});
+    }
 
     // Must populate fruit to get details about the fruit in the response.
     Cart.find({}).populate('items.fruit').exec(function (err, carts) {

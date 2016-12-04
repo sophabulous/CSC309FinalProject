@@ -1,82 +1,124 @@
-<div id="wrapper">        
+<div id="wrapper">
 
-        <div id="page-wrapper">
+    <div id="page-wrapper">
 
-            <div class="container-fluid">
+        <div class="container-fluid">
 
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h1 class="page-header">
-                            Bamama<br>
-                            <span style="font-size: 20px;">User ID: xxxxxxxxx</span>
-                        </h1>
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        {{userInfo.username}}<br>
+                    </h1>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad">
+
+
+                    <div class="panel panel-info">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">User Info</h3>
+                        </div>
+
+                        <div class="table-responsive" ng-if="editMode">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Firstname</td>
+                                    <td><input type="text" class="form-control" ng-init ="modUserObj.price = userInfo.price" ng-model="modUserObj.firstname"></td>
+                                </tr>
+                                <tr>
+                                    <td>Lastname</td>
+                                    <td><input type="text" class="form-control" ng-init ="modUserObj.photo = userInfo.photo" ng-model="modUserObj.lastname"></td>
+                                </tr>
+                                <tr>
+                                    <td>Photo</td>
+                                    <td><input type="text" class="form-control" ng-init ="modUserObj.photo = userInfo.photo" ng-model="modUserObj.photo"></td>
+                                </tr>
+                                <tr>
+                                    <td>Street</td>
+                                    <td><input type="text" class="form-control" ng-init ="modUserObj.photo = userInfo.street" ng-model="modUserObj.address.street"></td>
+                                </tr>
+                                <tr>
+                                    <td>City</td>
+                                    <td><input type="text" class="form-control" ng-init ="modUserObj.photo = userInfo.photo" ng-model="modUserObj.address.city"></td>
+                                </tr>
+                                <tr>
+                                    <td>Province</td>
+                                    <td><input type="text" class="form-control" ng-init ="modUserObj.quantity = userInfo.quantity" ng-model="modUserObj.address.province"></td>
+                                </tr>
+                                <tr>
+                                    <td>Postal Code</td>
+                                    <td><input type="text" class="form-control" ng-init ="modUserObj.photo = userInfo.photo" ng-model="modUserObj.address.postalcode"></td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td><input type="text" class="form-control" ng-init ="modUserObj.photo = userInfo.photo" ng-model="modUserObj.email"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-primary btn-block" style="margin-top: 20px;" ng-click="modCurrentUser()">Submit</button>
+                            <button type="button" ng-click="toggleEdit()">BACK</button>
+                        </div>
+
+                        <div class="panel-body" ng-if="!editMode">
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3 " align="center">
+                                    <img alt="User Pic" ng-src="{{userInfo.photo}}" class="profile-img img-responsive">
+                                </div>
+
+                                <div class=" col-md-9 col-lg-9 ">
+                                    <table class="table table-user-information">
+                                        <tbody>
+                                        <tr>
+                                            <td>Firstname</td>
+                                            <td>{{userInfo.firstname}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lastname</td>
+                                            <td>{{userInfo.lastname}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Username</td>
+                                            <td>{{userInfo.username}}</td>
+                                        </tr>
+
+                                        <tr>
+                                            <tr>
+                                                <td>Address</td>
+                                                <td>{{userInfo.street}}, {{userInfo.city}} {{userInfo.province}} {{userInfo.postalcode}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Email</td>
+                                                <td><a ng-href="{{userInfo.email}}">{{userInfo.email}}</a></td>
+                                            </tr>
+
+                                            </td>
+
+                                        </tr>
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <a data-original-title="Edit" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary" ng-click="toggleEdit()">Edit Info</a>
+                            <a data-original-title="Edit" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary" ng-click="logout()">Log Out</a>
+                        </div>
+
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
-   
-   
-          <div class="panel panel-info">
-            <div class="panel-heading">
-              <h3 class="panel-title">User Info</h3>
-            </div>
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-md-3 col-lg-3 " align="center"> <img alt="User Pic" src="http://thumbnails.cbc.ca/maven_legacy/thumbnails/822/983/raw-obama-prince-george-050116.jpg" class="profile-img img-responsive"> </div>
-
-                <div class=" col-md-9 col-lg-9 "> 
-                  <table class="table table-user-information">
-                    <tbody>
-                      <tr>
-                        <td>User type:</td>
-                        <td>Admin</td>
-                      </tr>
-                      <tr>
-                        <td>Registration date:</td>
-                        <td>06/23/2013</td>
-                      </tr>
-                      <tr>
-                        <td>Date of Birth</td>
-                        <td>05/14/1998</td>
-                      </tr>
-                   
-                      <tr>
-                      <tr>
-                        <td>Gender</td>
-                        <td>Female</td>
-                      </tr>
-                        <tr>
-                        <td>Address</td>
-                        <td>Toronto, Ontario</td>
-                      </tr>
-                      <tr>
-                        <td>Email</td>
-                        <td><a href="s.kelly@gmail.com">s.kelly@gmail.com</a></td>
-                      </tr>
-                        <td>Phone</td>
-                        <td>647-555-6666
-                        </td>
-                           
-                      </tr>
-                     
-                    </tbody>
-                  </table>
-
-                </div>
-              </div>
-            </div>
-                 <div class="panel-footer">
-                        <a data-original-title="Edit" data-toggle="tooltip" type="button" class="btn btn-sm btn-primary">Edit Info</a>
-                    </div>
-            
-          </div>
-        </div>
-
-                </div>
-
             </div>
 
         </div>
+
+    </div>
 
 </div>

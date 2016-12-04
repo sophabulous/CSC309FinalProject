@@ -4,83 +4,83 @@
 
         <div class="container-fluid">
             <div class="table-responsive" ng-if="editMode">
-                    <table class="table table-bordered table-hover table-striped">
-                        <thead>
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
 
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Price</td>                                  
-                                <td><input type="number" class="form-control" ng-init ="modFruitObj.price = fruitDetail.price" ng-model="modFruitObj.price"></td>                                   
-                            </tr>
-                            <tr>
-                                <td>Photo</td>                                  
-                                <td><input type="text" class="form-control" ng-init ="modFruitObj.photo = fruitDetail.photo" ng-model="modFruitObj.photo"></td>                                   
-                            </tr>
-                            <tr>
-                                <td>Quantity</td>                                  
-                                <td><input type="number" class="form-control" ng-init ="modFruitObj.quantity = fruitDetail.quantity" ng-model="modFruitObj.quantity"></td>                                   
-                            </tr>                                       
-                        </tbody>                                    
-                    </table>
-                    <button type="button" class="btn btn-primary btn-block" style="margin-top: 20px;" ng-click="modCurrentFruit()">Submit</button>
-                    <button type="button" ng-click="toggleEdit()">BACK</button>
-                </div>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Price</td>
+                        <td><input type="number" class="form-control" ng-init ="modFruitObj.price = fruitDetail.price" ng-model="modFruitObj.price"></td>
+                    </tr>
+                    <tr>
+                        <td>Photo</td>
+                        <td><input type="text" class="form-control" ng-init ="modFruitObj.photo = fruitDetail.photo" ng-model="modFruitObj.photo"></td>
+                    </tr>
+                    <tr>
+                        <td>Quantity</td>
+                        <td><input type="number" class="form-control" ng-init ="modFruitObj.quantity = fruitDetail.quantity" ng-model="modFruitObj.quantity"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary btn-block" style="margin-top: 20px;" ng-click="modCurrentFruit()">Submit</button>
+                <button type="button" ng-click="toggleEdit()">BACK</button>
+            </div>
 
             <div class="row fruit_detail" ng-if="!editMode">
                 <div class="col-lg-6 product_info_panel">
                     <img class="product-pic" ng-src="{{fruitDetail.photo}}" alt=""> <button type="button" ng-click="toggleEdit()">EDIT</button>
                 </div>
                 <br class="col-lg-6 product_info_panel">
-                    <label class="product_det_name">{{fruitDetail.type}}</label></br>
-                    <label class="product_store">Store: {{fruitDetail.storeId}}</label>
-                    <div class="product_detail">
-                        <h3>Price: ${{fruitDetail.price | number : 2}}</h3>
-                        <p class="productid">{{fruitDetail._id}}</p>
-                        Size: {{fruitDetail.unit}}
-                        <br/>
-                        <br/>
-                        Qty: <input type="number" name="quantity" min="1" max="20">
-                        <a href="#" class="add-to-cart">Add to Cart</a>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-lg-8 comments_panel">
-                        <div class="detailBox">
-                            <div class="titleBox">
-                                <label>Comments</label>
-                            </div>
-                            <div class="actionBox">
-                                <ul class="commentList" ng-repeat="comment in fruitDetail.comments">
-                                    <li>
-                                        <div class="commenterImage">
-                                            <img src="http://placekitten.com/50/50"/>
-                                        </div>
-                                        <div class="commenterText">
-                                            <p class="">{{comment.username}}</p>
-                                        </div>
-                                        <div class="commentText">
-                                            <p class="">{{comment.message}}</p>
-                                            <span class="date sub-text">on {{comment.created}}</span>
-                                        </div>
-                                    </li>
-                                </ul>
-                                <form class="form-inline" role="form">
-                                    <div class="form-group">
-                                        <input class="form-control" type="text" placeholder="Your comments"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-default">Add</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
-
+                <label class="product_det_name">{{fruitDetail.type}}</label></br>
+                <label class="product_store">Store: {{fruitDetail.storeId}}</label>
+                <div class="product_detail">
+                    <h3>Price: ${{fruitDetail.price | number : 2}}</h3>
+                    <p class="productid">{{fruitDetail._id}}</p>
+                    Size: {{fruitDetail.unit}}
+                    <br/>
+                    <br/>
+                    Qty: <input type="number" name="quantity" ng-model="" min="1" max="20">
+                    <a href="#" class="add-to-cart">Add to Cart</a>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-lg-8 comments_panel">
+                    <div class="detailBox">
+                        <div class="titleBox">
+                            <label>Comments</label>
+                        </div>
+                        <div class="actionBox">
+                            <ul class="commentList" ng-repeat="comment in fruitDetail.comments">
+                                <li>
+                                    <div class="commenterImage">
+                                        <img src="http://placekitten.com/50/50"/>
+                                    </div>
+                                    <div class="commenterText">
+                                        <p class="">{{comment.username}}</p>
+                                    </div>
+                                    <div class="commentText">
+                                        <p class="">{{comment.message}}</p>
+                                        <span class="date sub-text">on {{comment.created}}</span>
+                                    </div>
+                                </li>
+                            </ul>
+                            <form class="form-inline" role="form">
+                                <div class="form-group">
+                                    <input class="form-control" type="text" placeholder="Your comments"/>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-default">Add</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
+    </div>
 
 </div>

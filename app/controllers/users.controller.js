@@ -36,9 +36,9 @@ module.exports = {
  *  }]
  */
 function showUsers(req, res) {
-    // if (!authorize.onlyAdmin(req.session.admin)) {
-    //     return res.status(409).send({'msg': 'Not Authorized.'});
-    // }
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).send({'msg': 'Not Authorized.'});
+    }
 
     User.find({}, {password: 0}, function (err, users) {
         if (err) {
@@ -124,10 +124,10 @@ function showUser(req, res) {
  * @param res
  */
 function createNewUser(req, res) {
-    // if (!authorize.onlyNotLoggedInOrAdmin(req.session.username,
-    //         req.session.admin)) {
-    //     return res.status(409).send({'msg': 'Not Authorized.'});
-    // }
+    if (!authorize.onlyNotLoggedInOrAdmin(req.session.username,
+            req.session.admin)) {
+        return res.status(409).send({'msg': 'Not Authorized.'});
+    }
 
     // validation
     req.checkBody('username', 'username is required').notEmpty();
@@ -174,7 +174,11 @@ function createNewUser(req, res) {
             req.session.cart = {};
             console.log('Added new user ', newUser.username);
             console.log(req.session);
-            return res.json({'msg': 'Success'});
+            return res.json({
+                'isAdmin': newUser.admin,
+                'username': newUser.username,
+                'msg': 'Success'}
+                );
         }
     });
 }
@@ -198,9 +202,9 @@ function createNewUser(req, res) {
  * @param res
  */
 function loginUser(req, res) {
-    // if (!authorize.onlyNotLoggedIn(req.session.username)) {
-    //     return res.status(409).send('Not Authorized.');
-    // }
+    if (!authorize.onlyNotLoggedIn(req.session.username)) {
+        return res.status(409).send('Not Authorized.');
+    }
 
     // validation
     req.checkBody('username', 'username is required').notEmpty();
@@ -224,7 +228,10 @@ function loginUser(req, res) {
         if (user && bcrypt.compareSync(password, user.password)) {
             req.session.username = user.username;
             req.session.admin = user.admin;
-            return res.json({'msg': 'Success'});
+            return res.json({
+                'isAdmin': user.admin,
+                'username': user.username,
+                'msg': 'Success'});
         } else { // user doesn't exist or password match failed
             console.log('Invalid login attempt.');
             return res.status(409).send('Invalid username or password.');
@@ -311,9 +318,9 @@ function updateUserProfile(req, res) {
  * @param res
  */
 function deleteUser(req, res) {
-    // if (!authorize.onlyAdmin(req.session.admin)) {
-    //     return res.status(409).send('Not Authorized.');
-    // }
+    if (!authorize.onlyAdmin(req.session.admin)) {
+        return res.status(409).send('Not Authorized.');
+    }
 
     let username = req.params.id;
     User.findOneAndRemove({username: username}, function (err, user) {
