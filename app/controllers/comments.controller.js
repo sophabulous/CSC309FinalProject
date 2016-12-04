@@ -93,8 +93,8 @@ function commentOnFruit(req, res) {
     let sessionUser = req.session.username,
         requestUser = req.body.username,
         admin = req.session.admin,
-        fruitId = req.body.fruitId;
-
+        fruitId = req.params.id;
+    console.log("REQUEST: ", req.body);
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
         return res.status(409).json({'msg': 'Not Authorized.'});
     }
@@ -155,7 +155,8 @@ function commentOnStore(req, res) {
     let sessionUser = req.session.username,
         requestUser = req.body.username,
         admin = req.session.admin,
-        storeId = req.body.storeId;
+        storeId = req.params.id;
+    console.log("REQUEST: ", req.body);
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
         return res.status(409).json({'msg': 'Not Authorized.'});

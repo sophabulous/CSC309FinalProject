@@ -88,11 +88,11 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     };
 
     this.validateLogin = function() {
-            return $http({
-                method: 'POST',
-                data: $rootScope.userSignup,
-                url: "/login"
-             });
+        return $http({
+            method: 'POST',
+            data: $rootScope.userCred,
+            url: "/login"
+        });
     };
 
     this.signThisPersonUp = function() {
@@ -128,7 +128,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
         return $http({
             method: 'POST',
             data: $rootScope.storeComment,
-            url: "/comments/stores"
+            url: "/comments/stores/" + $location.search().storeid
         });
     };
 
@@ -136,7 +136,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
         return $http({
             method: 'POST',
             data: $rootScope.fruitComment,
-            url: "/comments/stores"
+            url: "/comments/fruits/" + $location.search().fruitid
         });
     };
 })
@@ -197,7 +197,6 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             }
 
             $rootScope.storeComment = {
-                storeId: $scope.storeDetail.storeId,
                 message: "",
                 username: $rootScope.username
             };
@@ -265,7 +264,6 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             }
 
             $rootScope.fruitComment = {
-                storeId: $location.search().fruitid,
                 message: "",
                 username: $rootScope.username
             };
