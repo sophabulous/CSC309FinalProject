@@ -133,7 +133,7 @@ function modifyCart(req, res) {
         fruitId = req.body.fruitId,
         quantity = parseInt(req.body.quantity, 10);
 
-    if (quantity === NaN) {
+    if (!quantity) {
         return res.status(409).
             json({'msg': 'Please provide a numeric quantity.'});
     }

@@ -202,7 +202,7 @@ function loginUser(req, res) {
     req.checkBody('username', 'username is required').notEmpty();
     req.checkBody('password', 'password is required').notEmpty();
 
-    var errors = req.validationErrors();
+    let errors = req.validationErrors();
     if (errors) {
         return res.json(errors);
     }

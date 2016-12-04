@@ -60,7 +60,7 @@
                                     <ul class="commentList" ng-repeat="comment in storeDetail.comments">
                                         <li>
                                             <div class="commenterImage">
-                                              <img src="http://placekitten.com/50/50" />
+                                              <img ng-src="{{comment.user[0].photo}}" />
                                             </div>
                                             <div class="commenterText">
                                                 <p class="">{{comment.username}}</p>

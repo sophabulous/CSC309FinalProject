@@ -60,7 +60,7 @@ function showFruits(req, res) {
         query.storeId = storeId;
     }
 
-    Fruit.find(query).populate('comments').exec(function (err, fruits) {
+    Fruit.find(query).exec(function (err, fruits) {
         if (err) {
             console.log(err);
             return res.status(500).json({'msg': err.message});
@@ -94,8 +94,18 @@ function showFruits(req, res) {
  */
 function showSingleFruit(req, res) {
     let id = req.params.id;
+
     console.log('Show fruit ' + id);
-    Fruit.findOne({_id: id}).populate('comments').exec(function (err, fruit) {
+
+    Fruit.findOne({_id: id})
+    .populate({
+        path: 'comments',
+        populate: {
+            path: 'user',
+            select: 'photo username'
+        }
+    })
+    .exec(function (err, fruit) {
         if (err) {
             console.log(err);
             return res.status(500).json({'msg': err.message});
