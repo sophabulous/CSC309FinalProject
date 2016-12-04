@@ -468,7 +468,20 @@
       }
     },
     {
-      "username": "kb",
+      "username": "peteylovesfruits",
+      "password": "3456abc",
+      "firstname": "Peter",
+      "lastname": "Long",
+      "email": "peter@gmail.com",
+      "admin": false,
+      "address": {
+        "street": "39 St George St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5S 2E5"
+        }
+    },
+      {"username": "kb",
       "password": "$2a$10$7wdH.hl9wPjLq64DvfMJc.2vuy79C1njZi2WkkMJcJU10f8j2Yv.q",
       "firstname": "Kelly",
       "lastname": "Bell",
@@ -479,7 +492,7 @@
         "city": "Toronto",
         "province": "ON",
         "postalcode": "M5S 2E4"
-      }
+        }
     },
     {
       "username": "sw",
