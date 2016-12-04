@@ -46,6 +46,10 @@ function showComments(req, res) {
         return res.status(409).json({'msg': 'Not Authorized.'});
     }
 
+    if (req.query.username) {
+        query.username = req.query.username;
+    }
+
     if (req.query.fruitId) {
         query.commentId = req.query.fruitId;
     }
@@ -88,7 +92,8 @@ function showComments(req, res) {
 function commentOnFruit(req, res) {
     let sessionUser = req.session.username,
         requestUser = req.body.username,
-        admin = req.session.admin;
+        admin = req.session.admin,
+        fruitId = req.body.fruitId;
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
         return res.status(409).json({'msg': 'Not Authorized.'});
@@ -97,7 +102,7 @@ function commentOnFruit(req, res) {
     let comment = {
         username: requestUser,
         message: req.body.message,
-        fruitId: req.body.fruitId
+        fruitId: fruitId
     };
 
     let newComment = new Comment(comment);
@@ -111,7 +116,9 @@ function commentOnFruit(req, res) {
                 json({'msg': dbErrors.handleSaveErrors(err)});
         }
 
-        Fruit.findOneAndUpdate({_id: fruitId}, {$push: {comments: newComment}},
+        Fruit.findOneAndUpdate(
+            {_id: fruitId},
+            {$push: {comments: newComment}},
             {safe: true}, function (err, fruit) {
                 if (err) {
                     console.log(err);
@@ -119,7 +126,6 @@ function commentOnFruit(req, res) {
                         json({'msg': dbErrors.handleSaveErrors(err)});
                 }
 
-                fruit.comments.push(newComment);
                 return res.json({'msg': 'Success'});
             })
     });

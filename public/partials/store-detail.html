@@ -1,91 +1,116 @@
-<div ng-app="starApp" id="wrapper" xmlns="http://www.w3.org/1999/html">
+<div id="wrapper">
 
-        <div id="page-wrapper">
-            <div class="container-fluid">
-                <div class="row store_detail">
-                    <label class="store_det_name">{{storeDetail.name}}</label>
-                    <div class="col-lg-12">
-                        <p>{{storeDetail.address.city}}, {{storeDetail.address.province}}</p>
-                        <div class="rating">
-                            <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
-                        </div>
+    <div id="page-wrapper">
+        <div class="container-fluid">
 
-                        <h6>Store ID: {{storeDetail.storeId}}</h6>
+            <div class="table-responsive" ng-if="editMode">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead>
+
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td><input type="text" class="form-control" ng-init ="modStoreObj.name = storeDetail.name" ng-model="modStoreObj.name"></td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td><input type="text" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <td>Store Photo</td>{{modStoreObj.photo}}
+                        <td><input type="text" class="form-control" ng-init ="modStoreObj.photo = storeDetail.photo" ng-model="modStoreObj.photo"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary btn-block" style="margin-top: 20px;" ng-click="modCurrentStore()">Submit</button>
+                <button type="button" ng-click="toggleEdit()">BACK</button>
+            </div>
+
+            <div class="row store_detail" ng-if="!editMode">
+                <label class="store_det_name">
+                    {{storeDetail.name}}</br> <button type="button" ng-click="toggleEdit()">EDIT</button>
+                    {{storeDetail.address.city}},{{storeDetail.address.province}}</label><br/>
+                <div class="col-lg-12">
+                    <div class="rating">
+                        <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
                     </div>
-                    <div class="col-lg-12 row store_info_panel">
+                    <h6>Store ID: {{storeDetail.storeId}}</h6>
+                </div>
+                <div class="col-lg-12 row store_info_panel">
 
-                        <div class="col-lg-5 crop">
-                            <img ng-src="{{storeDetail.photo}}">
-                        </div>
-                        <div class="col-lg-4 map_area">
-                            <iframe src={{googleMapSearchStr}}  width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>
-                            <p class="store_info_header"><i class="fa fa-map-marker" aria-hidden="true"></i> {{storeDetail.address.street}}, {{storeDetail.address.city}}, {{storeDetail.address.province}}, {{storeDetail.address.postalcode}}</p>
-                            <p class="store_info_header"><i class="fa fa-phone" aria-hidden="true"></i> (416) 979-1777</p>
-                        </div>
-                        <div class="col-lg-3 store_info">
-                            <p class="store_info_header">Hours: </p>
-
-                            <p>Mon: </p>
-                            <p>Tue: </p>
-                            <p>Wed: </p>
-                            <p>Thur: </p>
-                            <p>Fri: </p>
-                            <p>Sat: </p>
-                            <p>Sun: </p>
-                            <p class="store_info_header">More business info</p>
-                            <p>Accepted Cards: Credit, Debit</p>
-                            <p>Wheelchair Accessible: Yes</p>
-                        </div>
+                    <div class="col-lg-5 crop">
+                        <img ng-src="{{storeDetail.photo}}">
                     </div>
+                    <div class="col-lg-4 map_area">
+                        <iframe src={{googleMapSearchStr}} width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>
+                        <p class="store_info_header"><i class="fa fa-map-marker" aria-hidden="true"></i> {{storeDetail.address.street}}, {{storeDetail.address.city}}, {{storeDetail.address.province}}, {{storeDetail.address.postalcode}}</p>
+                        <p class="store_info_header"><i class="fa fa-phone" aria-hidden="true"></i> (416) 979-1777</p>
+                    </div>
+                    <div class="col-lg-3 store_info">
+                        <p class="store_info_header">Hours: </p>
 
-                    <div class="col-lg-12 row">
-                        <div class="col-lg-8 row store_products_panel">
-                            <label>Products</label><br/>
-                            <div ng-repeat="fruit in storeDetail.fruits">
-                                <div class="col-lg-3 product_thumb_link">
-                                    <span ui-sref="fruit-detail({fruitid: fruit._id})"><img ng-src="{{fruit.photo}}" alt=""></span>
-                                    <p>
-                                        <span class="leftcap">{{fruit.type}}</span>
-                                        <span class="rightcap">${{fruit.price}}</span>
-                                    </p>
-                                </div>
+                        <p>Mon: </p>
+                        <p>Tue: </p>
+                        <p>Wed: </p>
+                        <p>Thur: </p>
+                        <p>Fri: </p>
+                        <p>Sat: </p>
+                        <p>Sun: </p>
+                        <p class="store_info_header">More business info</p>
+                        <p>Accepted Cards: Credit, Debit</p>
+                        <p>Wheelchair Accessible: Yes</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 row">
+                    <div class="col-lg-8 row store_products_panel">
+                        <label>Products</label><br/>
+                        <div ng-repeat="fruit in storeDetail.fruits">
+                            <div class="col-lg-3 product_thumb_link">
+                                <span ui-sref="fruit-detail({fruitid: fruit._id})"><img ng-src="{{fruit.photo}}" alt=""></span>
+                                <p>
+                                    <span class="leftcap">{{fruit.type}}</span>
+                                    <span class="rightcap">${{fruit.price | number : 2}}</span>
+                                </p>
                             </div>
                         </div>
-                        <div class="col-lg-4 comments_panel">
-                            <div class="detailBox">
-                                <div class="titleBox">
-                                  <label>Comments</label>
-                                </div>
-                                <div class="actionBox">
-                                    <ul class="commentList" ng-repeat="comment in storeDetail.comments">
-                                        <li>
-                                            <div class="commenterImage">
-                                              <img src="http://placekitten.com/50/50" />
-                                            </div>
-                                            <div class="commenterText">
-                                                <p class="">{{comment.username}}</p>
-                                            </div>
-                                            <div class="commentText">
-                                                <p class="">{{comment.message}}</p> <span class="date sub-text">on {{comment.created}}</span>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                    <form class="form-inline" role="form">
-                                        <div class="form-group">
-                                            <input class="form-control" type="text" placeholder="Your comments" />
+                    </div>
+                    <div class="col-lg-4 comments_panel">
+                        <div class="detailBox">
+                            <div class="titleBox">
+                                <label>Comments</label>
+                            </div>
+                            <div class="actionBox">
+                                <ul class="commentList" ng-repeat="comment in storeDetail.comments">
+                                    <li>
+                                        <div class="commenterImage">
+                                            <img ng-src="{{comment.user[0].photo}}" />
                                         </div>
-                                        <div class="form-group">
-                                            <button class="btn btn-default">Add</button>
+                                        <div class="commenterText">
+                                            <p class="">{{comment.username}}</p>
                                         </div>
-                                    </form>
-                                </div>
+                                        <div class="commentText">
+                                            <p class="">{{comment.message}}</p> <span class="date sub-text">on {{comment.created}}</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <form class="form-inline" role="form">
+                                    <div class="form-group">
+                                        <input class="form-control" type="text" placeholder="Your comments" />
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-default">Add</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
         </div>
+
+    </div>
 
 </div>

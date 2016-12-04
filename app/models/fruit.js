@@ -124,7 +124,6 @@ const fruitsSchema = new Schema(
             required: true
         }
     },
-    {minimize: false},
     {
         collection: 'fruits',
         toJSON: {virtuals: true}

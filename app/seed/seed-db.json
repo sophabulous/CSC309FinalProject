@@ -479,6 +479,47 @@
         "city": "Toronto",
         "province": "ON",
         "postalcode": "M5S 2E5"
+        }
+    },
+      {"username": "kb",
+      "password": "$2a$10$7wdH.hl9wPjLq64DvfMJc.2vuy79C1njZi2WkkMJcJU10f8j2Yv.q",
+      "firstname": "Kelly",
+      "lastname": "Bell",
+      "email": "kb@me.com",
+      "photo": "https://cdn.pixabay.com/photo/2016/11/28/14/58/cat-1865232__180.jpg",
+      "address": {
+        "street": "40 St George St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5S 2E4"
+        }
+    },
+    {
+      "username": "sw",
+      "password": "$2a$10$hSC4bQBAQOLfouCK2cREV.pyISVapdt7/pPOvMdKQe4f1D2FXn1jy",
+      "firstname": "Sophie",
+      "lastname": "Wang",
+      "email": "sw@me.com",
+      "photo": "https://cdn.pixabay.com/photo/2015/11/16/22/14/cat-1046544__180.jpg",
+      "address": {
+        "street": "40 St George St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5S 2E4"
+      }
+    },
+    {
+      "username": "rg",
+      "password": "$2a$10$3Ey1TuyFL4zC4vmQla/9keArXufYrwMmAqJ1H1OjD4PqjWbj/r2ey",
+      "firstname": "Richard",
+      "lastname": "Gao",
+      "email": "rg@me.com",
+      "photo": "https://cdn.pixabay.com/photo/2015/05/22/05/52/cat-778315__180.jpg",
+      "address": {
+        "street": "40 St George St",
+        "city": "Toronto",
+        "province": "ON",
+        "postalcode": "M5S 2E4"
       }
     }
   ]

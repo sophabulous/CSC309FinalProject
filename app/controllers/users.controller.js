@@ -68,13 +68,17 @@ function showUsers(req, res) {
  * @returns {*}
  */
 function showUser(req, res) {
+    let sessionUser = req.session.username,
+        requestUser = req.params.id,
+        admin = req.session.admin;
+
     // Only show profile of user to signed in users
-    if (!authorize.onlyLoggedIn(req.session.username)) {
+    if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
         return res.status(409).send({'msg': 'Not Authorized.'});
     }
 
 
-    User.findOne({username: req.session.username},
+    User.findOne({username: requestUser},
         {password: 0},
         function (err, user) {
             if (err) {
@@ -170,7 +174,11 @@ function createNewUser(req, res) {
             req.session.cart = {};
             console.log('Added new user ', newUser.username);
             console.log(req.session);
-            return res.json({'msg': 'Success'});
+            return res.json({
+                'isAdmin': newUser.admin,
+                'username': newUser.username,
+                'msg': 'Success'}
+                );
         }
     });
 }
@@ -202,7 +210,7 @@ function loginUser(req, res) {
     req.checkBody('username', 'username is required').notEmpty();
     req.checkBody('password', 'password is required').notEmpty();
 
-    var errors = req.validationErrors();
+    let errors = req.validationErrors();
     if (errors) {
         return res.json(errors);
     }
@@ -220,7 +228,10 @@ function loginUser(req, res) {
         if (user && bcrypt.compareSync(password, user.password)) {
             req.session.username = user.username;
             req.session.admin = user.admin;
-            return res.json({'msg': 'Success'});
+            return res.json({
+                'isAdmin': user.admin,
+                'username': user.username,
+                'msg': 'Success'});
         } else { // user doesn't exist or password match failed
             console.log('Invalid login attempt.');
             return res.status(409).send('Invalid username or password.');
