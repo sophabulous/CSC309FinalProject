@@ -353,7 +353,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $scope.commentOnFruit = function() {
                 getData.postFruitComment().success(function(dataResponse) {
                     console.log(dataResponse);
-                    $state.go('fruit-detail');
+                    $state.reload();
                 });
             }
 
