@@ -27,12 +27,9 @@
                 <button type="button" ng-click="toggleEdit()">BACK</button>
             </div>
 
-            <div class="row fruit_detail" ng-if="!editMode">
-                <div class="col-lg-6 product_info_panel">
-                    <img class="product-pic" ng-src="{{fruitDetail.photo}}" alt=""> <button type="button" ng-click="toggleEdit()">EDIT</button>
-                </div>
-                <br class="col-lg-6 product_info_panel">
-                <label class="product_det_name">{{fruitDetail.type}}</label></br>
+            <div class="row fruit_detail product_info_panel" ng-if="!editMode">
+                <label class="product_det_name">{{fruitDetail.type}}</label><br/>
+                <img class="product-pic" ng-src="{{fruitDetail.photo}}" alt=""> <button type="button" ng-click="toggleEdit()">EDIT</button><br/>
                 <label class="product_store">Store: {{fruitDetail.storeId}}</label>
                 <div class="product_detail">
                     <h3>Price: ${{fruitDetail.price | number : 2}}</h3>
