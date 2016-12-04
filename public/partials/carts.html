@@ -49,24 +49,21 @@
                                 <thead>
                                     <tr>
                                         <th>No.</th>
-                                        <th>Picture</th>
-                                        <th>firstname</th>
-                                        <th>lastname</th>
-                                        <th>email</th>
-                                        <th>username</th>
-                                        <th>admin</th>
+                                        <th>Username</th>
+                                        <th>Number of Items</th>
+                                        <th>Total Price</th>
+                                        <th>Last Updated</th>
+                                        <th>Delete</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr ng-repeat="cart in cartsList track by $index">
-                                        <td>{{$index+1}}</td>                                     
-                                        <td ui-sref="cart-detail({cartid: cart._id})"><img ng-src="{{cart.photo}}" alt=""></td>
-                                        <td>{{cart.firstname}}</td>
-                                        <td>{{cart.lastname}}</td>
-                                        <td>{{cart.email}}</td>
-                                        <td>{{cart.username}}</td>
-                                        <td>{{cart.admin}}</td>
+                                        <td>{{$index+1}}</td>
+                                        <td ui-sref="cart({username: cart.username})">{{cart.username}}</td>
+                                        <td>{{cart.items.length}}</td>
+                                        <td>${{cart.total | number : 2}}</td>
+                                        <td>{{cart.lastUpdated}}</td>
                                         <td><button ng-click="deleteThisUser(cart._id)">DELETE</button></td>
                                     </tr>
                                 </tbody>

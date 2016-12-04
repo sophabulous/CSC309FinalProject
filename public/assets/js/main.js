@@ -287,7 +287,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 console.log("delete called");
                 getData.deleteFruit().success(function(dataResponse){
                     console.log(dataResponse);
-                    $state.reload();
+                    $state.go('store-detail');
                 });
         };
         $scope.getFruitsForSeason = function(season){
@@ -342,7 +342,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $scope.commentOnFruit = function() {
                 getData.postFruitComment().success(function(dataResponse) {
                     console.log(dataResponse);
-                    $state.reload();
+                    $state.go('fruit-detail');
                 });
             }
 
@@ -354,7 +354,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $scope.addToCart = function() {
                 getData.updateCart().success(function(dataResponse) {
                     console.log(dataResponse);
-                    $state.reload();
+                    $state.go('cart');
                 })
             }
 
