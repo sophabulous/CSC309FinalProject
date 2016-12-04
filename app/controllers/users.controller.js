@@ -174,7 +174,11 @@ function createNewUser(req, res) {
             req.session.cart = {};
             console.log('Added new user ', newUser.username);
             console.log(req.session);
-            return res.json({'msg': 'Success'});
+            return res.json({
+                'isAdmin': newUser.admin,
+                'username': newUser.username,
+                'msg': 'Success'}
+                );
         }
     });
 }
@@ -224,7 +228,10 @@ function loginUser(req, res) {
         if (user && bcrypt.compareSync(password, user.password)) {
             req.session.username = user.username;
             req.session.admin = user.admin;
-            return res.json({'msg': 'Success'});
+            return res.json({
+                'isAdmin': user.admin,
+                'username': user.username,
+                'msg': 'Success'});
         } else { // user doesn't exist or password match failed
             console.log('Invalid login attempt.');
             return res.status(409).send('Invalid username or password.');
