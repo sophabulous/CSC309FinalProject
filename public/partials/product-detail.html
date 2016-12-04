@@ -37,8 +37,8 @@
                     Size: {{fruitDetail.unit}}
                     <br/>
                     <br/>
-                    Qty: <input type="number" name="quantity" ng-model="" min="1" max="20">
-                    <a href="#" class="add-to-cart">Add to Cart</a>
+                    Qty: <input type="number" ng-model="selectedProduct.quantity" name="quantity">
+                    <a href="#" ng-click="addToCart()" class="add-to-cart">Add to Cart</a>
                 </div>
             </div>
 
@@ -52,7 +52,7 @@
                             <ul class="commentList" ng-repeat="comment in fruitDetail.comments">
                                 <li>
                                     <div class="commenterImage">
-                                        <img src="http://placekitten.com/50/50"/>
+                                        <img src="{{comment.user[0].photo}}"/>
                                     </div>
                                     <div class="commenterText">
                                         <p class="">{{comment.username}}</p>
@@ -65,10 +65,10 @@
                             </ul>
                             <form class="form-inline" role="form">
                                 <div class="form-group">
-                                    <input class="form-control" type="text" placeholder="Your comments"/>
+                                    <input ng-model = "fruitComment.message" class="form-control" type="text" placeholder="Your comments"/>
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn btn-default">Add</button>
+                                    <button ng-click="commentOnFruit()" class="btn btn-default">Add</button>
                                 </div>
                             </form>
                         </div>

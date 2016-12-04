@@ -29,7 +29,6 @@ const ordersSchema = new Schema(
             required: true
         }
     },
-    {minimize: false},
     {collection: 'orders'}
 );
 

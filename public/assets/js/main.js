@@ -168,8 +168,40 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
              });
     };
 
+    this.postStoreComment = function() {
+            return $http({
+                method: 'POST',
+                data: $rootScope.storeComment,
+                url: "/comments/stores/" + $location.search().storeid
+            });
+    };
 
+    this.postFruitComment = function() {
+            return $http({
+                method: 'POST',
+                data: $rootScope.fruitComment,
+                url: "/comments/fruits/" + $location.search().fruitid
+            });
+    };
+
+    this.postCheckout = function() {
+            return $http({
+                method: 'POST',
+                data: $rootScope.userCart,
+                url: "/checkout/" + $rootScope.username
+            });
+    };
+
+    this.updateCart = function() {
+            return $http({
+                method: 'POST',
+                data: $rootScope.selectedProduct,
+                url: "/carts/" + $rootScope.username
+            });
+    }
 })
+
+
 
 .run(function($rootScope, $location, $timeout, $state, $cookies, $http, $window){
     $rootScope.loggedIn =  $cookies.get('loggedIn');
@@ -234,6 +266,18 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 });
             }
 
+            $rootScope.storeComment = {
+                message: "",
+                username: $rootScope.username
+            };
+
+            $scope.commentOnStore = function() {
+                getData.postStoreComment().success(function(dataResponse) {
+                    console.log(dataResponse);
+                    $state.reload();
+                });
+            }
+
         });
 
     }
@@ -250,7 +294,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 console.log("delete called");
                 getData.deleteFruit().success(function(dataResponse){
                     console.log(dataResponse);
-                    $state.reload();
+                    $state.go('store-detail');
                 });
         };
         $scope.getFruitsForSeason = function(season){
@@ -301,6 +345,30 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 });
             }
 
+            $rootScope.fruitComment = {
+                message: "",
+                username: $rootScope.username
+            };
+
+            $scope.commentOnFruit = function() {
+                getData.postFruitComment().success(function(dataResponse) {
+                    console.log(dataResponse);
+                    $state.go('fruit-detail');
+                });
+            }
+
+            $rootScope.selectedProduct = {
+                fruitId: $scope.fruitDetail._id,
+                quantity: ""
+            };
+
+            $scope.addToCart = function() {
+                getData.updateCart().success(function(dataResponse) {
+                    console.log(dataResponse);
+                    $state.go('cart');
+                })
+            }
+
         });
 
     }
@@ -321,6 +389,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $cookies.put('loggedIn', true);
             $cookies.put('isAdmin', dataResponse.isAdmin);
             $cookies.put('username', dataResponse.username);
+            $state.go('account');
         });
     }
 
@@ -427,7 +496,17 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     getData.getUserCart().success(function(dataResponse){
         console.log(dataResponse);
         $scope.userCart = dataResponse;
+
+
+        $scope.checkout = function() {
+            getData.postCheckout().success(function(dataResponse) {
+                console.log(dataResponse);
+                $state.reload();
+            });
+        }
     });
+
+
 })
 
 .controller('cartsCtrl', function($scope, $rootScope, $state, $location, getData) {
@@ -435,7 +514,6 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     getData.getCarts().success(function(dataResponse){
         console.log(dataResponse);
         $scope.cartsList = dataResponse;
-
     });
 })
 

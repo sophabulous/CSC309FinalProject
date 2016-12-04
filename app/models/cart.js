@@ -35,7 +35,6 @@ const cartsSchema = new Schema(
             required: true
         }
     },
-    {minimize: false},
     {collection: 'carts'}
 );
 

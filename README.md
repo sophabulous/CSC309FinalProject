@@ -112,11 +112,11 @@ Virtuals are used in database to get relationships between stores, products, use
 
 Errors are always sent in JSON format {msg: error}. For POST and DELETE a success is represented as {msg: 'Success'}
 
-The shopping cart, regretfully, does not "reserve" items. This means that when a user tries to "checkout" their entire order may not be available. In this case, a "Partial Success" response is sent and the order goes through with only the items that were available. All items that were available for the order, will then be removed from inventory (quantity of fruit item decreases in database) and the order will only contain these items. Decided to make the carts expire after an hour since they were last modified.
+The shopping cart, regretfully, does not "reserve" items. This means that when a user tries to "checkout" parts of their order may not be available. In this case, a "Partial Success" response is sent and the order goes through with only the items that were available. All items that were available for the order, will then be removed from inventory (quantity of fruit item decreases in database) and the order will only contain these items. Decided to make the carts expire after an hour since they were last modified.
 
 ## Express API
 
-| Route              |QUERY PARAMS                | GET                                  | POST                                              | DELETE                       |
+| ROUTE              | QUERY                      | GET                                  | POST                                              | DELETE                       |
 | ------------------ | -------------------------- |------------------------------------- | ------------------------------------------------- | ---------------------------- |
 | /stores            |                            | Get all stores                       | Create new store <sup>1</sup>                     | N/A                          |
 | /stores/:id        |                            | Get a store                          | Modify a store  <sup>1</sup>                      | Delete a store <sup>1</sup>  |
