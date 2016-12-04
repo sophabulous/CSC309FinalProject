@@ -2,7 +2,7 @@
 
 angular.module('cv-noc', ['ui.router','hSweetAlert'])
 
-.config(function($stateProvider, $urlRouterProvider, $locationProvider){  
+.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 
   $stateProvider
     .state('stores', {url: '/stores', templateUrl: 'partials/stores.html', controller: 'storesCtrl'})
@@ -48,6 +48,7 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
              });
     };
 
+
     this.getFruitDetail = function() {
             return $http({
                 method: 'GET',
@@ -60,7 +61,7 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
 //controller---------------------------------------------------------------------------------------------------------------------------
 
 .controller('storesCtrl', function($scope, $rootScope, $state, getData) {
- 	
+
     getData.getStores().success(function(dataResponse){
         console.log(dataResponse);
         $scope.storesList = dataResponse;
@@ -71,17 +72,24 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
         getData.getStoreDetail().success(function(dataResponse){
             console.log(dataResponse);
             $scope.storeDetail = dataResponse;
+            $scope.googleMapSearchStr = 'https://www.google.com/maps/embed/v1/search?q=' + dataResponse.address.street + dataResponse.address.city + '&key=' + 'AIzaSyCDZtYC0RJupz5nw3uU4FEY_LW0OemniuE';
+            console.log($scope.googleMapSearchStr);
         });
 
-    }   
+    }
 )
 
 .controller('fruitsCtrl', function($scope, $rootScope, $state, $location, getData) {
-    
+
     getData.getFruits().success(function(dataResponse){
         console.log(dataResponse);
         $scope.fruitsList = dataResponse;
     });
+
+    $scope.getFruitsForSeason = function(season){
+        $scope.season = season;
+        console.log(season);
+    };
 })
 
 .controller('fruitDetailCtrl', function($scope, $rootScope, $stateParams, $state, getData, sweet) {
@@ -90,7 +98,7 @@ angular.module('cv-noc', ['ui.router','hSweetAlert'])
             $scope.fruitDetail = dataResponse;
         });
 
-    }   
+    }
 )
 
 ;
