@@ -389,6 +389,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $cookies.put('loggedIn', true);
             $cookies.put('isAdmin', dataResponse.isAdmin);
             $cookies.put('username', dataResponse.username);
+            $state.go('account');
         });
     }
 
