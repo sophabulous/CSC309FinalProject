@@ -577,7 +577,15 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     getData.getUserCart().success(function(dataResponse){
         console.log(dataResponse);
         $scope.userCart = dataResponse;
+        getData.getCurrentUser().success(function(dataResponse){
+                $scope.userFN = dataResponse.firstname;
+        });
+        var qtyUpdate = function() {
+            console.log($scope.priceOnPage);
+            $scope.subtotal = $scope.qtyOnPage * $scope.priceOnPage;
+        };
 
+        $scope.$watch('project.hours',qtyUpdate);
 
         $scope.checkout = function() {
             getData.postCheckout().success(function(dataResponse) {

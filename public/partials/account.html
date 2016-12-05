@@ -6,9 +6,7 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">
-                        {{userInfo.username}}<br>
-                    </h1>
+                    <h1 class="page-header">{{userInfo.firstname}} {{userInfo.lastname}} </h1>
                 </div>
             </div>
 
@@ -90,7 +88,7 @@
                                         <tr>
                                             <tr>
                                                 <td>Address</td>
-                                                <td>{{userInfo.street}}, {{userInfo.city}} {{userInfo.province}} {{userInfo.postalcode}}</td>
+                                                <td>{{userInfo.address.street}}, {{userInfo.address.city}} {{userInfo.address.province}}, {{userInfo.address.postalcode}}</td>
                                             </tr>
                                             <tr>
                                                 <td>Email</td>
