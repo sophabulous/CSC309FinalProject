@@ -22,8 +22,12 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 
 })
 
-.run(function($rootScope, $location, $timeout, $state, $http, $window){
+.run(function($rootScope, $location, $timeout, $cookies, $state, $http, $window){
+    $rootScope.loggedIn =  $cookies.get('loggedIn');
+    $rootScope.isAdmin = $cookies.get('isAdmin');
+    $rootScope.username = $cookies.get('username');
 
+    console.log($rootScope.loggedIn, $rootScope.isAdmin);
 })
 
 //services-----------------------------------------------------------------------------------------------------------------------------
@@ -229,6 +233,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 
 })
 
+
 //controller---------------------------------------------------------------------------------------------------------------------------
 
 .controller('storesCtrl', function($scope, $rootScope, $state, getData) {
@@ -236,6 +241,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
     getData.getStores().success(function(dataResponse){
         console.log(dataResponse);
         $scope.storesList = dataResponse;
+
         $scope.editMode = false;
 
 
@@ -254,6 +260,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                     console.log(dataResponse);
                     $state.reload();
                 });
+
             };
 
         $rootScope.addStoreObj = {
@@ -307,10 +314,11 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 storeId: $scope.storeDetail.storeId,
                 name: $scope.storeDetail.name,
                 address: {
-                  street: "String",
-                  city: "String",
-                  province: "String",
-                  postalcode: "String"
+                  street: $scope.storeDetail.address.street,
+                  city: $scope.storeDetail.address.city,
+                  province: $scope.storeDetail.address.province,
+                  postalcode: $scope.storeDetail.address.postalcode
+
                 },
                 photo: $scope.storeDetail.photo
             };
@@ -355,7 +363,6 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 )
 
 .controller('fruitsCtrl', function($scope, $rootScope, $state, $location, getData) {
-
     getData.getFruits().success(function(dataResponse){
         console.log(dataResponse);
         $scope.fruitsList = dataResponse;
@@ -380,6 +387,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
 })
 
 .controller('fruitDetailCtrl', function($scope, $rootScope, $stateParams, $state, getData, sweet) {
+
         getData.getFruitDetail().success(function(dataResponse){
             console.log(dataResponse);
             $scope.fruitDetail = dataResponse;
@@ -510,11 +518,12 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $rootScope.isAdmin = false;
             $rootScope.username = '';
 
-            $cookies.put('loggedIn', false);
-            $cookies.put('isAdmin', false);
-            $cookies.put('username', '');
+            $cookies.remove('loggedIn');
+            $cookies.remove('isAdmin');
+            $cookies.remove('username');
 
-            $state.reload();
+            $state.go('stores');
+
         });
     }
 
@@ -528,10 +537,11 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
         firstname: '',
         lastname: '',
         address: {
-           street: "String",
-           city: "String",
-           province: "String",
-           postalcode: "String"
+           street: "",
+           city: "",
+           province: "",
+           postalcode: ""
+
            },
 
         email: ''
