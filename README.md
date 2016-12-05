@@ -102,7 +102,7 @@ The app supports the following features
 * Stores and products can be modified by an edit button visible only to admins on the store/product detail page
 
 
-Did not manage to complete rating stores on the front end, but ratings can be viewed in the Stores view
+Did not manage to complete rating stores on the front end, but ratings can be viewed in the Stores view. Also, the cart page doesn't allow users to update the cart there. Products and only be added to a cart from a prodcut detail page and there's no way to delete them.
 
 ## Backend features
 
