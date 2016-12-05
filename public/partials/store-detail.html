@@ -14,9 +14,21 @@
                         <td><input type="text" class="form-control" ng-init ="modStoreObj.name = storeDetail.name" ng-model="modStoreObj.name"></td>
                     </tr>
                     <tr>
-                        <td>Address</td>
-                        <td><input type="text" class="form-control"></td>
-                    </tr>
+                            <td>Street</td>
+                            <td><input type="text" class="form-control" ng-init ="modStoreObj.address.street = modStoreObj.address.street" ng-model="modStoreObj.address.street"></td>
+                        </tr>
+                        <tr>
+                            <td>City</td>
+                            <td><input type="text" class="form-control" ng-init ="modStoreObj.address.city = modStoreObj.address.city" ng-model="modStoreObj.address.city"></td>
+                        </tr>
+                        <tr>
+                            <td>Province</td>
+                            <td><input type="text" class="form-control" ng-init ="modStoreObj.address.province = modStoreObj.address.province" ng-model="modStoreObj.address.province"></td>
+                        </tr>
+                        <tr>
+                            <td>Postal Code</td>
+                            <td><input type="text" class="form-control" ng-init ="modStoreObj.address.postalcode = modStoreObj.address.photo" ng-model="modStoreObj.address.postalcode"></td>
+                        </tr>
                     <tr>
                         <td>Store Photo</td>{{modStoreObj.photo}}
                         <td><input type="text" class="form-control" ng-init ="modStoreObj.photo = storeDetail.photo" ng-model="modStoreObj.photo"></td>
@@ -116,12 +128,12 @@
                                         </div>
                                     </li>
                                 </ul>
-                                <form class="form-inline" role="form">
+                                <form class="form-inline" role="form" ng-if="loggedIn">
                                     <div class="form-group">
                                         <input ng-model = "storeComment.message" class="form-control" type="text" placeholder="Your comments" />
                                     </div>
                                     <div class="form-group">
-                                        <button ng-click="commentOnStore()" class="btn btn-default" ng-if="loggedIn">Add</button>
+                                        <button ng-click="commentOnStore()" class="btn btn-default">Add</button>
 
                                     </div>
                                 </form>

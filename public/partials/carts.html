@@ -53,8 +53,6 @@
                                         <th>Number of Items</th>
                                         <th>Total Price</th>
                                         <th>Last Updated</th>
-
-                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -64,7 +62,6 @@
                                         <td>{{cart.items.length}}</td>
                                         <td>${{cart.total | number : 2}}</td>
                                         <td>{{cart.lastUpdated}}</td>
-                                        <td><button ng-click="deleteThisUser(cart._id)">DELETE</button></td>
                                     </tr>
                                 </tbody>
                             </table>

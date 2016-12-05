@@ -65,12 +65,12 @@
                                     </div>
                                 </li>
                             </ul>
-                            <form class="form-inline" role="form">
+                            <form class="form-inline" role="form" ng-if="loggedIn">
                                 <div class="form-group">
                                     <input ng-model = "fruitComment.message" class="form-control" type="text" placeholder="Your comments"/>
                                 </div>
                                 <div class="form-group">
-                                    <button ng-click="commentOnFruit()" class="btn btn-default" ng-if="loggedIn">Add</button>
+                                    <button ng-click="commentOnFruit()" class="btn btn-default">Add</button>
                                 </div>
                             </form>
                         </div>
