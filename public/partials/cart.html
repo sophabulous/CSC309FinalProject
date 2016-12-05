@@ -6,10 +6,7 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">
-                        Store Name<br>
-                        <span style="font-size: 20px;">Store ID: xxxxxxxxx</span>
-                    </h1>
+                    <h1 class="page-header">{{userFN}}'s Shopping Cart<br></h1>
                 </div>
             </div>
 
@@ -35,11 +32,11 @@
                                 </div>
                             </div>
                         </td>
-                        <td data-th="Price">${{item.fruit.price | number : 2}}</td>
+                        <td ng-model="priceOnPage" data-th="Price">${{item.fruit.price | number : 2}}</td>
                         <td data-th="Quantity">
-                            <input type="number" class="form-control text-center" ng-value="{{item.quantity}}">
+                            <input ng-model="qtyOnPage" type="number" min="1" max="20" class="form-control text-center" ng-value="{{item.quantity}}">
                         </td>
-                        <td data-th="Subtotal" class="text-center">${{item.quantity * item.fruit.price | number : 2}}</td>
+                        <td data-th="Subtotal" class="text-center">${{subtotal | number : 2}}</td>
                         <td class="actions" data-th="">
                             <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
                         </td>
