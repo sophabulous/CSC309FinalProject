@@ -96,7 +96,7 @@ const fruitsSchema = new Schema(
         },
         photo: {
             type: String,
-            default: 'https://cdn.pixabay.com/photo/2016/05/25/20/17/icon-1415760_960_720.png'
+            default: 'https://cdn.pixabay.com/photo/2014/08/26/15/15/country-lane-428039__340.jpg'
         },
         season: {
             type: String,

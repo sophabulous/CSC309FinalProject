@@ -48,7 +48,7 @@ function showStores(req, res) {
             console.log(err);
             return res.json({'msg': err.message});
         } else {
-            console.log(stores);
+
             return res.json(stores);
         }
     });
@@ -166,10 +166,10 @@ function createNewStore(req, res) {
         storeId: req.body.storeId.toUpperCase(),
         name: req.body.name,
         address: {
-            street: req.body.street,
-            city: req.body.city,
-            province: req.body.province,
-            postalcode: req.body.postalcode,
+            street: req.body.address.street,
+            city: req.body.address.city,
+            province: req.body.address.province,
+            postalcode: req.body.address.postalcode,
         }
     });
 
