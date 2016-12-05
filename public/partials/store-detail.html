@@ -80,26 +80,12 @@
                         <p class="store_info_header"><i class="fa fa-map-marker" aria-hidden="true"></i> {{storeDetail.address.street}}, {{storeDetail.address.city}}, {{storeDetail.address.province}}, {{storeDetail.address.postalcode}}</p>
                         <p class="store_info_header"><i class="fa fa-phone" aria-hidden="true"></i> (416) 979-1777</p>
                     </div>
-                    <div class="col-lg-3 store_info">
-                        <p class="store_info_header">Hours: </p>
-
-                        <p>Mon: </p>
-                        <p>Tue: </p>
-                        <p>Wed: </p>
-                        <p>Thur: </p>
-                        <p>Fri: </p>
-                        <p>Sat: </p>
-                        <p>Sun: </p>
-                        <p class="store_info_header">More business info</p>
-                        <p>Accepted Cards: Credit, Debit</p>
-                        <p>Wheelchair Accessible: Yes</p>
-                    </div>
                 </div>
 
-                <a data-original-title="Add" data-toggle="tooltip" type="button" class="btn-lg" ng-click="toggleAdd()">Add Product</a>
+
                 <div class="col-lg-12 row">
                     <div class="col-lg-8 row store_products_panel">
-                        <label>Products</label><br/>
+                        <label>Products</label><a data-original-title="Add" data-toggle="tooltip" type="button" class="btn-lg" ng-click="toggleAdd()">Add Product</a><br/>
                         <div ng-repeat="fruit in storeDetail.fruits">
                             <div class="col-lg-3 product_thumb_link">
                                 <span ui-sref="fruit-detail({fruitid: fruit._id})"><img ng-src="{{fruit.photo}}" alt=""></span>

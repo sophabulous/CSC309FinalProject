@@ -36,7 +36,7 @@ const storesSchema = new Schema(
         },
         photo: {
             type: String,
-            default: 'https://cdn.pixabay.com/photo/2016/05/25/20/17/icon-1415760_960_720.png'
+            default: 'https://cdn.pixabay.com/photo/2016/11/18/13/20/brick-wall-1834446__340.jpg'
         },
         rateCount: {
             type: Number,

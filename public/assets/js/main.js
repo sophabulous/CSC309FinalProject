@@ -264,14 +264,14 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             };
 
         $rootScope.addStoreObj = {
-            storeId: "",
-            name: "",
             address: {
                 street: "",
                 city: "",
                 province: "",
                 postalcode: ""
-            }
+            },
+            name: "",
+            storeId: ""
         };
 
         $scope.addNewStore = function() {
