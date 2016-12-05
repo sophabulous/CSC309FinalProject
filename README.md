@@ -93,7 +93,8 @@ The app supports the following features
 * See all users by choosing users in sidebar
 * See all carts by choosing carts in sidebar
 * Delete button appears beside products and stores in the full list view and will delete that single item
-* Stores and products can be **added ?**
+* Stores can be added in the stores page view
+* Product can be added in the store detail page view
 * Stores and products can be modified by an edit button visible only to admins on the store/product detail page
 
 
@@ -109,7 +110,7 @@ Some validation is done on the server when checking signup and login fields befo
 
 Virtuals are used in database to get relationships between stores, products, users and comments.
 
-Errors are always sent in JSON format {msg: error}. For POST and DELETE a success is represented as {msg: 'Success'}
+Errors are always sent in JSON format `{msg: error}`. For POST and DELETE a success is represented as `{msg: 'Success'}`.
 
 The shopping cart, regretfully, does not "reserve" items. This means that when a user tries to "checkout" parts of their order may not be available. In this case, a "Partial Success" response is sent and the order goes through with only the items that were available. All items that were available for the order, will then be removed from inventory (quantity of fruit item decreases in database) and the order will only contain these items. Decided to make the carts expire after an hour since they were last modified.
 
