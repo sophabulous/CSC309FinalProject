@@ -202,7 +202,35 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 data: $rootScope.selectedProduct,
                 url: "/carts/" + $rootScope.username
             });
-    }
+    };
+
+    this.addStore = function() {
+            return $http({
+                method: 'POST',
+                data: $rootScope.addStoreObj,
+                url: "/stores"
+            });
+    };
+
+    this.addFruit = function() {
+        return $http({
+            method: 'POST',
+            data: $rootScope.addFruitObj,
+            url: "/fruits"
+        });
+    };
+
+})
+
+
+
+.run(function($rootScope, $location, $timeout, $state, $cookies, $http, $window){
+    $rootScope.loggedIn =  $cookies.get('loggedIn');
+    $rootScope.isAdmin = $cookies.get('isAdmin');
+    $rootScope.username = $cookies.get('username');
+
+    console.log($rootScope.loggedIn, $rootScope.isAdmin);
+
 })
 
 
@@ -214,6 +242,17 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
         console.log(dataResponse);
         $scope.storesList = dataResponse;
 
+        $scope.editMode = false;
+
+
+        $scope.toggleAdd = function(){
+            if($scope.addMode == true){
+                $scope.addMode = false;
+            }else{
+                $scope.addMode = true;
+            }
+        };
+
         $scope.deleteThisStore = function(storeid){
                 $rootScope.deleteStoreId = storeid;
                 console.log("delete called");
@@ -221,7 +260,28 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                     console.log(dataResponse);
                     $state.reload();
                 });
+
+            };
+
+        $rootScope.addStoreObj = {
+            storeId: "",
+            name: "",
+            address: {
+                street: "",
+                city: "",
+                province: "",
+                postalcode: ""
             }
+        };
+
+        $scope.addNewStore = function() {
+            console.log($rootScope.addStoreObj);
+            getData.addStore().success(function(dataResponse) {
+                console.log(dataResponse);
+                $state.reload();
+            })
+        };
+
     });
 })
 
@@ -237,7 +297,15 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 }else{
                     $scope.editMode = true;
                 }
-            }
+            };
+
+            $scope.toggleAdd = function(){
+                if($scope.addMode == true){
+                    $scope.addMode = false;
+                }else{
+                    $scope.addMode = true;
+                }
+            };
 
             $scope.googleMapSearchStr = 'https://www.google.com/maps/embed/v1/search?q=' + dataResponse.address.street + dataResponse.address.city + '&key=' + 'AIzaSyCDZtYC0RJupz5nw3uU4FEY_LW0OemniuE';
             console.log($scope.googleMapSearchStr);
@@ -250,6 +318,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                   city: $scope.storeDetail.address.city,
                   province: $scope.storeDetail.address.province,
                   postalcode: $scope.storeDetail.address.postalcode
+
                 },
                 photo: $scope.storeDetail.photo
             };
@@ -272,13 +341,28 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 });
             }
 
+            $rootScope.addFruitObj = {
+                storeId: $scope.storeDetail.storeId,
+                type: "",
+                season: "",
+                unit: "",
+                quantity: "",
+                price: ""
+            };
+
+            $scope.addNewFruit = function() {
+                getData.addFruit().success(function(dataResponse) {
+                    console.log(dataResponse);
+                    $state.reload();
+                })
+            };
+
         });
 
     }
 )
 
 .controller('fruitsCtrl', function($scope, $rootScope, $state, $location, getData) {
-    $scope.yesAdmin = $rootScope.isAdmin;
     getData.getFruits().success(function(dataResponse){
         console.log(dataResponse);
         $scope.fruitsList = dataResponse;
@@ -348,7 +432,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $scope.commentOnFruit = function() {
                 getData.postFruitComment().success(function(dataResponse) {
                     console.log(dataResponse);
-                    $state.go('fruit-detail');
+                    $state.reload();
                 });
             }
 
@@ -439,6 +523,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $cookies.remove('username');
 
             $state.go('stores');
+
         });
     }
 
@@ -456,6 +541,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
            city: "",
            province: "",
            postalcode: ""
+
            },
 
         email: ''

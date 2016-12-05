@@ -30,6 +30,7 @@
             <div class="row fruit_detail product_info_panel" ng-if="!editMode">
                 <label class="product_det_name">{{fruitDetail.type}}</label><br/>
                 <img class="product-pic" ng-src="{{fruitDetail.photo}}" alt=""> <button type="button" ng-click="toggleEdit()" ng-if="isAdmin">EDIT</button><br/>
+
                 <label class="product_store">Store: {{fruitDetail.storeId}}</label>
                 <div class="product_detail">
                     <h3>Price: ${{fruitDetail.price | number : 2}}</h3>
@@ -53,6 +54,7 @@
                                 <li>
                                     <div class="commenterImage">
                                         <img ng-src="{{comment.user[0].photo}}"/>
+
                                     </div>
                                     <div class="commenterText">
                                         <p class="">{{comment.username}}</p>

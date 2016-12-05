@@ -48,7 +48,7 @@ function showStores(req, res) {
             console.log(err);
             return res.json({'msg': err.message});
         } else {
-            console.log(stores);
+
             return res.json(stores);
         }
     });
