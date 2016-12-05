@@ -60,7 +60,7 @@
                                         <td>{{$index+1}}</td>
                                         <td>{{order.username}}</td>
                                         <td>{{order.items.length}}</td>
-                                        <td>{{order.total}}</td>
+                                        <td>${{order.total | number : 2}}</td>
                                         <td>{{order.createdAt}}</td>
                                     </tr>
                                 </tbody>
