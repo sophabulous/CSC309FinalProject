@@ -36,7 +36,7 @@
                         <td data-th="Quantity">
                             <input ng-model="qtyOnPage" type="number" min="1" max="20" class="form-control text-center" ng-value="{{item.quantity}}">
                         </td>
-                        <td data-th="Subtotal" class="text-center">${{subtotal | number : 2}}</td>
+                        <td data-th="Subtotal" class="text-center">${{item.fruit.price *  item.quantity| number : 2}}</td>
                         <td class="actions" data-th="">
                             <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
                         </td>

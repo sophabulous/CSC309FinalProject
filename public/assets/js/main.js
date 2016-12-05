@@ -583,11 +583,10 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
                 $scope.userFN = dataResponse.firstname;
         });
         var qtyUpdate = function() {
-            console.log($scope.priceOnPage);
             $scope.subtotal = $scope.qtyOnPage * $scope.priceOnPage;
         };
 
-        $scope.$watch('project.hours',qtyUpdate);
+        $scope.$watch('qtyOnPage', qtyUpdate);
 
         $scope.checkout = function() {
             getData.postCheckout().success(function(dataResponse) {
