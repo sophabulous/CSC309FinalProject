@@ -29,7 +29,8 @@
 
             <div class="row fruit_detail product_info_panel" ng-if="!editMode">
                 <label class="product_det_name">{{fruitDetail.type}}</label><br/>
-                <img class="product-pic" ng-src="{{fruitDetail.photo}}" alt=""> <button type="button" ng-click="toggleEdit()">EDIT</button><br/>
+                <img class="product-pic" ng-src="{{fruitDetail.photo}}" alt=""> <button type="button" ng-click="toggleEdit()" ng-if="isAdmin">EDIT</button><br/>
+
                 <label class="product_store">Store: {{fruitDetail.storeId}}</label>
                 <div class="product_detail">
                     <h3>Price: ${{fruitDetail.price | number : 2}}</h3>
@@ -52,7 +53,8 @@
                             <ul class="commentList" ng-repeat="comment in fruitDetail.comments">
                                 <li>
                                     <div class="commenterImage">
-                                        <img src="{{comment.user[0].photo}}"/>
+                                        <img ng-src="{{comment.user[0].photo}}"/>
+
                                     </div>
                                     <div class="commenterText">
                                         <p class="">{{comment.username}}</p>
@@ -68,7 +70,7 @@
                                     <input ng-model = "fruitComment.message" class="form-control" type="text" placeholder="Your comments"/>
                                 </div>
                                 <div class="form-group">
-                                    <button ng-click="commentOnFruit()" class="btn btn-default">Add</button>
+                                    <button ng-click="commentOnFruit()" class="btn btn-default" ng-if="loggedIn">Add</button>
                                 </div>
                             </form>
                         </div>

@@ -4,9 +4,9 @@
                 <a class="navbar-brand sitetitle" href="index.html">RIPe Fruit</a>
             </div>
 
-            <a style="color:white;color: white;padding-top: 12px;margin-right: 12px;" class="pull-right" ui-sref="account"><i class="fa fa-user"></i> Account</a>
+            <a style="color:white;color: white;padding-top: 12px;margin-right: 12px;" class="pull-right" ui-sref="account" ng-if="loggedIn"><i class="fa fa-user"></i> Account</a>
 
-            <a style="color:white;color: white;padding-top: 12px;margin-right: 12px;" class="pull-right" ui-sref="cart"><i class="fa fa-shopping-cart"></i> Cart</a>
+            <a style="color:white;color: white;padding-top: 12px;margin-right: 12px;" class="pull-right" ui-sref="cart" ng-if="loggedIn"><i class="fa fa-shopping-cart"></i> Cart</a>
 
             <span ui-sref-active="active" style="color:white;color: white;padding-top: 12px;margin-right: 12px; " class="pull-right"><a ui-sref="signin"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a></span>
 
@@ -20,13 +20,13 @@
                     <li ui-sref-active="active">
                         <a ui-sref="products"><i class="fa fa-lemon-o"></i> Products</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-if="isAdmin">
                         <a ui-sref="users"><i class="fa fa-lemon-o"></i> Users</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-if="isAdmin">
                         <a ui-sref="carts"><i class="fa fa-lemon-o"></i> Carts</a>
                     </li>
-                    <li ui-sref-active="active">
+                    <li ui-sref-active="active" ng-if="isAdmin">
                         <a ui-sref="orders"><i class="fa fa-lemon-o"></i> Orders</a>
                     </li>
                 </ul>

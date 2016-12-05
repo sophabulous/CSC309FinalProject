@@ -3,6 +3,9 @@
 Checkout out the live website [here](https://ripefruitsuoft.herokuapp.com).
 
 
+Checkout out the live website [here](https://ripefruitsuoft.herokuapp.com).
+
+
 ## Set up .env (optional)
 
 To specify environment variables, create a new file named `.env` and see `.env.example` to see which variables must be specified. You can do this manually or run the following command:
@@ -22,6 +25,7 @@ Create a directory to store the database and start the database server:
 ## Start Node and MongoDB
 
 `npm start`
+
 
 or
 
