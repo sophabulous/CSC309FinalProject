@@ -43,7 +43,7 @@ function showComments(req, res) {
     let query = {};
 
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).json({'msg': 'Not Authorized.'});
+        return res.json({'msg': 'Not Authorized.'});
     }
 
     if (req.query.username) {
@@ -61,7 +61,7 @@ function showComments(req, res) {
     Comment.find(query).exec(function (err, comments) {
         if (err) {
             console.log(err);
-            return res.status(500).json({'msg': err.message});
+            return res.json({'msg': err.message});
         } else {
             console.log(comments);
             return res.json(comments);
@@ -93,10 +93,10 @@ function commentOnFruit(req, res) {
     let sessionUser = req.session.username,
         requestUser = req.body.username,
         admin = req.session.admin,
-        fruitId = req.body.fruitId;
-
+        fruitId = req.params.id;
+    console.log("REQUEST: ", req.body);
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
-        return res.status(409).json({'msg': 'Not Authorized.'});
+        return res.json({'msg': 'Not Authorized.'});
     }
 
     let comment = {
@@ -112,7 +112,7 @@ function commentOnFruit(req, res) {
     newComment.save(function (err, newComment) {
         if (err) {
             console.log(err);
-            return res.status(409).
+            return res.
                 json({'msg': dbErrors.handleSaveErrors(err)});
         }
 
@@ -122,7 +122,7 @@ function commentOnFruit(req, res) {
             {safe: true}, function (err, fruit) {
                 if (err) {
                     console.log(err);
-                    return res.status(409).
+                    return res.
                         json({'msg': dbErrors.handleSaveErrors(err)});
                 }
 
@@ -155,10 +155,11 @@ function commentOnStore(req, res) {
     let sessionUser = req.session.username,
         requestUser = req.body.username,
         admin = req.session.admin,
-        storeId = req.body.storeId;
+        storeId = req.params.id;
+    console.log("REQUEST: ", req.body);
 
     if (!authorize.onlyActiveUserOrAdmin(requestUser, sessionUser, admin)) {
-        return res.status(409).json({'msg': 'Not Authorized.'});
+        return res.json({'msg': 'Not Authorized.'});
     }
 
     let comment = {
@@ -174,7 +175,7 @@ function commentOnStore(req, res) {
     newComment.save(function (err, newComment) {
         if (err) {
             console.log(err);
-            return res.status(409).
+            return res.
                 json({'msg': dbErrors.handleSaveErrors(err)});
         }
 
@@ -184,7 +185,7 @@ function commentOnStore(req, res) {
             function (err, store) {
                 if (err) {
                     console.log(err);
-                    return res.status(409).
+                    return res.
                         json({'msg': dbErrors.handleSaveErrors(err)});
                 }
 
@@ -208,18 +209,18 @@ function commentOnStore(req, res) {
 function deleteComment(req, res) {
     // Only admins can delete a comment
     if (!authorize.onlyAdmin(req.session.admin)) {
-        return res.status(409).json({'msg': 'Not Authorized.'});
+        return res.json({'msg': 'Not Authorized.'});
     }
 
     Comment.findByIdAndRemove(req.params.id, function (err, comment) {
         if (err) {
             console.log(err);
-            return res.status(500).json({'msg': err.message});
+            return res.json({'msg': err.message});
         }
 
         if (!comment) {
             console.log('Comment not found');
-            return res.status(404).json({'msg': 'Comment not found'});
+            return res.json({'msg': 'Comment not found'});
         }
 
         return res.json({'msg': 'Success'});

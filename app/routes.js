@@ -90,8 +90,8 @@ router.get('/orders/:id', ordersController.showSingleOrder);
 // Show all comments -- query with ?username=, ?storeId=, ?fruitId=
 router.get('/comments', commentsController.showComments);
 // Add a fruit comment
-router.post('/comments/fruits', commentsController.commentOnFruit);
+router.post('/comments/fruits/:id', commentsController.commentOnFruit);
 // Add a store comment
-router.post('/comments/stores', commentsController.commentOnStore);
+router.post('/comments/stores/:id', commentsController.commentOnStore);
 // Delete a comment
 router.delete('/comments/:id', commentsController.deleteComment);

@@ -27,12 +27,9 @@
                 <button type="button" ng-click="toggleEdit()">BACK</button>
             </div>
 
-            <div class="row fruit_detail" ng-if="!editMode">
-                <div class="col-lg-6 product_info_panel">
-                    <img class="product-pic" ng-src="{{fruitDetail.photo}}" alt=""> <button type="button" ng-click="toggleEdit()">EDIT</button>
-                </div>
-                <br class="col-lg-6 product_info_panel">
-                <label class="product_det_name">{{fruitDetail.type}}</label></br>
+            <div class="row fruit_detail product_info_panel" ng-if="!editMode">
+                <label class="product_det_name">{{fruitDetail.type}}</label><br/>
+                <img class="product-pic" ng-src="{{fruitDetail.photo}}" alt=""> <button type="button" ng-click="toggleEdit()" ng-if="isAdmin">EDIT</button><br/>
                 <label class="product_store">Store: {{fruitDetail.storeId}}</label>
                 <div class="product_detail">
                     <h3>Price: ${{fruitDetail.price | number : 2}}</h3>
@@ -40,8 +37,8 @@
                     Size: {{fruitDetail.unit}}
                     <br/>
                     <br/>
-                    Qty: <input type="number" name="quantity" ng-model="" min="1" max="20">
-                    <a href="#" class="add-to-cart">Add to Cart</a>
+                    Qty: <input type="number" ng-model="selectedProduct.quantity" name="quantity">
+                    <a href="#" ng-click="addToCart()" class="add-to-cart">Add to Cart</a>
                 </div>
             </div>
 
@@ -55,7 +52,7 @@
                             <ul class="commentList" ng-repeat="comment in fruitDetail.comments">
                                 <li>
                                     <div class="commenterImage">
-                                        <img src="http://placekitten.com/50/50"/>
+                                        <img ng-src="{{comment.user[0].photo}}"/>
                                     </div>
                                     <div class="commenterText">
                                         <p class="">{{comment.username}}</p>
@@ -68,10 +65,10 @@
                             </ul>
                             <form class="form-inline" role="form">
                                 <div class="form-group">
-                                    <input class="form-control" type="text" placeholder="Your comments"/>
+                                    <input ng-model = "fruitComment.message" class="form-control" type="text" placeholder="Your comments"/>
                                 </div>
                                 <div class="form-group">
-                                    <button class="btn btn-default">Add</button>
+                                    <button ng-click="commentOnFruit()" class="btn btn-default" ng-if="loggedIn">Add</button>
                                 </div>
                             </form>
                         </div>
