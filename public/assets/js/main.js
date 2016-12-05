@@ -326,6 +326,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $scope.modCurrentStore = function(){
                 getData.modifyStoreDetail().success(function(dataResponse){
                     console.log(dataResponse);
+                    $state.reload();
                 });
             }
 
@@ -421,6 +422,7 @@ angular.module('ripe-central', ['ui.router','ngCookies','hSweetAlert'])
             $scope.modCurrentFruit = function(){
                 getData.modifyFruitDetail().success(function(dataResponse){
                     console.log(dataResponse);
+                    $state.reload();
                 });
             }
 

@@ -93,7 +93,7 @@
                                         <th>ID</th>
                                         <th>Address</th>
                                         <th>Rating</th>
-                                        <th ng-if="isAdmin == true"></th>
+                                        <th ng-if="isAdmin"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -104,7 +104,7 @@
                                         <td>{{store.storeId}}</td>
                                         <td>{{store.address.street}}, {{store.address.city}}, {{store.address.province}}, {{store.address.postalcode}}</td>
                                         <td>{{store.rateValue / store.rateCount | number : 0}}</td>
-                                        <td ng-if="isAdmin == true"><button ng-click="deleteThisStore(store.storeId)">DELETE</button></td>
+                                        <td ng-if="isAdmin"><button ng-click="deleteThisStore(store.storeId)">DELETE</button></td>
                                     </tr>
                                     </tbody>
                                 </table>
