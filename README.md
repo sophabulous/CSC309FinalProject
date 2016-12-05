@@ -60,14 +60,14 @@ The app supports the following features
  * View the details of a specific store by clicking on its photo
     * name
     * address
-    * view of all available procuts (photo can be clicked on to jump to that product)
+    * view of all available products (photo can be clicked on to jump to that product)
     * view comments
 
 **Visitor only**
-    * Sign in
-        * requires valid username and password
-    * Sign up
-        * requires unique username and email
+* Sign in
+    * requires valid username and password
+* Sign up
+    * requires unique username and email
 
 **Admin and Signed in only**
 
@@ -78,7 +78,6 @@ The app supports the following features
     * email
     * address
     * photo
-    * **all orders ?**
 * Modify account info
     * first and last name
     * email
@@ -116,27 +115,27 @@ The shopping cart, regretfully, does not "reserve" items. This means that when a
 
 ## Express API
 
-| ROUTE              | QUERY                      | GET                                  | POST                                              | DELETE                       |
-| ------------------ | -------------------------- |------------------------------------- | ------------------------------------------------- | ---------------------------- |
-| /stores            |                            | Get all stores                       | Create new store <sup>1</sup>                     | N/A                          |
-| /stores/:id        |                            | Get a store                          | Modify a store  <sup>1</sup>                      | Delete a store <sup>1</sup>  |
-| /rate/:id          |                            | N/A                                  | Rate a store  <sup>2</sup>                        | N/A                          |
-| /fruits            | type, season, storeId      | Get all fruits                       | Create a new fruit  <sup>1</sup>                  | N/A                          |
-| /fruits/:id        |                            | Get a fruit                          | Modify a fruit <sup>1</sup>                       | Delete a fruit <sup>1</sup>  |
-| /signup            |                            | N/A                                  | Create new user                                   | N/A                          |
-| /login             |                            | N/A                                  | Start user session                                | N/A                          |
-| /signout           |                            | End user session  <sup>2</sup>       | N/A                                               | N/A                          |
-| /users             |                            | Get all users <sup>1</sup>           | N/A                                               | N/A                          |
-| /users/:id         |                            | Get a user <sup>2</sup>              | Modify a user<sup>2</sup>                         | Delete a user  <sup>1</sup>  |
-| /carts             |                            | Get all carts <sup>1</sup>           | N/A                                               | N/A                          |
-| /carts/:id         |                            | Get a cart  <sup>2</sup>             | Modify a cart <sup>2</sup>                        | Delete a cart <sup>2</sup>   |
-| /checkout/:id      |                            | N/A                                  | Deletes a cart and creates an order <sup>2</sup>  | N/A                          |
-| /orders            | username                   | Get all orders <sup>1</sup>          | N/A                                               | N/A                          |
-| /orders:id         |                            | Get an order <sup>2</sup>            | N/A                                               | N/A                          |
-| /comments          | username, storeId, fruitId | Get all comments <sup>1</sup>        | N/A                                               | N/A                          |
-| /comments/fruits   |                            |  N/A                                 | Add a fruit comment <sup>2</sup>                  | N/A                          |
-| /comments/stores   |                            |  N/A                                 | Add a store comment <sup>2</sup>                  | N/A                          |
-| /comments/:id      |                            |  N/A                                 | N/A                                               | Delete a comment <sup>1</sup>|
+| ROUTE                | QUERY                      | GET                                  | POST                                              | DELETE                       |
+| -------------------- | -------------------------- |------------------------------------- | ------------------------------------------------- | ---------------------------- |
+| /stores              |                            | Get all stores                       | Create new store <sup>1</sup>                     | N/A                          |
+| /stores/:id          |                            | Get a store                          | Modify a store  <sup>1</sup>                      | Delete a store <sup>1</sup>  |
+| /rate/:id            |                            | N/A                                  | Rate a store  <sup>2</sup>                        | N/A                          |
+| /fruits              | type, season, storeId      | Get all fruits                       | Create a new fruit  <sup>1</sup>                  | N/A                          |
+| /fruits/:id          |                            | Get a fruit                          | Modify a fruit <sup>1</sup>                       | Delete a fruit <sup>1</sup>  |
+| /signup              |                            | N/A                                  | Create new user                                   | N/A                          |
+| /login               |                            | N/A                                  | Start user session                                | N/A                          |
+| /signout             |                            | End user session  <sup>2</sup>       | N/A                                               | N/A                          |
+| /users               |                            | Get all users <sup>1</sup>           | N/A                                               | N/A                          |
+| /users/:id           |                            | Get a user <sup>2</sup>              | Modify a user<sup>2</sup>                         | Delete a user  <sup>1</sup>  |
+| /carts               |                            | Get all carts <sup>1</sup>           | N/A                                               | N/A                          |
+| /carts/:id           |                            | Get a cart  <sup>2</sup>             | Modify a cart <sup>2</sup>                        | Delete a cart <sup>2</sup>   |
+| /checkout/:id        |                            | N/A                                  | Deletes a cart and creates an order <sup>2</sup>  | N/A                          |
+| /orders              | username                   | Get all orders <sup>1</sup>          | N/A                                               | N/A                          |
+| /orders:id           |                            | Get an order <sup>2</sup>            | N/A                                               | N/A                          |
+| /comments            | username, storeId, fruitId | Get all comments <sup>1</sup>        | N/A                                               | N/A                          |
+| /comments/fruits/:id |                            |  N/A                                 | Add a fruit comment <sup>2</sup>                  | N/A                          |
+| /comments/stores/:id |                            |  N/A                                 | Add a store comment <sup>2</sup>                  | N/A                          |
+| /comments/:id        |                            |  N/A                                 | N/A                                               | Delete a comment <sup>1</sup>|
 <sup>1</sup>: Requires admin
 <sup>2</sup>: Requires logged in
 
@@ -408,7 +407,7 @@ The shopping cart, regretfully, does not "reserve" items. This means that when a
 
 ## POST JSON data expectations
 
-###/store
+###/stores
 ```
 {
    "storeId": "",
@@ -422,7 +421,7 @@ The shopping cart, regretfully, does not "reserve" items. This means that when a
 }
 ```
 
-###/store/:id (Store storeId)
+###/stores/:id (Store storeId)
 ```
 {
    "storeId": "", // optional
@@ -523,20 +522,18 @@ The shopping cart, regretfully, does not "reserve" items. This means that when a
 }
 ```
 
-###/comments/fruits
+###/comments/fruits/:id (Fruit _id)
 ```
 {
     "username": "",
-    "fruitId": "",
     "message": ""
 }
 ```
 
-###/comments/stores
+###/comments/stores/:id (Store storeId)
 ```
 {
     "username": "",
-    "storeId": "",
     "message": ""
 }
 ```
